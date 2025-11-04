@@ -28,7 +28,7 @@ function HamburgerButton({
   const shouldTransform = hamburgerTransform && isOpen;
   
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative z-[999999] ${className}`}>
       {/* Hidden checkbox - controls state */}
       <input
         type="checkbox"
