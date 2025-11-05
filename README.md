@@ -63,6 +63,13 @@ const posts = await query('blog')
 - **Desktop and mobile variants** with responsive behavior
 - **Active state detection** with exact path matching
 
+### 🔗 Link Tree Page
+- **Mobile-first link aggregation** page at `/links` similar to Linktree
+- **Filtered menu system** showing only `links-menu` items
+- **Full-width card design** with external link indicators
+- **Icon support** for visual identification
+- **Responsive layout** optimized for mobile sharing
+
 ### 🔗 Smart Redirect Management
 - **Automatic redirects** from `redirectFrom` frontmatter
 - **Path alias redirects** (automatically redirect `/collection/item` ↔ `/item`)
