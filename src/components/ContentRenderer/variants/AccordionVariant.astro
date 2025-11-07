@@ -1,10 +1,5 @@
 ---
 // src/components/ContentRenderer/variants/AccordionVariant.astro
-/**
- * Accordion Variant - Collapsible Q&A layout
- * Features: Single/multiple expansion, React component with client:visible
- */
-
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import Accordion from "@/components/LoopTemplates/Accordion";
 import Button from "@/components/Button/Button";
@@ -25,6 +20,36 @@ const {
   id,
 } = Astro.props as Props;
 
+// Process items: get HTML from Content components
+const processedItems = await Promise.all(
+  items.map(async (item) => {
+    let renderedContent: string | undefined;
+    
+    if (item.Content) {
+      try {
+        const Component = item.Content;
+        const result = await Component({});
+        
+        if (typeof result === 'object' && result !== null && 'html' in result) {
+          renderedContent = result.html;
+        } else {
+          renderedContent = String(result);
+        }
+      } catch (error) {
+        console.error('Failed to render Content component:', error);
+        renderedContent = item.content;
+      }
+    }
+    
+    // ✅ Spread original item, override specific fields
+    return {
+      ...item,                                              // Keep all original props
+      content: renderedContent || item.content || item.description,  // Override content
+      Content: undefined,                                   // Remove Content component
+    };
+  })
+);
+
 const viewAllText = `View All ${collectionTitle || ""}`.trim();
 ---
 
@@ -38,8 +63,12 @@ const viewAllText = `View All ${collectionTitle || ""}`.trim();
     </div>
   )}
 
-  {items.length > 0 && (
-    <Accordion items={items} allowMultiple={allowMultiple} client:visible />
+  {processedItems.length > 0 && (
+    <Accordion 
+      items={processedItems} 
+      allowMultiple={allowMultiple} 
+      client:visible 
+    />
   )}
 
   {shouldShowCollectionCTA(collectionUrl, items.length) && (

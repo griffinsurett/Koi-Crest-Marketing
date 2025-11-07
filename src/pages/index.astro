@@ -12,19 +12,15 @@ import {
   sortBy,
 } from "@/utils/query";
 ---
+
 <BaseLayout title="Home" description={siteData.description}>
   <main class="flex-1">
-
     <!-- Hero ContentRenderer with static content -->
     <ContentRenderer
       variant="HeroVariant"
       title="Welcome"
       description="Static hero without collection"
     />
-
-    <!-- Blog with limit - auto-populates from blog meta -->
-    <ContentRenderer query={query("blog").limit(2)} variant="BlogVariant" columns={2} />
-    <ContentRenderer query={query("blog").limit(2)} variant="BlogVariant" columns={2} />
 
     <!-- Services - auto-populates from services meta -->
     <ContentRenderer
@@ -34,19 +30,17 @@ import {
       gap="lg"
     />
 
-    <!-- Filtered query - still gets meta from authors -->
-    <ContentRenderer
-      query={query("authors").where(whereArrayContains("tags", "featured"))}
-      variant="GridVariant"
-      columns={3}
-      gap="lg"
-    />
-
     <!-- Portfolio with sorting -->
     <ContentRenderer
-      query={query("portfolio")
+      query={query("projects")
         .orderBy(sortByDate("publishDate", "desc"))
         .limit(5)}
+      variant="ListVariant"
+    />
+
+    <!-- Why Choose Us -->
+    <ContentRenderer
+      query={query("benefits").orderBy(sortByOrder())}
       variant="ListVariant"
     />
 
@@ -64,14 +58,10 @@ import {
     />
 
     <!-- Contact ContentRenderer -->
-    <ContentRenderer query={query("contact-us")} variant="ContactVariant" columns={2} />
-
-    <!-- Multi-collection query - requires manual title/description -->
     <ContentRenderer
-      query={query(["blog", "portfolio"]).orderBy(sortByDate()).limit(10)}
-      variant="ListVariant"
-      title="Recent Updates"
-      description="Latest from our blog and portfolio"
+      query={query("contact-us")}
+      variant="ContactVariant"
+      columns={2}
     />
   </main>
 </BaseLayout>

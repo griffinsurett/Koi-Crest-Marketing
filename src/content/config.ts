@@ -1,13 +1,13 @@
 // src/content/config.ts
 /**
  * Collection structure:
- * 
+ *
  * src/content/[collection]/
  *   _meta.mdx         ← Collection config (frontmatter) + index page content (body)
  *                        The _ prefix excludes it from collection entries
  *   item-one.mdx      ← Collection item
  *   item-two.mdx      ← Collection item
- * 
+ *
  * _meta.mdx frontmatter controls:
  * - title: Display name for the collection
  * - description: Collection description
@@ -23,8 +23,8 @@ import { MenuItemsLoader } from "@/utils/loaders/MenuItemsLoader";
 
 // Define your collections with the base schema - all support MDX
 export const collections = {
-    // ── menus.json ─────────────────────────────────────────
-  "menus": defineCollection({
+  // ── menus.json ─────────────────────────────────────────
+  menus: defineCollection({
     loader: file("src/content/menus/menus.json"),
     schema: MenuSchema,
   }),
@@ -34,7 +34,7 @@ export const collections = {
     loader: MenuItemsLoader(),
     schema: MenuItemFields,
   }),
-  
+
   "contact-us": defineCollection({
     loader: file("src/content/contact-us/contact-us.json"),
     schema: ({ image }) =>
@@ -45,12 +45,13 @@ export const collections = {
 
   "social-media": defineCollection({
     loader: file("src/content/social-media/socialmedia.json"),
-    schema: ({ image }) => baseSchema({ image }).extend({
-      link: z.string().optional(),
-    }),
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        link: z.string().optional(),
+      }),
   }),
 
-  "blog": defineCollection({
+  blog: defineCollection({
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         author: refSchema("authors"),
@@ -59,7 +60,7 @@ export const collections = {
       }),
   }),
 
-  "authors": defineCollection({
+  authors: defineCollection({
     loader: file("src/content/authors/authors.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
@@ -76,15 +77,22 @@ export const collections = {
       }),
   }),
 
-  "services": defineCollection({
+  services: defineCollection({
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         price: z.string().optional(),
         features: z.array(z.string()).default([]),
       }),
   }),
-
-  "testimonials": defineCollection({
+  projects: defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        client: z.string(),
+        projectUrl: z.string().url().optional(),
+        technologies: z.array(z.string()).default([]),
+      }),
+  }),
+  testimonials: defineCollection({
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         role: z.string(),
@@ -92,21 +100,26 @@ export const collections = {
         rating: z.number().min(1).max(5).default(5),
       }),
   }),
-
-  "portfolio": defineCollection({
+  faq: defineCollection({
     schema: ({ image }) =>
       baseSchema({ image }).extend({
-        client: z.string(),
-        projectUrl: z.string().url().optional(),
-        technologies: z.array(z.string()).default([]),
-        category: z.string(),
+        services: refSchema("services"),
+      }),
+  }),
+  reasons: defineCollection({
+    loader: file("src/content/reasons/reasons.json"),
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        number: z.string(),
+        reason: z.string(),
       }),
   }),
 
-  "faq": defineCollection({
+  benefits: defineCollection({
+    loader: file("src/content/benefits/benefits.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
-        category: z.string().optional(),
+        benefit: z.string(),
       }),
   }),
 };
