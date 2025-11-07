@@ -1,16 +1,16 @@
 // src/components/LoopTemplates/Accordion.tsx
-import { useState } from "react";
-import AccordionItem from "../LoopComponents/AccordionItem";
+import { useState, useEffect, useRef } from "react";
+import AccordionItem from "@/components/LoopComponents/AccordionItem";
+
+interface AccordionItemData {
+  slug?: string;
+  title: string;
+  description?: string;
+  contentSlotId: string; // ID of the hidden div with rendered content
+}
 
 interface AccordionProps {
-  items: Array<{
-    slug?: string;
-    title: string;
-    description?: string;
-    content?: string;  // Single field: HTML string or plain text
-    headerAction?: React.ReactNode;
-    [key: string]: any;
-  }>;
+  items: AccordionItemData[];
   allowMultiple?: boolean;
   className?: string;
 }
@@ -21,6 +21,19 @@ export default function Accordion({
   className = "",
 }: AccordionProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const [itemsWithContent, setItemsWithContent] = useState<Array<AccordionItemData & { renderedContent: string }>>([]);
+
+  // Grab rendered content from DOM on mount
+  useEffect(() => {
+    const processedItems = items.map(item => {
+      const contentElement = document.getElementById(item.contentSlotId);
+      return {
+        ...item,
+        renderedContent: contentElement ? contentElement.innerHTML : '',
+      };
+    });
+    setItemsWithContent(processedItems);
+  }, [items]);
 
   const toggleItem = (id: string) => {
     setExpandedItems((prev) => {
@@ -37,22 +50,20 @@ export default function Accordion({
 
   return (
     <div className={`space-y-2 ${className}`}>
-      {items.map((item) => {
-        const itemId = item.slug || item.title;
-        const displayContent = item.content || item.description;
-        const subtitle = item.content ? item.description : undefined;
-
+      {itemsWithContent.map((item, index) => {
+        const itemId = item.slug || `item-${index}`;
+        
         return (
           <AccordionItem
             key={itemId}
             id={itemId}
             title={item.title}
-            description={subtitle}
+            description={item.description}
             isExpanded={expandedItems.has(itemId)}
             onToggle={() => toggleItem(itemId)}
-            headerAction={item.headerAction}
           >
-            {displayContent}
+            {/* Render the pre-rendered HTML content */}
+            <div dangerouslySetInnerHTML={{ __html: item.renderedContent }} />
           </AccordionItem>
         );
       })}

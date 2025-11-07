@@ -5,15 +5,9 @@ export interface AccordionItemProps {
   id: string;
   title: string;
   description?: string;
-  children?: ReactNode | string; // Can be plain text or HTML string
+  children?: ReactNode;
   isExpanded: boolean;
   onToggle: () => void;
-  headerAction?: ReactNode;
-}
-
-function isHTMLString(str: string): boolean {
-  // Check if string contains HTML tags
-  return /<[a-z][\s\S]*>/i.test(str);
 }
 
 export default function AccordionItem({
@@ -23,17 +17,13 @@ export default function AccordionItem({
   children,
   isExpanded,
   onToggle,
-  headerAction,
 }: AccordionItemProps) {
-  // Determine how to render children
-  const isHTML = typeof children === 'string' && isHTMLString(children);
-
   return (
     <div className="border border-gray-300 rounded-lg overflow-hidden">
-      <div
-        className="flex items-center justify-between p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+      <button
+        type="button"
+        className="flex items-center justify-between p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors w-full text-left"
         onClick={onToggle}
-        role="button"
         aria-expanded={isExpanded}
         aria-controls={`${id}-content`}
       >
@@ -48,31 +38,15 @@ export default function AccordionItem({
             )}
           </div>
         </div>
-
-        {headerAction && (
-          <div className="ml-4" onClick={(e) => e.stopPropagation()}>
-            {headerAction}
-          </div>
-        )}
-      </div>
+      </button>
 
       {isExpanded && children && (
         <div
           id={`${id}-content`}
           className="p-6 bg-white border-t border-gray-300"
-          aria-labelledby={id}
         >
           <div className="prose prose-gray max-w-none">
-            {isHTML ? (
-              // Render HTML string safely
-              <div dangerouslySetInnerHTML={{ __html: children as string }} />
-            ) : typeof children === 'string' ? (
-              // Render plain text with preserved line breaks
-              <div className="whitespace-pre-wrap">{children}</div>
-            ) : (
-              // Render React nodes as-is
-              children
-            )}
+            {children}
           </div>
         </div>
       )}

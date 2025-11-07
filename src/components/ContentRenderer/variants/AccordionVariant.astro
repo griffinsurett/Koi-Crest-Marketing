@@ -20,37 +20,8 @@ const {
   id,
 } = Astro.props as Props;
 
-// Process items: get HTML from Content components
-const processedItems = await Promise.all(
-  items.map(async (item) => {
-    let renderedContent: string | undefined;
-    
-    if (item.Content) {
-      try {
-        const Component = item.Content;
-        const result = await Component({});
-        
-        if (typeof result === 'object' && result !== null && 'html' in result) {
-          renderedContent = result.html;
-        } else {
-          renderedContent = String(result);
-        }
-      } catch (error) {
-        console.error('Failed to render Content component:', error);
-        renderedContent = item.content;
-      }
-    }
-    
-    // ✅ Spread original item, override specific fields
-    return {
-      ...item,                                              // Keep all original props
-      content: renderedContent || item.content || item.description,  // Override content
-      Content: undefined,                                   // Remove Content component
-    };
-  })
-);
-
 const viewAllText = `View All ${collectionTitle || ""}`.trim();
+const accordionId = id || 'accordion';
 ---
 
 <section id={id} class={`py-16 ${className}`}>
@@ -63,12 +34,35 @@ const viewAllText = `View All ${collectionTitle || ""}`.trim();
     </div>
   )}
 
-  {processedItems.length > 0 && (
-    <Accordion 
-      items={processedItems} 
-      allowMultiple={allowMultiple} 
-      client:visible 
-    />
+  {items.length > 0 && (
+    <>
+      {/* Render Content components server-side in hidden slots */}
+      {items.map((item, index) => (
+        <div 
+          id={`${accordionId}-content-${index}`} 
+          style="display: none;" 
+          data-accordion-content={index}
+        >
+          {item.Content ? (
+            <item.Content />
+          ) : item.content ? (
+            <div set:html={item.content} />
+          ) : null}
+        </div>
+      ))}
+
+      {/* Pass item metadata to React, it will grab rendered content via slots */}
+      <Accordion 
+        items={items.map((item, index) => ({
+          slug: item.slug,
+          title: item.title || 'Untitled',
+          description: item.description,
+          contentSlotId: `${accordionId}-content-${index}`,
+        }))}
+        allowMultiple={allowMultiple}
+        client:visible
+      />
+    </>
   )}
 
   {shouldShowCollectionCTA(collectionUrl, items.length) && (
