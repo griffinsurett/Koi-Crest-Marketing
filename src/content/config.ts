@@ -59,7 +59,6 @@ export const collections = {
         readingTime: z.number().optional(),
       }),
   }),
-
   authors: defineCollection({
     loader: file("src/content/authors/authors.json"),
     schema: ({ image }) =>
@@ -76,7 +75,6 @@ export const collections = {
         role: z.string().optional(),
       }),
   }),
-
   services: defineCollection({
     schema: ({ image }) =>
       baseSchema({ image }).extend({
@@ -114,7 +112,6 @@ export const collections = {
         reason: z.string(),
       }),
   }),
-
   benefits: defineCollection({
     loader: file("src/content/benefits/benefits.json"),
     schema: ({ image }) =>

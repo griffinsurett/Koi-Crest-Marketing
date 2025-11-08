@@ -1,12 +1,17 @@
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
 import { loadEnv } from 'vite';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import partytown from '@astrojs/partytown';
 import { buildRedirectConfig } from './src/utils/redirects';
 import { manualChunks, assetFileNames } from './vite.chunks.js';
+
+// Get __dirname in ESM
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 const redirects = await buildRedirectConfig();
@@ -20,6 +25,11 @@ export default defineConfig({
   
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src')
+      }
+    },
     build: {
       assetsInlineLimit: 10240, // 10KB - will inline your 7.3KB CSS automatically
       cssCodeSplit: true,

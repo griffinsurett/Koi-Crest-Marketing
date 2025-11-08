@@ -1,0 +1,73 @@
+---
+// src/components/ContentBridge/ContentBridge.astro
+/**
+ * ContentBridge - Server-side content renderer for React components
+ * 
+ * Renders Astro/MDX content server-side in hidden containers,
+ * then passes slot IDs to React components as normal props.
+ * 
+ * React components use standard DOM APIs (document.getElementById)
+ * to access the pre-rendered content - no special hooks needed!
+ * 
+ * @example
+ * <ContentBridge items={blogPosts} bridgeId="accordion">
+ *   <Accordion 
+ *     items={blogPosts.map((item, i) => ({
+ *       title: item.title,
+ *       contentSlotId: `accordion-slot-${i}`
+ *     }))}
+ *     client:visible
+ *   />
+ * </ContentBridge>
+ */
+
+interface ContentItem {
+  Content?: any;
+  content?: string;
+  [key: string]: any;
+}
+
+interface Props {
+  /** Array of items with Content component or raw HTML */
+  items: ContentItem[];
+  /** Unique identifier for this bridge instance (used for DOM IDs) */
+  bridgeId: string;
+  /** Additional CSS classes */
+  className?: string;
+}
+
+const {
+  items = [],
+  bridgeId,
+  className = "",
+} = Astro.props as Props;
+---
+
+<div class={`content-bridge ${className}`} data-bridge-id={bridgeId}>
+  {/* 
+    Server-Side Rendering: 
+    Render all content in hidden containers with unique IDs
+  */}
+  {items.map((item, index) => (
+    <div
+      id={`${bridgeId}-slot-${index}`}
+      style="display: none;"
+      data-bridge-slot={index}
+    >
+      {/* Render Astro component if provided */}
+      {item.Content ? (
+        <item.Content />
+      ) : /* Render raw HTML if provided */
+      item.content ? (
+        <div set:html={item.content} />
+      ) : null}
+    </div>
+  ))}
+
+  {/* 
+    React Component:
+    Receives normal props (including contentSlotId strings)
+    Uses document.getElementById() to access content
+  */}
+  <slot />
+</div>

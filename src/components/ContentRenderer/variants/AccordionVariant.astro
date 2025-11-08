@@ -1,6 +1,14 @@
 ---
 // src/components/ContentRenderer/variants/AccordionVariant.astro
+/**
+ * AccordionVariant - Refactored to use ContentBridge
+ * 
+ * The ONLY change: Wrap Accordion in ContentBridge instead of manually
+ * rendering hidden slots. Your existing Accordion.tsx works unchanged!
+ */
+
 import type { BaseVariantProps } from "../ContentRenderer.types";
+import ContentBridge from "@/components/ContentBridge/ContentBridge.astro";
 import Accordion from "@/components/LoopTemplates/Accordion";
 import Button from "@/components/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
@@ -21,10 +29,11 @@ const {
 } = Astro.props as Props;
 
 const viewAllText = `View All ${collectionTitle || ""}`.trim();
-const accordionId = id || 'accordion';
+const bridgeId = id || "accordion";
 ---
 
 <section id={id} class={`py-16 ${className}`}>
+  {/* Header Section */}
   {(title || description) && (
     <div class="mb-12">
       {title && <h2 class="text-4xl font-bold mb-4">{title}</h2>}
@@ -34,37 +43,28 @@ const accordionId = id || 'accordion';
     </div>
   )}
 
+  {/* Accordion with ContentBridge */}
   {items.length > 0 && (
-    <>
-      {/* Render Content components server-side in hidden slots */}
-      {items.map((item, index) => (
-        <div 
-          id={`${accordionId}-content-${index}`} 
-          style="display: none;" 
-          data-accordion-content={index}
-        >
-          {item.Content ? (
-            <item.Content />
-          ) : item.content ? (
-            <div set:html={item.content} />
-          ) : null}
-        </div>
-      ))}
-
-      {/* Pass item metadata to React, it will grab rendered content via slots */}
-      <Accordion 
+    <ContentBridge items={items} bridgeId={bridgeId}>
+      {/* 
+        Your existing Accordion component!
+        ContentBridge generates slot IDs as: `${bridgeId}-slot-${index}`
+        Just pass that pattern to your Accordion as contentSlotId
+      */}
+      <Accordion
         items={items.map((item, index) => ({
           slug: item.slug,
-          title: item.title || 'Untitled',
+          title: item.title || "Untitled",
           description: item.description,
-          contentSlotId: `${accordionId}-content-${index}`,
+          contentSlotId: `${bridgeId}-slot-${index}`,  // ← ContentBridge created this ID
         }))}
         allowMultiple={allowMultiple}
         client:visible
       />
-    </>
+    </ContentBridge>
   )}
 
+  {/* Collection CTA */}
   {shouldShowCollectionCTA(collectionUrl, items.length) && (
     <div class="mt-12 text-center">
       <Button
