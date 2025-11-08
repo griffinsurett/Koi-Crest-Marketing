@@ -11,15 +11,15 @@ import {
   sortByOrder,
   sortBy,
 } from "@/utils/query";
+import HeroVariant from "@/components/ContentRenderer/variants/HeroVariant.astro";
 ---
 
 <BaseLayout title="Home" description={siteData.description}>
   <main class="flex-1">
     <!-- Hero ContentRenderer with static content -->
-    <ContentRenderer
-      variant="HeroVariant"
-      title="Welcome"
-      description="Static hero without collection"
+    <HeroVariant
+      title="How do you measure the success of social media marketing campaigns?"
+      description="We track key performance indicators (KPIs) such as engagement rates, reach, conversions, click-through rates, and ROI. We provide detailed analytics reports so you can see exactly how your campaigns are performing."
     />
 
     <!-- Services - auto-populates from services meta -->

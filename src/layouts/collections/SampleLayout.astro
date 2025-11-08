@@ -1,0 +1,11 @@
+---
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query, sortByOrder } from "@/utils/query";
+import HeroVariant from "@/components/ContentRenderer/variants/HeroVariant.astro";
+---
+<HeroVariant
+  title="How do you measure the success of social media marketing campaigns?"
+  description="We track key performance indicators (KPIs)..."
+/>
+
+<ContentRenderer query={query("services")} />
