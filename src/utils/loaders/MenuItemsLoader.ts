@@ -5,12 +5,18 @@ import { capitalize } from '@/utils/string';
 import { parseContentPath, isMetaFile } from '@/utils/paths';
 import { SimpleIdRegistry } from '@/utils/idRegistry';
 import { parseFrontmatterFromString } from '@/utils/filesystem/frontmatter';
+import { readFileSync, readdirSync } from 'fs';
+import { join, relative } from 'path';
 
 const MENU_ITEMS_JSON_PATH = 'src/content/menu-items/menu-items.json';
 const MENUS_COLLECTION = 'menus' as const;
 
 const idRegistry = new SimpleIdRegistry();
 
+/**
+ * Get full ancestor chain for a parent reference
+ * Returns array of IDs from immediate parent to root
+ */
 function getAncestorChain(parentRef: any, store: any): string[] {
   const ancestors: string[] = [];
   let current = parentRef;
@@ -37,6 +43,10 @@ function getAncestorChain(parentRef: any, store: any): string[] {
   return ancestors;
 }
 
+/**
+ * Build semantic ID from full ancestor path
+ * Walks up parent chain to ensure uniqueness across multi-level hierarchies
+ */
 function buildSemanticId(
   baseId: string, 
   context: {
@@ -65,10 +75,16 @@ function buildSemanticId(
   return parts.join('-');
 }
 
+/**
+ * Get unique ID using shared registry
+ */
 function getUniqueId(semanticId: string): string {
   return idRegistry.getUniqueId(semanticId);
 }
 
+/**
+ * Normalize menu reference to standard format
+ */
 function normalizeMenuReference(menu: any): any {
   if (!menu) return [];
   
@@ -82,10 +98,16 @@ function normalizeMenuReference(menu: any): any {
     : [normalizeOne(menu)];
 }
 
+/**
+ * Ensure value is an array
+ */
 function ensureArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value];
 }
 
+/**
+ * Get item property with override pattern
+ */
 function getItemProperty<T>(
   itemData: any,
   metaData: any,
@@ -102,14 +124,23 @@ function getItemProperty<T>(
   return defaultValue;
 }
 
+/**
+ * Determine if item should have a page
+ */
 function shouldItemHavePage(itemData: any, metaData: any): boolean {
   return getItemProperty(itemData, metaData, 'hasPage', 'itemsHasPage', true);
 }
 
+/**
+ * Determine if item should use root path
+ */
 function shouldItemUseRootPath(itemData: any, metaData: any): boolean {
   return getItemProperty(itemData, metaData, 'rootPath', 'itemsRootPath', false);
 }
 
+/**
+ * Get collection metadata from modules
+ */
 function getCollectionMetaFromModules(
   collectionName: string,
   modules: Record<string, any>
@@ -138,6 +169,9 @@ function getCollectionMetaFromModules(
   };
 }
 
+/**
+ * Create the menu items loader
+ */
 export function MenuItemsLoader(): Loader {
   return {
     name: 'menu-items-loader',
@@ -145,17 +179,19 @@ export function MenuItemsLoader(): Loader {
     async load(context: LoaderContext) {
       const { store, logger } = context;
 
+      // Clear ID tracking for fresh load
       idRegistry.clear();
+
+      // Step 1: Load base menu items from JSON
       store.clear();
       await file(MENU_ITEMS_JSON_PATH).load(context);
 
+      // Step 2: Pre-register IDs from manually loaded items
       for (const [id, entry] of store.entries()) {
         idRegistry.getUniqueId(id);
       }
 
-      const { readFileSync, readdirSync } = await import('fs');
-      const { join, relative } = await import('path');
-      
+      // Step 3: Walk content directory and parse frontmatter
       const frontmatterModules: Record<string, any> = {};
       
       function walkDir(dir: string) {
@@ -186,7 +222,10 @@ export function MenuItemsLoader(): Loader {
       const contentDir = join(process.cwd(), 'src/content');
       walkDir(contentDir);
 
+      // Step 4: Process individual item addToMenu fields
       await processItemMenus(frontmatterModules, store);
+
+      // Step 5: Process collection-level addToMenu and itemsAddToMenu
       await processCollectionMenus(frontmatterModules, store);
 
       logger.info(`Menu items loader: ${store.keys().length} items loaded`);
@@ -194,6 +233,9 @@ export function MenuItemsLoader(): Loader {
   };
 }
 
+/**
+ * Process individual item addToMenu configurations
+ */
 async function processItemMenus(
   modules: Record<string, any>,
   store: any
@@ -245,6 +287,9 @@ async function processItemMenus(
   }
 }
 
+/**
+ * Process collection-level addToMenu and itemsAddToMenu
+ */
 async function processCollectionMenus(
   modules: Record<string, any>,
   store: any
@@ -259,6 +304,7 @@ async function processCollectionMenus(
 
     const meta = getCollectionMetaFromModules(collection, modules);
 
+    // Process collection-level addToMenu
     if (data.addToMenu) {
       const configs = ensureArray(data.addToMenu);
 
@@ -294,6 +340,7 @@ async function processCollectionMenus(
       }
     }
 
+    // Process itemsAddToMenu
     if (data.itemsAddToMenu) {
       const configs = ensureArray(data.itemsAddToMenu);
 
