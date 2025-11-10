@@ -124,6 +124,9 @@ function parseYamlObject(lines: string[], startIndex: number, baseIndent: number
 /**
  * Parse YAML array/list
  */
+/**
+ * Parse YAML array/list
+ */
 function parseYamlArray(lines: string[], startIndex: number, baseIndent: number): ParseResult {
   const array: any[] = [];
   let i = startIndex;
@@ -151,16 +154,56 @@ function parseYamlArray(lines: string[], startIndex: number, baseIndent: number)
     
     const afterDash = trimmed.substring(1).trim();
     
-    // Check if inline value contains object syntax (key: value)
+    // ✅ FIX: Handle multiline objects in arrays
     if (afterDash && afterDash.includes(':')) {
-      // Inline object: - key: value
+      // This is the start of an object in the array
       const obj: Record<string, any> = {};
+      
+      // Parse the first property on the dash line
       const colonIndex = afterDash.indexOf(':');
       const key = afterDash.substring(0, colonIndex).trim();
       const value = afterDash.substring(colonIndex + 1).trim();
       obj[key] = parseYamlValue(value);
-      array.push(obj);
+      
+      // Move to next line
       i++;
+      
+      // ✅ Keep reading properties until we hit another dash at same level
+      while (i < lines.length) {
+        const nextLine = lines[i];
+        const nextTrimmed = nextLine.trim();
+        const nextIndent = nextLine.length - nextLine.trimStart().length;
+        
+        // Stop if we hit empty line or comment
+        if (!nextTrimmed || nextTrimmed.startsWith('#')) {
+          i++;
+          continue;
+        }
+        
+        // Stop if we're back at or before the array indent
+        if (nextIndent <= baseIndent) {
+          break;
+        }
+        
+        // Stop if we hit another array item
+        if (nextTrimmed.startsWith('-')) {
+          break;
+        }
+        
+        // This should be another property of the current object
+        if (nextTrimmed.includes(':')) {
+          const propColonIndex = nextTrimmed.indexOf(':');
+          const propKey = nextTrimmed.substring(0, propColonIndex).trim();
+          const propValue = nextTrimmed.substring(propColonIndex + 1).trim();
+          obj[propKey] = parseYamlValue(propValue);
+          i++;
+        } else {
+          // Not a valid property, stop
+          break;
+        }
+      }
+      
+      array.push(obj);
       continue;
     }
     
