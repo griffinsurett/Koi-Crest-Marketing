@@ -110,12 +110,11 @@ export function createSortFn<T extends CollectionKey>(
  */
 export function applySorting<T extends CollectionKey>(
   entries: CollectionEntry<T>[],
-  sort: SortFn<T> | SortFn<T>[] | SortConfig[]
+  sort: SortFn<T> | SortFn<T>[] | SortConfig[] | Array<SortFn<T> | SortConfig>
 ): CollectionEntry<T>[] {
-  // Convert configs to functions
-  if (Array.isArray(sort) && sort.length > 0 && 'field' in sort[0]) {
-    const sortFns = (sort as SortConfig[]).map(config => createSortFn<T>(config));
-    return [...entries].sort(sortByMultiple(...sortFns));
+  // Handle empty sort
+  if (!sort || (Array.isArray(sort) && sort.length === 0)) {
+    return entries;
   }
   
   // Single sort function
@@ -123,8 +122,26 @@ export function applySorting<T extends CollectionKey>(
     return [...entries].sort(sort);
   }
   
-  // Array of sort functions
+  // Array of items - need to check if they're configs or functions
   if (Array.isArray(sort)) {
+    // Check if first item is a config
+    if (sort.length > 0 && typeof sort[0] === 'object' && 'field' in sort[0]) {
+      // All configs
+      const sortFns = (sort as SortConfig[]).map(config => createSortFn<T>(config));
+      return [...entries].sort(sortByMultiple(...sortFns));
+    }
+    
+    // Check if it's a mixed array
+    const hasMixed = sort.some(s => typeof s === 'object' && 'field' in s);
+    if (hasMixed) {
+      // Convert all to functions
+      const sortFns = sort.map(s => 
+        typeof s === 'function' ? s : createSortFn<T>(s as SortConfig)
+      );
+      return [...entries].sort(sortByMultiple(...(sortFns as SortFn<T>[])));
+    }
+    
+    // All functions
     return [...entries].sort(sortByMultiple(...(sort as SortFn<T>[])));
   }
   

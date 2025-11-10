@@ -8,7 +8,6 @@ import type { CollectionEntry, CollectionKey } from 'astro:content';
 import type { 
   RelationshipGraph, 
   RelationMap, 
-  Relation,
   GraphBuildOptions,
 } from './types';
 import { getEntryKey, parseEntryKey } from './types';
@@ -64,17 +63,17 @@ export async function buildRelationshipGraph(
       byParent: new Map(),
       byReference: new Map(),
     },
-    collections: requestedCollections as CollectionKey[],
+    collections: requestedCollections,
     totalEntries: 0,
   };
   
   // Load entries
   for (const collection of requestedCollections) {
-    const entries = await getCollection(collection as any);
+    const entries = await getCollection(collection);
     
     for (const entry of entries) {
-      const key = getEntryKey(entry as any);
-      graph.nodes.set(key, entry as any);
+      const key = getEntryKey(entry);
+      graph.nodes.set(key, entry);
       
       if (!graph.indexes.byCollection.has(collection)) {
         graph.indexes.byCollection.set(collection, []);
@@ -96,7 +95,7 @@ export async function buildRelationshipGraph(
       const refs = normalizeReference(data[config.field]);
       
       for (const ref of refs) {
-        const targetKey = getEntryKey(ref as any);
+        const targetKey = getEntryKey(ref);
         
         if (!graph.indexes.byReference.has(key)) {
           graph.indexes.byReference.set(key, []);
@@ -105,7 +104,7 @@ export async function buildRelationshipGraph(
           type: 'reference',
           field: config.field,
           targetKey,
-          targetCollection: ref.collection as CollectionKey,
+          targetCollection: ref.collection,
         });
       }
     }
@@ -115,7 +114,7 @@ export async function buildRelationshipGraph(
       const parents = normalizeReference(data.parent);
       
       for (const parent of parents) {
-        const parentKey = getEntryKey(parent as any);
+        const parentKey = getEntryKey(parent);
         
         if (!graph.indexes.byParent.has(key)) {
           graph.indexes.byParent.set(key, []);
@@ -129,7 +128,7 @@ export async function buildRelationshipGraph(
           type: 'parent',
           field: 'parent',
           targetKey: parentKey,
-          targetCollection: parent.collection as CollectionKey,
+          targetCollection: parent.collection,
         });
       }
     }
@@ -138,14 +137,14 @@ export async function buildRelationshipGraph(
   return graph;
 }
 
-export function getCollectionEntries(
+export function getCollectionEntries<T extends CollectionKey>(
   graph: RelationshipGraph,
-  collection: CollectionKey
-): CollectionEntry<typeof collection>[] {
+  collection: T
+): CollectionEntry<T>[] {
   const keys = graph.indexes.byCollection.get(collection) || [];
   return keys
     .map(key => graph.nodes.get(key))
-    .filter((e): e is CollectionEntry<typeof collection> => e !== undefined);
+    .filter((e): e is CollectionEntry<T> => e !== undefined);
 }
 
 export function getRelationMap(
