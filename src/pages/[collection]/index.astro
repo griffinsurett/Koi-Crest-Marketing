@@ -1,6 +1,7 @@
 ---
 // src/pages/[collection]/index.astro
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import HeroLayout from "@/layouts/collections/HeroLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { getCollectionMeta } from "@/utils/collections";
 import { buildCollectionSEOProps } from "@/utils/seo";
@@ -38,23 +39,21 @@ const { title: pageTitle, description: pageDescription } = seoProps;
 
 <BaseLayout {...seoProps}>
   <main class="flex-1">
-    {
-      MDXContent ? (
+    {/* ✅ ALWAYS render the hero */}
+    <HeroLayout
+      title={pageTitle}
+      description={pageDescription}
+      bannerImage={meta.bannerImage}
+      featuredImage={meta.featuredImage}
+    />
+
+    {/* ✅ Then render MDX content OR default ContentRenderer */}
+    <div class="container mx-auto px-4 py-8 md:py-12">
+      {MDXContent ? (
         <MDXContent />
       ) : (
-        <div class="container mx-auto px-4">
-          <header class="text-center py-12">
-            <h1 class="text-4xl font-bold mb-4">{pageTitle}</h1>
-            {pageDescription && (
-              <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                {pageDescription}
-              </p>
-            )}
-          </header>
-
-          <ContentRenderer collection={collection} variant="GridVariant" />
-        </div>
-      )
-    }
+        <ContentRenderer collection={collection} variant="GridVariant" />
+      )}
+    </div>
   </main>
 </BaseLayout>
