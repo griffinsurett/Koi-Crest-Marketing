@@ -2,17 +2,20 @@
 /**
  * Frontmatter Parsing Utilities
  * 
- * Reusable utilities for parsing frontmatter from MDX/Markdown files.
- * Uses simple regex parsing to extract YAML frontmatter without dependencies.
+ * Robust YAML parser for extracting frontmatter from MDX/Markdown files.
+ * Handles: scalars, arrays, nested objects, complex indentation.
+ * No external dependencies.
  */
 
 import fs from 'node:fs';
 
+interface ParseResult {
+  value: any;
+  nextIndex: number;
+}
+
 /**
  * Parse frontmatter from a file
- * 
- * Extracts and parses YAML frontmatter between --- markers.
- * Supports both string and array values.
  * 
  * @param filePath - Path to MDX/Markdown file
  * @returns Parsed frontmatter data
@@ -34,97 +37,228 @@ export function parseFrontmatter(filePath: string): Record<string, any> {
  * @returns Parsed frontmatter data
  */
 export function parseFrontmatterFromString(content: string): Record<string, any> {
-  try {
-    // Extract frontmatter block between --- markers
-    const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
-    if (!frontmatterMatch) {
-      return {};
-    }
-    
-    const frontmatter = frontmatterMatch[1];
-    const result: Record<string, any> = {};
-    
-    // Parse each field
-    const fieldRegex = /(\w+):\s*(.+?)(?=\n\w+:|$)/gs;
-    let match;
-    
-    while ((match = fieldRegex.exec(frontmatter)) !== null) {
-      const key = match[1];
-      const value = match[2].trim();
-      
-      result[key] = parseYamlValue(value);
-    }
-    
-    return result;
-  } catch (error) {
-    console.warn('Failed to parse frontmatter:', error);
-    return {};
-  }
+  const match = content.match(/^---\s*\n([\s\S]*?)\n---/);
+  if (!match) return {};
+  
+  const yaml = match[1];
+  const lines = yaml.split('\n');
+  
+  return parseYamlObject(lines, 0, 0).value;
 }
 
 /**
- * Parse a YAML value (string, boolean, number, or array)
- * 
- * @param value - Raw YAML value string
- * @returns Parsed value
+ * Parse YAML object/map
+ */
+function parseYamlObject(lines: string[], startIndex: number, baseIndent: number): ParseResult {
+  const obj: Record<string, any> = {};
+  let i = startIndex;
+  
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+    
+    // Skip empty lines and comments
+    if (!trimmed || trimmed.startsWith('#')) {
+      i++;
+      continue;
+    }
+    
+    const indent = line.length - line.trimStart().length;
+    
+    // If dedented, we're done with this object
+    if (indent < baseIndent) {
+      break;
+    }
+    
+    // Parse key: value line
+    const colonIndex = line.indexOf(':');
+    if (colonIndex === -1) {
+      i++;
+      continue;
+    }
+    
+    const key = line.substring(0, colonIndex).trim();
+    const valueStart = line.substring(colonIndex + 1).trim();
+    
+    // Inline value (key: value on same line)
+    if (valueStart) {
+      obj[key] = parseYamlValue(valueStart);
+      i++;
+      continue;
+    }
+    
+    // Value on next line(s)
+    i++;
+    if (i >= lines.length) {
+      obj[key] = null;
+      break;
+    }
+    
+    const nextLine = lines[i];
+    const nextTrimmed = nextLine.trim();
+    const nextIndent = nextLine.length - nextLine.trimStart().length;
+    
+    // Array value
+    if (nextTrimmed.startsWith('-')) {
+      const result = parseYamlArray(lines, i, nextIndent);
+      obj[key] = result.value;
+      i = result.nextIndex;
+      continue;
+    }
+    
+    // Nested object
+    if (nextIndent > indent) {
+      const result = parseYamlObject(lines, i, nextIndent);
+      obj[key] = result.value;
+      i = result.nextIndex;
+      continue;
+    }
+    
+    // No value found
+    obj[key] = null;
+  }
+  
+  return { value: obj, nextIndex: i };
+}
+
+/**
+ * Parse YAML array/list
+ */
+function parseYamlArray(lines: string[], startIndex: number, baseIndent: number): ParseResult {
+  const array: any[] = [];
+  let i = startIndex;
+  
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+    
+    if (!trimmed || trimmed.startsWith('#')) {
+      i++;
+      continue;
+    }
+    
+    const indent = line.length - line.trimStart().length;
+    
+    // If dedented, we're done with this array
+    if (indent < baseIndent) {
+      break;
+    }
+    
+    // Not an array item at this level
+    if (!trimmed.startsWith('-')) {
+      break;
+    }
+    
+    const afterDash = trimmed.substring(1).trim();
+    
+    // Check if inline value contains object syntax (key: value)
+    if (afterDash && afterDash.includes(':')) {
+      // Inline object: - key: value
+      const obj: Record<string, any> = {};
+      const colonIndex = afterDash.indexOf(':');
+      const key = afterDash.substring(0, colonIndex).trim();
+      const value = afterDash.substring(colonIndex + 1).trim();
+      obj[key] = parseYamlValue(value);
+      array.push(obj);
+      i++;
+      continue;
+    }
+    
+    // Simple inline value: - value
+    if (afterDash) {
+      array.push(parseYamlValue(afterDash));
+      i++;
+      continue;
+    }
+    
+    // Multiline value: check next line
+    i++;
+    if (i >= lines.length) {
+      array.push(null);
+      break;
+    }
+    
+    const nextLine = lines[i];
+    const nextTrimmed = nextLine.trim();
+    const nextIndent = nextLine.length - nextLine.trimStart().length;
+    
+    // Nested object in array
+    if (nextIndent > indent && nextTrimmed && !nextTrimmed.startsWith('-')) {
+      const result = parseYamlObject(lines, i, nextIndent);
+      array.push(result.value);
+      i = result.nextIndex;
+      continue;
+    }
+    
+    // Nested array in array
+    if (nextIndent > indent && nextTrimmed.startsWith('-')) {
+      const result = parseYamlArray(lines, i, nextIndent);
+      array.push(result.value);
+      i = result.nextIndex;
+      continue;
+    }
+    
+    // Empty array item
+    array.push(null);
+  }
+  
+  return { value: array, nextIndex: i };
+}
+
+/**
+ * Parse scalar YAML value (string, number, boolean, etc)
  */
 function parseYamlValue(value: string): any {
+  const trimmed = value.trim();
+  
+  // Null values
+  if (trimmed === 'null' || trimmed === '~' || trimmed === '') {
+    return null;
+  }
+  
   // Boolean
-  if (value === 'true') return true;
-  if (value === 'false') return false;
+  if (trimmed === 'true' || trimmed === 'yes' || trimmed === 'on') {
+    return true;
+  }
+  if (trimmed === 'false' || trimmed === 'no' || trimmed === 'off') {
+    return false;
+  }
   
   // Number
-  if (/^-?\d+(\.\d+)?$/.test(value)) {
-    return parseFloat(value);
+  if (/^-?\d+$/.test(trimmed)) {
+    return parseInt(trimmed, 10);
+  }
+  if (/^-?\d+\.\d+$/.test(trimmed)) {
+    return parseFloat(trimmed);
   }
   
-  // Array (flow style or block style)
-  if (value.startsWith('[') || value.startsWith('-')) {
-    return parseYamlArray(value);
+  // Quoted string
+  if ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+    return trimmed.slice(1, -1);
   }
   
-  // String (remove quotes if present)
-  return value.replace(/^["']|["']$/g, '');
-}
-
-/**
- * Parse a YAML array
- * 
- * Supports both:
- * - Flow style: [item1, item2, item3]
- * - Block style:
- *   - item1
- *   - item2
- * 
- * @param value - Raw YAML array string
- * @returns Array of parsed values
- */
-function parseYamlArray(value: string): any[] {
-  const items: any[] = [];
+  // Flow array: [item1, item2]
+  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+    const content = trimmed.slice(1, -1);
+    if (!content.trim()) return [];
+    return content.split(',').map(item => parseYamlValue(item));
+  }
   
-  if (value.startsWith('[')) {
-    // Flow array: ["/contact", "/contact-us"]
-    const arrayContent = value.match(/\[(.*?)\]/s)?.[1] || '';
-    items.push(
-      ...arrayContent
-        .split(',')
-        .map(s => s.trim().replace(/['"]/g, ''))
-        .filter(Boolean)
-    );
-  } else {
-    // Block array:
-    // - "/contact"
-    // - "/contact-us"
-    const lines = value.split('\n');
-    for (const line of lines) {
-      const match = line.match(/^\s*-\s*["']?([^"'\n]+)["']?/);
-      if (match) {
-        items.push(match[1].trim());
-      }
+  // Flow object: {key: value}
+  if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+    const content = trimmed.slice(1, -1);
+    const obj: Record<string, any> = {};
+    const pairs = content.split(',');
+    for (const pair of pairs) {
+      const [key, val] = pair.split(':').map(s => s.trim());
+      if (key) obj[key] = parseYamlValue(val || '');
     }
+    return obj;
   }
   
-  return items;
+  // Plain string
+  return trimmed;
 }
 
 /**

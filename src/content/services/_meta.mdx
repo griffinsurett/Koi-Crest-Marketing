@@ -9,3 +9,12 @@ itemsAddToMenu:
 addToMenu:
   - menu: "main-menu"
 ---
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import { query } from '@/utils/query';
+
+ <ContentRenderer
+      query={query("services")}
+      variant="GridVariant"
+      columns={3}
+      gap="lg"
+    />

@@ -1,8 +1,7 @@
 // src/utils/query/index.ts
 /**
  * Query System - Public API
- * 
- * Central export point for all query functionality.
+ * Everything is lazy-loaded, safe for MDX
  */
 
 // Core types
@@ -33,7 +32,7 @@ export {
   safeGetEntry,
 } from './helpers';
 
-// Schema helpers
+// ✅ Keep schema helpers - they're lazy now
 export {
   relationSchema,
   parentSchema,

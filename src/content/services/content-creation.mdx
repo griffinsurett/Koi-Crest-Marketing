@@ -5,5 +5,12 @@ icon: "lu:megaphone"
 order: 2
 hasPage: true
 ---
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import { query } from '@/utils/query';
 
-Engage your audience with our professional Content Creation service. We craft high-quality, compelling content that aligns with your brand's message, driving engagement and enhancing your digital presence.
+<ContentRenderer
+    query={query("services")}
+    variant="GridVariant"
+    columns={3}
+    gap="lg"
+/>

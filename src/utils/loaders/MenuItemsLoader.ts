@@ -1,44 +1,26 @@
 // src/utils/loaders/MenuItemsLoader.ts
-/**
- * Menu Items Loader - With Semantic Auto-Generated IDs
- * 
- * Generates intelligent IDs based on full ancestor chain:
- * - contact-us (root level)
- * - contact-us-about-us (under about-us parent)
- * - contact-us-about-us-company (under about-us → company)
- * - contact-us-about-us-1 (only if duplicate exists)
- */
-
 import { file } from 'astro/loaders';
 import type { Loader, LoaderContext } from 'astro/loaders';
-import { getCollectionMeta, getCollectionNames } from '@/utils/collections';
 import { capitalize } from '@/utils/string';
 import { parseContentPath, isMetaFile } from '@/utils/paths';
-import { shouldItemHavePage, shouldItemUseRootPath } from '@/utils/filesystem/pageLogic';
 import { SimpleIdRegistry } from '@/utils/idRegistry';
+import { parseFrontmatterFromString } from '@/utils/filesystem/frontmatter';
 
 const MENU_ITEMS_JSON_PATH = 'src/content/menu-items/menu-items.json';
 const MENUS_COLLECTION = 'menus' as const;
 
-// Use shared ID registry
 const idRegistry = new SimpleIdRegistry();
 
-/**
- * Get full ancestor chain for a parent reference
- * Returns array of IDs from immediate parent to root
- */
 function getAncestorChain(parentRef: any, store: any): string[] {
   const ancestors: string[] = [];
   let current = parentRef;
-  const visited = new Set<string>(); // Prevent infinite loops
+  const visited = new Set<string>();
   
   while (current) {
-    // Extract parent ID
     const parentId = typeof current === 'string' 
       ? current 
       : current.id || String(current);
     
-    // Prevent circular references
     if (visited.has(parentId)) {
       console.warn(`Circular parent reference detected: ${parentId}`);
       break;
@@ -46,7 +28,6 @@ function getAncestorChain(parentRef: any, store: any): string[] {
     visited.add(parentId);
     ancestors.push(parentId);
     
-    // Look up parent in store
     const parentEntry = store.get(parentId);
     if (!parentEntry?.data?.parent) break;
     
@@ -56,10 +37,6 @@ function getAncestorChain(parentRef: any, store: any): string[] {
   return ancestors;
 }
 
-/**
- * Build semantic ID from full ancestor path
- * Walks up parent chain to ensure uniqueness across multi-level hierarchies
- */
 function buildSemanticId(
   baseId: string, 
   context: {
@@ -71,14 +48,11 @@ function buildSemanticId(
 ): string {
   const parts = [baseId];
   
-  // Walk up the parent chain
   if (context.parent) {
     const ancestors = getAncestorChain(context.parent, store);
-    // Add in reverse order (grandparent, parent, child)
     parts.push(...ancestors.reverse());
   }
   
-  // Optionally add menu (useful if same item in multiple menus)
   if (context.includeMenu && context.menu) {
     const menuId = typeof context.menu === 'string'
       ? context.menu
@@ -91,16 +65,10 @@ function buildSemanticId(
   return parts.join('-');
 }
 
-/**
- * Get unique ID using shared registry
- */
 function getUniqueId(semanticId: string): string {
   return idRegistry.getUniqueId(semanticId);
 }
 
-/**
- * Normalize menu reference to standard format
- */
 function normalizeMenuReference(menu: any): any {
   if (!menu) return [];
   
@@ -114,16 +82,62 @@ function normalizeMenuReference(menu: any): any {
     : [normalizeOne(menu)];
 }
 
-/**
- * Ensure value is an array
- */
 function ensureArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value];
 }
 
-/**
- * Create the menu items loader
- */
+function getItemProperty<T>(
+  itemData: any,
+  metaData: any,
+  itemKey: string,
+  metaKey: string,
+  defaultValue: T
+): T {
+  if (itemData?.[itemKey] !== undefined) {
+    return itemData[itemKey];
+  }
+  if (metaData?.[metaKey] !== undefined) {
+    return metaData[metaKey];
+  }
+  return defaultValue;
+}
+
+function shouldItemHavePage(itemData: any, metaData: any): boolean {
+  return getItemProperty(itemData, metaData, 'hasPage', 'itemsHasPage', true);
+}
+
+function shouldItemUseRootPath(itemData: any, metaData: any): boolean {
+  return getItemProperty(itemData, metaData, 'rootPath', 'itemsRootPath', false);
+}
+
+function getCollectionMetaFromModules(
+  collectionName: string,
+  modules: Record<string, any>
+): any {
+  const metaPath = Object.keys(modules).find(
+    path => path.includes(`/${collectionName}/_meta.mdx`)
+  );
+  
+  if (metaPath) {
+    const data = modules[metaPath].frontmatter ?? {};
+    return {
+      title: data.title ?? capitalize(collectionName),
+      description: data.description,
+      hasPage: data.hasPage ?? false,
+      itemsHasPage: data.itemsHasPage ?? true,
+      itemsRootPath: data.itemsRootPath ?? false,
+      ...data
+    };
+  }
+  
+  return {
+    title: capitalize(collectionName),
+    hasPage: false,
+    itemsHasPage: true,
+    itemsRootPath: false,
+  };
+}
+
 export function MenuItemsLoader(): Loader {
   return {
     name: 'menu-items-loader',
@@ -131,44 +145,55 @@ export function MenuItemsLoader(): Loader {
     async load(context: LoaderContext) {
       const { store, logger } = context;
 
-      // Clear ID tracking for fresh load
       idRegistry.clear();
-
-      // Step 1: Load base menu items from JSON
       store.clear();
       await file(MENU_ITEMS_JSON_PATH).load(context);
 
-      // Step 2: Pre-register IDs from manually loaded items
       for (const [id, entry] of store.entries()) {
-        idRegistry.getUniqueId(id); // Register existing IDs
-        
-        // Validate that url exists
-        const data = entry.data;
-        if (data && !data.url) {
-          console.warn(`Menu item ${id} missing url field`);
-        }
+        idRegistry.getUniqueId(id);
       }
 
-      // Step 3: Load all content files
-      const mdxMods = import.meta.glob<{ frontmatter?: any }>(
-        '../../content/**/*.{mdx,md}',
-        { eager: true }
-      );
+      const { readFileSync, readdirSync } = await import('fs');
+      const { join, relative } = await import('path');
+      
+      const frontmatterModules: Record<string, any> = {};
+      
+      function walkDir(dir: string) {
+        const entries = readdirSync(dir, { withFileTypes: true });
+        
+        for (const entry of entries) {
+          const fullPath = join(dir, entry.name);
+          
+          if (entry.isDirectory()) {
+            walkDir(fullPath);
+          } else if (entry.isFile() && /\.(mdx?|md)$/.test(entry.name)) {
+            try {
+              const raw = readFileSync(fullPath, 'utf-8');
+              const frontmatter = parseFrontmatterFromString(raw);
+              
+              const relativePath = relative(process.cwd(), fullPath)
+                .replace(/\\/g, '/')
+                .replace('src/', '../../');
+              
+              frontmatterModules[relativePath] = { frontmatter };
+            } catch (error) {
+              logger.warn(`Failed to read ${fullPath}: ${error}`);
+            }
+          }
+        }
+      }
+      
+      const contentDir = join(process.cwd(), 'src/content');
+      walkDir(contentDir);
 
-      // Step 4: Process individual item addToMenu fields
-      await processItemMenus(mdxMods, store);
-
-      // Step 5: Process collection-level addToMenu and itemsAddToMenu
-      await processCollectionMenus(mdxMods, store);
+      await processItemMenus(frontmatterModules, store);
+      await processCollectionMenus(frontmatterModules, store);
 
       logger.info(`Menu items loader: ${store.keys().length} items loaded`);
     },
   };
 }
 
-/**
- * Process individual item addToMenu configurations
- */
 async function processItemMenus(
   modules: Record<string, any>,
   store: any
@@ -177,41 +202,31 @@ async function processItemMenus(
     if (isMetaFile(path)) continue;
 
     const data = mod.frontmatter ?? {};
+    
     if (!data.addToMenu) continue;
 
-    const { collection, slug } = parseContentPath(path);
-    const meta = getCollectionMeta(collection);
-    const menuConfigs = ensureArray(data.addToMenu);
+    const { slug, collection } = parseContentPath(path);
+    const configs = ensureArray(data.addToMenu);
 
-    for (const menuConfig of menuConfigs) {
-      // Store parent as-is (hierarchy built at query time)
-      let parent = null;
-      if (menuConfig.parent !== undefined) {
-        parent = menuConfig.parent;
-      } else if (menuConfig.customHierarchy === false && data.parent) {
-        parent = data.parent;
-      }
+    for (const menuConfig of configs) {
+      const menus = normalizeMenuReference(menuConfig.menu);
       
-      // Build semantic ID based on full ancestor chain
-      const baseId = menuConfig.id ?? `${collection}-${slug}`;
+      const baseId = menuConfig.id || slug;
       const semanticId = buildSemanticId(
         baseId,
         {
-          parent,
+          parent: menuConfig.parent,
           menu: menuConfig.menu,
-          includeMenu: false, // Set to true if you want menu in ID
+          includeMenu: false,
         },
         store
       );
-      
-      // Get unique ID (adds number only if semantic ID is taken)
       const itemId = getUniqueId(semanticId);
+
+      const meta = getCollectionMetaFromModules(collection, modules);
       
-      // Determine URL
       const useRootPath = shouldItemUseRootPath(data, meta);
-      const itemUrl = menuConfig.url ?? (useRootPath ? `/${slug}` : `/${collection}/${slug}`);
-      
-      const menus = normalizeMenuReference(menuConfig.menu);
+      const itemUrl = useRootPath ? `/${slug}` : `/${collection}/${slug}`;
 
       store.set({
         id: itemId,
@@ -220,9 +235,9 @@ async function processItemMenus(
           description: menuConfig.description ?? data.description,
           url: itemUrl,
           menu: menus,
-          parent,
+          parent: menuConfig.parent ?? null,
           openInNewTab: menuConfig.openInNewTab ?? false,
-          order: menuConfig.order ?? data.order,
+          order: data.order,
           tags: data.tags,
         },
       });
@@ -230,26 +245,28 @@ async function processItemMenus(
   }
 }
 
-/**
- * Process collection-level menu configurations
- */
 async function processCollectionMenus(
   modules: Record<string, any>,
   store: any
 ): Promise<void> {
-  const collections = getCollectionNames().filter(c => c !== 'menus' && c !== 'menu-items');
+  const metaModules = Object.entries(modules).filter(([path]) => isMetaFile(path));
 
-  for (const collection of collections) {
-    const meta = getCollectionMeta(collection);
+  for (const [path, mod] of metaModules) {
+    const data = mod.frontmatter ?? {};
+    const collection = path.split('/').slice(-2)[0];
 
-    // Process collection's own addToMenu
-    if (meta.addToMenu) {
-      const menuConfigs = ensureArray(meta.addToMenu);
+    if (!data.addToMenu && !data.itemsAddToMenu) continue;
 
-      for (const menuConfig of menuConfigs) {
-        const baseId = menuConfig.id ?? collection;
+    const meta = getCollectionMetaFromModules(collection, modules);
+
+    if (data.addToMenu) {
+      const configs = ensureArray(data.addToMenu);
+
+      for (const menuConfig of configs) {
+        const menus = normalizeMenuReference(menuConfig.menu);
+        
         const semanticId = buildSemanticId(
-          baseId,
+          collection,
           {
             parent: menuConfig.parent,
             menu: menuConfig.menu,
@@ -257,12 +274,13 @@ async function processCollectionMenus(
           },
           store
         );
-        const itemId = getUniqueId(semanticId);
-        const itemUrl = menuConfig.url ?? `/${collection}`;
-        const menus = normalizeMenuReference(menuConfig.menu);
+        const collectionId = getUniqueId(semanticId);
+
+        const hasPage = meta.hasPage ?? false;
+        const itemUrl = hasPage ? `/${collection}` : undefined;
 
         store.set({
-          id: itemId,
+          id: collectionId,
           data: {
             title: menuConfig.title ?? meta.title ?? capitalize(collection),
             description: menuConfig.description ?? meta.description,
@@ -276,104 +294,84 @@ async function processCollectionMenus(
       }
     }
 
-    // Process itemsAddToMenu
-    if (meta.itemsAddToMenu) {
-      await processItemsAddToMenu(collection, meta, modules, store);
-    }
-  }
-}
+    if (data.itemsAddToMenu) {
+      const configs = ensureArray(data.itemsAddToMenu);
 
-/**
- * Process itemsAddToMenu configuration
- */
-async function processItemsAddToMenu(
-  collection: string,
-  meta: any,
-  modules: Record<string, any>,
-  store: any
-): Promise<void> {
-  const configs = ensureArray(meta.itemsAddToMenu);
+      for (const menuConfig of configs) {
+        const menus = normalizeMenuReference(menuConfig.menu);
+        
+        const attachTo = menuConfig.attachTo === undefined || menuConfig.attachTo === true
+          ? collection
+          : menuConfig.attachTo;
+        
+        if (attachTo === collection && !store.has(collection)) {
+          const semanticId = buildSemanticId(
+            collection,
+            {
+              parent: null,
+              menu: menuConfig.menu,
+              includeMenu: false,
+            },
+            store
+          );
+          const parentId = getUniqueId(semanticId);
+          
+          store.set({
+            id: parentId,
+            data: {
+              title: meta.title ?? capitalize(collection),
+              description: meta.description,
+              url: `/${collection}`,
+              menu: menus,
+              parent: null,
+              openInNewTab: false,
+            },
+          });
+        }
 
-  for (const menuConfig of configs) {
-    const menus = normalizeMenuReference(menuConfig.menu);
-    
-    // Create parent menu item if attachTo is the collection name
-    const attachTo = menuConfig.attachTo === undefined || menuConfig.attachTo === true
-      ? collection
-      : menuConfig.attachTo;
-    
-    if (attachTo === collection && !store.has(collection)) {
-      const semanticId = buildSemanticId(
-        collection,
-        {
-          parent: null,
-          menu: menuConfig.menu,
-          includeMenu: false,
-        },
-        store
-      );
-      const parentId = getUniqueId(semanticId);
-      
-      store.set({
-        id: parentId,
-        data: {
-          title: meta.title ?? capitalize(collection),
-          description: meta.description,
-          url: `/${collection}`,
-          menu: menus,
-          parent: null,
-          openInNewTab: false,
-        },
-      });
-    }
+        for (const [itemPath, itemMod] of Object.entries(modules)) {
+          if (!itemPath.includes(`content/${collection}/`)) continue;
+          if (isMetaFile(itemPath)) continue;
 
-    // Process each item in the collection
-    for (const [path, mod] of Object.entries(modules)) {
-      if (!path.includes(`../../content/${collection}/`)) continue;
-      if (isMetaFile(path)) continue;
+          const itemData = itemMod.frontmatter ?? {};
+          const { slug } = parseContentPath(itemPath);
 
-      const data = mod.frontmatter ?? {};
-      const { slug } = parseContentPath(path);
+          if (!shouldItemHavePage(itemData, meta)) continue;
 
-      // Check if item should have a page
-      if (!shouldItemHavePage(data, meta)) continue;
+          const useRootPath = shouldItemUseRootPath(itemData, meta);
+          const itemUrl = useRootPath ? `/${slug}` : `/${collection}/${slug}`;
+          
+          let parent = attachTo;
+          if (itemData.parent && menuConfig.respectHierarchy !== false) {
+            parent = itemData.parent;
+          }
 
-      // Generate menu item
-      const useRootPath = shouldItemUseRootPath(data, meta);
-      const itemUrl = useRootPath ? `/${slug}` : `/${collection}/${slug}`;
-      
-      // Simple parent logic
-      let parent = attachTo;
-      if (data.parent && menuConfig.respectHierarchy !== false) {
-        parent = data.parent;
+          const baseId = `${collection}-${slug}-auto`;
+          const semanticId = buildSemanticId(
+            baseId,
+            {
+              parent,
+              menu: menuConfig.menu,
+              includeMenu: false,
+            },
+            store
+          );
+          const menuItemId = getUniqueId(semanticId);
+
+          store.set({
+            id: menuItemId,
+            data: {
+              title: itemData.title ?? capitalize(slug),
+              description: itemData.description,
+              url: itemUrl,
+              menu: menus,
+              parent,
+              openInNewTab: menuConfig.openInNewTab ?? false,
+              order: itemData.order,
+            },
+          });
+        }
       }
-
-      // Build semantic ID with full ancestor chain
-      const baseId = `${collection}-${slug}-auto`;
-      const semanticId = buildSemanticId(
-        baseId,
-        {
-          parent,
-          menu: menuConfig.menu,
-          includeMenu: false,
-        },
-        store
-      );
-      const menuItemId = getUniqueId(semanticId);
-
-      store.set({
-        id: menuItemId,
-        data: {
-          title: data.title ?? capitalize(slug),
-          description: data.description,
-          url: itemUrl,
-          menu: menus,
-          parent,
-          openInNewTab: menuConfig.openInNewTab ?? false,
-          order: data.order,
-          tags: data.tags,
-        },
-      });
     }
   }
 }
