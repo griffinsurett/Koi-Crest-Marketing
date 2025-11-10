@@ -11,27 +11,25 @@
  * or just use their frontmatter for configuration.
  */
 
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
 /**
  * Get raw MDX source for a specific file
  * 
- * Uses Vite's ?raw import to get the file as a string
- * without processing it.
+ * Reads the file directly from the filesystem.
  * 
  * @param collectionName - Collection containing the file
  * @param fileName - Name of the MDX file (without extension)
  * @returns Raw file content or null if not found
  */
 function getRawMDXContent(collectionName: string, fileName: string): string | null {
-  const rawMDXFiles = import.meta.glob('/src/content/**/*.mdx', { 
-    query: '?raw',
-    eager: true 
-  });
-  
-  const rawPath = Object.keys(rawMDXFiles).find(path => 
-    path.includes(`/${collectionName}/${fileName}.mdx`)
-  );
-  
-  return rawPath ? (rawMDXFiles[rawPath] as string) : null;
+  try {
+    const filePath = join(process.cwd(), 'src', 'content', collectionName, `${fileName}.mdx`);
+    return readFileSync(filePath, 'utf-8');
+  } catch (error) {
+    return null;
+  }
 }
 
 /**
@@ -88,19 +86,29 @@ export async function getMDXContentIfExists(
   fileName: string = '_meta'
 ): Promise<{ Component: any; hasContent: boolean } | null> {
   try {
-    // Dynamically import the MDX module
-    const mdxModule = await import(`../content/${collectionName}/${fileName}.mdx`);
+    // Get raw content first to check if it has actual content
     const rawContent = getRawMDXContent(collectionName, fileName);
     
     if (!rawContent) {
       return null;
     }
     
+    const hasContent = hasContentAfterFrontmatter(rawContent);
+    
+    // Only import the MDX module if it has content to render
+    if (!hasContent) {
+      return { Component: null, hasContent: false };
+    }
+    
+    // ✅ Dynamic import is safe - happens at runtime, not module init
+    const mdxModule = await import(`../content/${collectionName}/${fileName}.mdx`);
+    
     return {
       Component: mdxModule.default,
-      hasContent: hasContentAfterFrontmatter(rawContent)
+      hasContent: true
     };
   } catch (error) {
+    console.warn(`Failed to load MDX: ${collectionName}/${fileName}.mdx`, error);
     return null;
   }
 }
