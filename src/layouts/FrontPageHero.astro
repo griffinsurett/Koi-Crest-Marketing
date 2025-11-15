@@ -95,7 +95,7 @@ const backgroundMedia = {
     <!-- <BackgroundMedia backgroundMedia={backgroundMedia} /> -->
 
     {/* Hero Content */}
-    <div class="relative text-center text-white px-8 max-w-4xl mx-auto z-10">
+    <div class="relative text-center text-black px-8 max-w-4xl mx-auto z-10">
       <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
         {title}
       </h1>
@@ -123,18 +123,6 @@ const backgroundMedia = {
           )
         }
 
-        {
-          secondaryCTA && (
-            <Button
-              href={secondaryCTA.link}
-              variant="ghost"
-              size="lg"
-              className="bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 hover:bg-white/20"
-            >
-              {secondaryCTA.text}
-            </Button>
-          )
-        }
       </div>
     </div>
   </div>
