@@ -12,6 +12,7 @@
  */
 
 import { metaSchema, type MetaData } from "@/content/schema";
+import { z } from "astro:content";
 
 /**
  * Pre-load all _meta.mdx files at module load time
@@ -35,21 +36,15 @@ const mdxModules = import.meta.glob<{ frontmatter?: Record<string, any> }>(
  * // meta.hasPage, meta.itemsHasPage, meta.itemsLayout, etc.
  */
 export function getCollectionMeta(collectionName: string): MetaData {
-  // Find the _meta.mdx file for this collection
   const mdxKey = Object.keys(mdxModules).find((k) =>
     k.endsWith(`/${collectionName}/_meta.mdx`)
   );
   
-  // Extract frontmatter or use empty object
   const data = mdxKey ? (mdxModules[mdxKey] as any).frontmatter ?? {} : {};
 
-  // Use a simple image function for parsing frontmatter
-  // This allows string paths and image objects without full Astro image processing
-  const simpleImageFn = () => ({
-    parse: (val: any) => val,
-    _parse: (val: any) => ({ success: true, data: val })
-  });
-
-  // Parse and validate against schema, applying defaults
-  return metaSchema({ image: simpleImageFn }).parse(data);
+  // For _meta.mdx, images come as raw strings from glob imports
+  // We need to pass them through as-is since they're not in content collections
+  const passthroughImage = () => z.string().optional();
+  
+  return metaSchema({ image: passthroughImage }).parse(data);
 }

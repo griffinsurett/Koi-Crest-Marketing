@@ -4,6 +4,10 @@
  *
  * Simple dropdown that reads current language from localStorage
  * and calls window.changeLanguage() to switch.
+ * 
+ * NOW WITH CONSENT CHECKING:
+ * - Only allows language switching if functional consent is given
+ * - Shows warning message if consent not granted
  */
 
 import { useState, useRef, useEffect } from "react";
@@ -11,12 +15,16 @@ import {
   supportedLanguages,
   getLanguageByCode,
 } from "@/utils/languageTranslation/languages";
+import { useConsent } from "@/hooks/useConsent";
 import "@/styles/language-switcher.css";
 
 export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const { hasConsentFor } = useConsent();
+  
+  const hasFunctionalConsent = hasConsentFor('functional');
 
   // Get current language from localStorage
   const getCurrentLanguage = () => {
@@ -63,6 +71,12 @@ export default function LanguageSwitcher() {
   }, [isOpen]);
 
   const handleLanguageChange = (code: string) => {
+    // Check for functional consent before allowing language change
+    if (!hasFunctionalConsent) {
+      alert('Please enable functional cookies to use the language switcher. You can manage your preferences in the cookie settings.');
+      return;
+    }
+    
     setIsOpen(false);
 
     // Update localStorage and reload page
@@ -81,6 +95,7 @@ export default function LanguageSwitcher() {
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         aria-label="Choose language"
+        title={hasFunctionalConsent ? "Choose language" : "Enable functional cookies to change language"}
       >
         {currentLanguage.flag && (
           <span className="text-xl leading-none notranslate" aria-hidden="true">
@@ -113,6 +128,12 @@ export default function LanguageSwitcher() {
         aria-hidden={!isOpen}
         aria-label="Available languages"
       >
+        {!hasFunctionalConsent && (
+          <div className="px-4 py-3 bg-yellow-50 border-b border-yellow-200 text-sm text-yellow-800">
+            Enable functional cookies to use translation
+          </div>
+        )}
+        
         {supportedLanguages.map((language) => (
           <button
             key={language.code}
@@ -121,6 +142,8 @@ export default function LanguageSwitcher() {
             aria-selected={language.code === currentLanguage.code}
             className="language-option notranslate"
             onClick={() => handleLanguageChange(language.code)}
+            disabled={!hasFunctionalConsent}
+            style={!hasFunctionalConsent ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
           >
             {language.flag && (
               <span

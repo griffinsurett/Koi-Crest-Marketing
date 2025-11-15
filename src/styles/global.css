@@ -1,6 +1,7 @@
 /* src/styles/global.css */
 @import "tailwindcss";
 @import "@/styles/language-switcher.css";
+@import "@/styles/legal.css";
 
 @layer components {
     button, a {

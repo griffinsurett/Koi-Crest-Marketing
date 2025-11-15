@@ -3,101 +3,126 @@
  * Layout Discovery and Selection Utilities
  * 
  * Handles:
- * - Dynamic discovery of layout components
+ * - Dynamic import of layout components from full paths
  * - Layout selection based on collection/item config
  * - Fallback to default layout
- * 
- * Enables flexible layout system where collections and items
- * can specify custom layouts via frontmatter.
  */
 
 import { getItemProperty } from '@/utils/metaOverrides';
 
 /**
- * Dynamically discover all collection layout components
- * 
- * Uses Vite glob import to load all .astro files in the
- * layouts/collections directory.
- * 
- * @returns Object mapping layout names to components
- * @example
- * {
- *   'CollectionLayout': CollectionLayoutComponent,
- *   'BlogLayout': BlogLayoutComponent,
- * }
+ * All layout components loaded eagerly
+ * This allows us to use dynamic paths without issues
  */
-export async function getCollectionLayouts() {
-  const layouts = import.meta.glob('../*.astro', { eager: true });
-  
-  const result = Object.entries(layouts).reduce((acc, [path, module]) => {
-    // Extract filename without extension
-    const fileName = path.split('/').pop()?.replace('.astro', '');
-    
-    // Add to map if valid
-    if (fileName && module && typeof module === 'object' && 'default' in module) {
-      acc[fileName] = module.default;
-    }
-    
-    return acc;
-  }, {} as Record<string, any>);
-  
-  return result;
-}
+const allLayouts = import.meta.glob('../*.astro', { eager: true });
 
 /**
- * Get layout component by name
- * 
- * Looks up the layout component and falls back to CollectionLayout
- * if the specified layout doesn't exist.
- * 
- * @param layoutName - Name of the layout to load
- * @returns Layout component
- * @throws Error if layout not found and no default available
+ * Cache for resolved layout components
  */
-export async function getLayoutComponent(layoutName: string) {
-  const layouts = await getCollectionLayouts();
+const layoutCache = new Map<string, any>();
+
+/**
+ * Default layout paths
+ */
+const DEFAULT_ITEM_LAYOUT_PATH = '@/layouts/collections/CollectionLayout.astro';
+const DEFAULT_INDEX_LAYOUT_PATH = '@/layouts/collections/CollectionIndexLayout.astro';
+
+/**
+ * Resolve a layout path to the actual module
+ * 
+ * Supports:
+ * - @/layouts/collections/BlogLayout.astro
+ * - /src/layouts/collections/BlogLayout.astro
+ * - ../BlogLayout.astro
+ * 
+ * @param layoutPath - Layout path from frontmatter
+ * @returns Layout component module
+ */
+function resolveLayoutModule(layoutPath: string): any {
+  // Extract just the filename
+  const filename = layoutPath.split('/').pop() || 'CollectionLayout.astro';
   
-  // Use specified layout or fall back to default
-  const component = layouts[layoutName] || layouts['CollectionLayout'];
+  // Find in glob imports (they're relative paths like ../BlogLayout.astro)
+  const relativePath = `../${filename}`;
   
-  if (!component) {
+  const module = allLayouts[relativePath];
+  
+  if (!module || typeof module !== 'object' || !('default' in module)) {
+    const available = Object.keys(allLayouts).map(p => p.replace('../', '')).join(', ');
     throw new Error(
-      `Layout component "${layoutName}" not found. Available layouts: ${Object.keys(layouts).join(', ')}. ` +
-      `Make sure you have a CollectionLayout.astro file in src/layouts/collections/`
+      `Layout "${filename}" not found in src/layouts/collections/.\n` +
+      `Available layouts: ${available}\n` +
+      `Make sure the file exists and has a default export.`
     );
   }
   
-  return component;
+  return module.default;
 }
 
 /**
- * Determine which layout to use for a collection/item
+ * Get layout component from path
+ * 
+ * @param layoutPath - Full path to layout (e.g., "@/layouts/collections/BlogLayout.astro")
+ * @returns Layout component
+ * @throws Error if layout cannot be imported
+ */
+export async function getLayoutComponent(layoutPath?: string) {
+  const path = layoutPath || DEFAULT_ITEM_LAYOUT_PATH;
+
+  // Check cache first
+  if (layoutCache.has(path)) {
+    return layoutCache.get(path);
+  }
+
+  try {
+    const component = resolveLayoutModule(path);
+    
+    // Cache the component
+    layoutCache.set(path, component);
+    return component;
+  } catch (error) {
+    throw new Error(
+      `Failed to import layout from "${path}".\n` +
+      `${error instanceof Error ? error.message : String(error)}`
+    );
+  }
+}
+
+/**
+ * Determine which layout path to use for a collection/item
  * 
  * Uses override pattern:
- * - Index pages always use CollectionLayout
  * - Item pages use itemLayout or itemsLayout or CollectionLayout
  * 
  * @param meta - Collection metadata
  * @param item - Item data (optional)
  * @param isItemPage - Whether this is an item page
- * @returns Layout name to use
+ * @returns Layout path to use
  */
-export function getLayoutName(
+export function getLayoutPath(
   meta: any,
   item?: any,
   isItemPage: boolean = false
-): string {
-  // Index pages always use the default layout
-  if (!isItemPage) {
-    return 'CollectionLayout';
-  }
-  
+): string | undefined {
   // For item pages, use the override pattern
   return getItemProperty(
     item?.data,
     meta,
-    'itemLayout',          // item-level property
+    'layout',          // item-level property
     'itemsLayout',         // collection-level property
-    'CollectionLayout'     // default layout
+    undefined              // default (will use CollectionLayout)
   );
+}
+
+/**
+ * Get layout path for collection index pages
+ * 
+ * Uses the layout field from _meta.mdx
+ * Defaults to CollectionIndexLayout if not specified
+ * 
+ * @param meta - Collection metadata
+ * @returns Layout path to use
+ */
+export function getCollectionIndexLayoutPath(meta: any): string {
+  return meta.layout || DEFAULT_INDEX_LAYOUT_PATH;
 }

@@ -1,136 +1,205 @@
 // src/utils/query/relations.ts
 /**
- * Relation Resolution - FULLY LAZY
+ * Relation Resolution Utilities - FULLY LAZY
+ * 
+ * High-level functions for querying relationships between entries.
+ * ALL astro:content imports are lazy to prevent circular dependencies.
  */
 
 import type { CollectionEntry, CollectionKey } from 'astro:content';
-import type { RelationshipGraph, EntryReference } from './types';
-import { getEntryKey } from './types';
+import { 
+  type RelationshipGraph, 
+  type Relation, 
+  type RelationMap,
+  type RelationType,
+} from './types';
+import { getRelationMap, getOrBuildGraph } from './graph';
+import { normalizeId } from './helpers';
 
-// ❌ NO module-level imports that touch astro:content
+// ❌ NO module-level imports of astro:content
 
-export async function getRelations<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  options: {
-    graph?: RelationshipGraph;
-    fields?: string[];
-    maxDepth?: number;
-  } = {}
-): Promise<Map<string, CollectionEntry<CollectionKey>[]>> {
-  // ✅ Lazy imports
-  const { getOrBuildGraph, getRelationMap } = await import('./graph');
+/**
+ * Get all relations for an entry
+ */
+export async function getRelations(
+  collection: CollectionKey,
+  id: string,
+  types?: RelationType[]
+): Promise<RelationMap> {
+  const cleanId = normalizeId(id);
+  const graph = await getOrBuildGraph();
+  const relationMap = getRelationMap(graph, collection, cleanId);
   
-  const { fields, maxDepth = 1 } = options;
-  const graph = options.graph || await getOrBuildGraph();
-  
-  const entryKey = getEntryKey(entry as any);
-  const relations = getRelationMap(graph, entryKey);
-  
-  const result = new Map<string, CollectionEntry<CollectionKey>[]>();
-  
-  for (const relation of relations) {
-    if (fields && !fields.includes(relation.field)) continue;
-    
-    const target = graph.nodes.get(relation.targetKey);
-    if (target) {
-      if (!result.has(relation.field)) {
-        result.set(relation.field, []);
-      }
-      result.get(relation.field)!.push(target);
-    }
+  if (!relationMap) {
+    throw new Error(`Entry not found: ${collection}/${cleanId}`);
   }
   
-  return result;
+  // Filter by types if specified
+  if (types && types.length > 0) {
+    const filtered: RelationMap = {
+      ...relationMap,
+      references: filterByType(relationMap.references, types),
+      referencedBy: filterByType(relationMap.referencedBy, types),
+      children: filterByType(relationMap.children, types),
+      siblings: filterByType(relationMap.siblings, types),
+      ancestors: filterByType(relationMap.ancestors, types),
+      descendants: filterByType(relationMap.descendants, types),
+      indirect: filterByType(relationMap.indirect, types),
+    };
+    
+    return filtered;
+  }
+  
+  return relationMap;
 }
 
+/**
+ * Get entries that this entry references
+ */
 export async function getReferencedEntries<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  field: string,
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<CollectionKey>[]> {
-  const relations = await getRelations(entry, { graph, fields: [field] });
-  return relations.get(field) || [];
+  collection: T,
+  id: string,
+  options: {
+    field?: string;
+    targetCollection?: CollectionKey;
+    resolve?: boolean;
+  } = {}
+): Promise<Relation[]> {
+  const { field, targetCollection, resolve = false } = options;
+  const cleanId = normalizeId(id);
+  const relationMap = await getRelations(collection, cleanId, ['reference']);
+  
+  let relations = relationMap.references;
+  
+  // Filter by field
+  if (field) {
+    relations = relations.filter(r => r.field === field);
+  }
+  
+  // Filter by target collection
+  if (targetCollection) {
+    relations = relations.filter(r => r.collection === targetCollection);
+  }
+  
+  // Resolve entries if requested
+  if (resolve) {
+    await resolveRelations(relations);
+  }
+  
+  return relations;
 }
 
+/**
+ * Get entries that reference this entry
+ */
 export async function getReferencingEntries<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<CollectionKey>[]> {
+  collection: T,
+  id: string,
+  options: {
+    field?: string;
+    fromCollection?: CollectionKey;
+    resolve?: boolean;
+  } = {}
+): Promise<Relation[]> {
+  const { field, fromCollection, resolve = false } = options;
+  const cleanId = normalizeId(id);
+  const relationMap = await getRelations(collection, cleanId, ['referenced-by']);
+  
+  let relations = relationMap.referencedBy;
+  
+  // Filter by field
+  if (field) {
+    relations = relations.filter(r => r.field === field);
+  }
+  
+  // Filter by source collection
+  if (fromCollection) {
+    relations = relations.filter(r => r.collection === fromCollection);
+  }
+  
+  // Resolve entries if requested
+  if (resolve) {
+    await resolveRelations(relations);
+  }
+  
+  return relations;
+}
+
+/**
+ * Get all related entries (both directions)
+ */
+export async function getAllRelatedEntries<T extends CollectionKey>(
+  collection: T,
+  id: string,
+  options: {
+    includeIndirect?: boolean;
+    maxDepth?: number;
+    resolve?: boolean;
+  } = {}
+): Promise<Relation[]> {
+  const { includeIndirect = false, maxDepth = 1, resolve = false } = options;
+  
+  const cleanId = normalizeId(id);
+  const relationMap = await getRelations(collection, cleanId);
+  
+  const relations: Relation[] = [
+    ...relationMap.references,
+    ...relationMap.referencedBy,
+  ];
+  
+  // Include indirect if requested
+  if (includeIndirect) {
+    const indirectFiltered = relationMap.indirect.filter(
+      r => !maxDepth || (r.depth && r.depth <= maxDepth)
+    );
+    relations.push(...indirectFiltered);
+  }
+  
+  // Resolve if requested
+  if (resolve) {
+    await resolveRelations(relations);
+  }
+  
+  // Remove duplicates
+  return deduplicateRelations(relations);
+}
+
+/**
+ * Resolve relation entries (lazy load)
+ */
+export async function resolveRelations(relations: Relation[]): Promise<void> {
   // ✅ Lazy import
-  const { getOrBuildGraph } = await import('./graph');
+  const { getEntry } = await import('astro:content');
   
-  const g = graph || await getOrBuildGraph();
-  const entryKey = getEntryKey(entry as any);
-  
-  const referencing: CollectionEntry<CollectionKey>[] = [];
-  
-  for (const [key, relations] of g.indexes.byReference) {
-    for (const relation of relations) {
-      if (relation.targetKey === entryKey) {
-        const referencingEntry = g.nodes.get(key);
-        if (referencingEntry) {
-          referencing.push(referencingEntry);
+  await Promise.all(
+    relations.map(async (relation) => {
+      if (!relation.entry) {
+        try {
+          relation.entry = await getEntry(relation.collection, relation.id);
+        } catch (error) {
+          console.warn(`Failed to resolve ${relation.collection}/${relation.id}`);
         }
       }
-    }
-  }
-  
-  return referencing;
+    })
+  );
 }
 
-export async function getAllRelatedEntries<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  maxDepth: number = 3,
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<CollectionKey>[]> {
-  // ✅ Lazy import
-  const { getOrBuildGraph, getRelationMap } = await import('./graph');
-  
-  const g = graph || await getOrBuildGraph();
-  const entryKey = getEntryKey(entry as any);
-  
-  const visited = new Set<string>([entryKey]);
-  const queue: Array<{ key: string; depth: number }> = [{ key: entryKey, depth: 0 }];
-  const related: CollectionEntry<CollectionKey>[] = [];
-  
-  while (queue.length > 0) {
-    const { key, depth } = queue.shift()!;
-    
-    if (depth >= maxDepth) continue;
-    
-    const relations = getRelationMap(g, key);
-    
-    for (const relation of relations) {
-      if (visited.has(relation.targetKey)) continue;
-      
-      visited.add(relation.targetKey);
-      const target = g.nodes.get(relation.targetKey);
-      
-      if (target) {
-        related.push(target);
-        queue.push({ key: relation.targetKey, depth: depth + 1 });
-      }
-    }
-  }
-  
-  return related;
+/**
+ * Helper: Filter relations by type
+ */
+function filterByType(relations: Relation[], types: RelationType[]): Relation[] {
+  return relations.filter(r => types.includes(r.type));
 }
 
-export async function resolveRelations<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  fields: string[],
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<T> & { [key: string]: any }> {
-  const relations = await getRelations(entry, { graph, fields });
-  
-  const resolved: any = { ...entry };
-  
-  for (const [field, entries] of relations) {
-    resolved.data = {
-      ...resolved.data,
-      [field]: entries.length === 1 ? entries[0] : entries,
-    };
-  }
-  
-  return resolved;
+/**
+ * Helper: Deduplicate relations
+ */
+function deduplicateRelations(relations: Relation[]): Relation[] {
+  const seen = new Set<string>();
+  return relations.filter(r => {
+    const key = `${r.collection}:${r.id}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }

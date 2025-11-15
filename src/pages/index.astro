@@ -11,15 +11,35 @@ import {
   sortByOrder,
   sortBy,
 } from "@/utils/query";
-import HeroVariant from "@/components/ContentRenderer/variants/HeroVariant.astro";
+import FrontPageHero from "@/layouts/FrontPageHero.astro";
 ---
 
 <BaseLayout title="Home" description={siteData.description}>
   <main class="flex-1">
     <!-- Hero ContentRenderer with static content -->
-    <HeroVariant
-      title="How do you measure the success of social media marketing campaigns?"
-      description="We track key performance indicators (KPIs) such as engagement rates, reach, conversions, click-through rates, and ROI. We provide detailed analytics reports so you can see exactly how your campaigns are performing."
+    <FrontPageHero
+      title="Build Amazing Static Sites"
+      description="The fastest way to create type-safe, content-driven websites with Astro and React"
+      primaryCTA={{
+        text: "Get Started",
+        link: "/contact-us",
+      }}
+      secondaryCTA={{
+        text: "View Services",
+        link: "/services",
+      }}
+    />
+
+    <!-- Blog with limit - auto-populates from blog meta -->
+    <ContentRenderer
+      query={query("blog").limit(2)}
+      variant="BlogVariant"
+      columns={2}
+    />
+    <ContentRenderer
+      query={query("blog").limit(2)}
+      variant="BlogVariant"
+      columns={2}
     />
 
     <!-- Services - auto-populates from services meta -->
@@ -30,17 +50,19 @@ import HeroVariant from "@/components/ContentRenderer/variants/HeroVariant.astro
       gap="lg"
     />
 
+    <!-- Filtered query - still gets meta from authors -->
+    <ContentRenderer
+      query={query("authors").where(whereArrayContains("tags", "featured"))}
+      variant="GridVariant"
+      columns={3}
+      gap="lg"
+    />
+
     <!-- Portfolio with sorting -->
     <ContentRenderer
       query={query("projects")
         .orderBy(sortByDate("publishDate", "desc"))
         .limit(5)}
-      variant="ListVariant"
-    />
-
-    <!-- Why Choose Us -->
-    <ContentRenderer
-      query={query("benefits").orderBy(sortByOrder())}
       variant="ListVariant"
     />
 
@@ -62,6 +84,14 @@ import HeroVariant from "@/components/ContentRenderer/variants/HeroVariant.astro
       query={query("contact-us")}
       variant="ContactVariant"
       columns={2}
+    />
+
+    <!-- Multi-collection query - requires manual title/description -->
+    <ContentRenderer
+      query={query(["blog", "projects"]).orderBy(sortByDate()).limit(10)}
+      variant="ListVariant"
+      title="Recent Updates"
+      description="Latest from our blog and portfolio"
     />
   </main>
 </BaseLayout>

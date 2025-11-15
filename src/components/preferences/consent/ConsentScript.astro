@@ -1,0 +1,26 @@
+---
+// src/components/preferences/consent/ConsentScript.astro
+/**
+ * Consent Script Initialization
+ * 
+ * Inline script that runs immediately on page load to:
+ * 1. Check for existing consent
+ * 2. Initialize script manager to enable consented scripts
+ * 
+ * This runs before any React hydration for zero-impact performance.
+ */
+---
+
+<script>
+  import { initScriptManager } from '@/utils/scriptManager';
+  import { hasConsentCookie } from '@/utils/consent/consent';
+  
+  // Only initialize if user has already given consent
+  // This prevents any overhead for first-time visitors
+  if (hasConsentCookie()) {
+    console.log('🍪 Consent detected, initializing script manager');
+    initScriptManager();
+  } else {
+    console.log('❌ No consent yet, scripts remain blocked');
+  }
+</script>

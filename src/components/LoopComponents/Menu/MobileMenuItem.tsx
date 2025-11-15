@@ -1,9 +1,9 @@
-// src/components/LoopComponents/MobileMenuItem.tsx
+// src/components/LoopComponents/Menu/MobileMenuItem.tsx
 /**
  * Mobile Menu Item Component
  * 
  * Collapsible menu item for mobile navigation.
- * Similar to AccordionItem but for navigation.
+ * Accessible navigation pattern with proper ARIA.
  */
 
 import { useState } from 'react';
@@ -21,6 +21,7 @@ interface MobileMenuItemProps {
 export default function MobileMenuItem({ 
   title, 
   url, 
+  slug,
   children = [],
   openInNewTab = false,
   onNavigate,
@@ -32,11 +33,12 @@ export default function MobileMenuItem({
   
   if (hasChildren) {
     return (
-      <li role="none">
+      <li>
         <button 
           onClick={() => setIsExpanded(!isExpanded)}
           className="w-full text-left py-3 px-4 flex justify-between items-center hover:bg-gray-50 rounded-md transition-colors"
           aria-expanded={isExpanded}
+          aria-controls={`mobile-submenu-${slug}`}
           style={{ paddingLeft: `${indent + 16}px` }}
           type="button"
         >
@@ -46,13 +48,17 @@ export default function MobileMenuItem({
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         
         {isExpanded && (
-          <ul className="mt-1 space-y-1" role="menu">
+          <ul 
+            id={`mobile-submenu-${slug}`}
+            className="mt-1 space-y-1"
+          >
             {children.map(child => (
               <MobileMenuItem 
                 key={child.slug || child.id}
@@ -68,7 +74,7 @@ export default function MobileMenuItem({
   }
   
   return (
-    <li role="none">
+    <li>
       <a 
         href={url || '#'} 
         onClick={onNavigate}
@@ -76,7 +82,6 @@ export default function MobileMenuItem({
         rel={openInNewTab ? 'noopener noreferrer' : undefined}
         className="block py-3 px-4 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
         style={{ paddingLeft: `${indent + 16}px` }}
-        role="menuitem"
       >
         {title}
       </a>

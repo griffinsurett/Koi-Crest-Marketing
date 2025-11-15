@@ -23,19 +23,42 @@ export type RelationType =
 /**
  * A single relationship between two entries
  */
-export interface Relation {
+export interface Relation<T extends CollectionKey = CollectionKey> {
   type: RelationType;
+  collection: T;
+  id: string;
   field?: string;           // Which field contains the reference
-  targetKey: string;        // Full key of target entry
-  targetCollection: CollectionKey;
   depth?: number;           // For indirect relations
   path?: string[];          // Path of collections for indirect relations
+  entry?: CollectionEntry<T>; // Resolved entry (lazy loaded)
 }
 
 /**
  * Complete relationship map for an entry
  */
-export type RelationMap = Relation[];
+export interface RelationMap<T extends CollectionKey = CollectionKey> {
+  entry: CollectionEntry<T>;
+  
+  // Direct relations
+  references: Relation[];           // What this entry references
+  referencedBy: Relation[];         // What references this entry
+  
+  // Hierarchical relations
+  parent?: Relation;                // Direct parent
+  children: Relation[];             // Direct children
+  siblings: Relation[];             // Same parent
+  ancestors: Relation[];            // All parents up the tree
+  descendants: Relation[];          // All children down the tree
+  
+  // Indirect relations
+  indirect: Relation[];             // Multi-hop relations
+  
+  // Metadata
+  depth: number;                    // Depth in hierarchy (0 = root)
+  hasChildren: boolean;
+  isRoot: boolean;
+  isLeaf: boolean;
+}
 
 /**
  * Query filter function
@@ -91,14 +114,14 @@ export interface QueryResult<T extends CollectionKey = CollectionKey> {
  * Relationship graph for the entire system
  */
 export interface RelationshipGraph {
-  // All entries by key
-  nodes: Map<string, CollectionEntry<CollectionKey>>;
+  // Collection → Entry ID → Relations
+  nodes: Map<string, Map<string, RelationMap>>;
   
   // Quick lookup indexes
   indexes: {
-    byCollection: Map<CollectionKey, string[]>;
-    byParent: Map<string, string[]>;
-    byReference: Map<string, RelationMap>;
+    byCollection: Map<CollectionKey, Set<string>>;
+    byParent: Map<string, Set<string>>;
+    byReference: Map<string, Set<string>>;
   };
   
   // Metadata
@@ -127,24 +150,8 @@ export interface EntryReference {
 /**
  * Helper to create unique entry key
  */
-export function getEntryKey(entry: CollectionEntry<CollectionKey>): string;
-export function getEntryKey(ref: EntryReference): string;
-export function getEntryKey(collectionOrEntry: CollectionKey | CollectionEntry<CollectionKey>, id?: string): string;
-export function getEntryKey(
-  collectionOrEntry: CollectionKey | CollectionEntry<CollectionKey> | EntryReference,
-  id?: string
-): string {
-  if (typeof collectionOrEntry === 'string') {
-    // Called as getEntryKey(collection, id)
-    return `${collectionOrEntry}:${id}`;
-  } else if ('collection' in collectionOrEntry && 'id' in collectionOrEntry && !('data' in collectionOrEntry)) {
-    // It's an EntryReference
-    return `${collectionOrEntry.collection}:${collectionOrEntry.id}`;
-  } else {
-    // It's a CollectionEntry
-    const entry = collectionOrEntry as CollectionEntry<CollectionKey>;
-    return `${entry.collection}:${entry.id}`;
-  }
+export function getEntryKey(collection: CollectionKey, id: string): string {
+  return `${collection}:${id}`;
 }
 
 /**

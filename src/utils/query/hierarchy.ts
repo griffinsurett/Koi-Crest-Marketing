@@ -1,205 +1,326 @@
 // src/utils/query/hierarchy.ts
 /**
- * Hierarchy Utilities - FULLY LAZY
+ * Hierarchical Query Utilities - FULLY LAZY
+ * 
+ * Functions for querying parent-child relationships and tree structures.
+ * ALL astro:content imports are lazy to prevent circular dependencies.
  */
 
 import type { CollectionEntry, CollectionKey } from 'astro:content';
-import type { RelationshipGraph } from './types';
-import { getEntryKey } from './types';
+import type { Relation, RelationMap } from './types';
+import { getRelations, resolveRelations } from './relations';
+import { getOrBuildGraph, getRelationMap } from './graph';
+import { normalizeId } from './helpers';
 
-// ❌ NO module-level imports
+// ❌ NO module-level imports of astro:content
 
+/**
+ * Get parent entry
+ */
 export async function getParent<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<T> | null> {
-  // ✅ Lazy import
-  const { getOrBuildGraph } = await import('./graph');
+  collection: T,
+  id: string,
+  resolve: boolean = false
+): Promise<Relation | undefined> {
+  const cleanId = normalizeId(id);
+  const relationMap = await getRelations(collection, cleanId, ['parent']);
+  const parent = relationMap.parent;
   
-  const g = graph || await getOrBuildGraph();
-  const entryKey = getEntryKey(entry as any);
+  if (parent && resolve && !parent.entry) {
+    // ✅ Lazy import
+    const { getEntry } = await import('astro:content');
+    try {
+      parent.entry = await getEntry(parent.collection, normalizeId(parent.id));
+    } catch (error) {
+      console.warn(`Failed to resolve parent ${parent.collection}/${parent.id}`);
+    }
+  }
   
-  const parents = g.indexes.byParent.get(entryKey);
-  if (!parents || parents.length === 0) return null;
-  
-  const parentEntry = g.nodes.get(parents[0]);
-  return parentEntry as CollectionEntry<T> || null;
+  return parent;
 }
 
+/**
+ * Get all children entries
+ */
 export async function getChildren<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<T>[]> {
-  // ✅ Lazy import
-  const { getOrBuildGraph } = await import('./graph');
+  collection: T,
+  id: string,
+  options: {
+    resolve?: boolean;
+    recursive?: boolean;
+    maxDepth?: number;
+  } = {}
+): Promise<Relation[]> {
+  const { resolve = false, recursive = false, maxDepth = Infinity } = options;
+  const cleanId = normalizeId(id);
   
-  const g = graph || await getOrBuildGraph();
-  const entryKey = getEntryKey(entry as any);
+  if (recursive) {
+    return getDescendants(collection, cleanId, { resolve, maxDepth });
+  }
   
-  const children: CollectionEntry<T>[] = [];
+  const relationMap = await getRelations(collection, cleanId, ['child']);
+  const children = relationMap.children;
   
-  for (const [childKey, parents] of g.indexes.byParent) {
-    if (parents.includes(entryKey)) {
-      const childEntry = g.nodes.get(childKey);
-      if (childEntry) {
-        children.push(childEntry as CollectionEntry<T>);
-      }
-    }
+  if (resolve) {
+    await resolveRelations(children);
   }
   
   return children;
 }
 
+/**
+ * Get all ancestors (parents up the tree)
+ */
 export async function getAncestors<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<T>[]> {
-  const ancestors: CollectionEntry<T>[] = [];
-  let current = await getParent(entry, graph);
+  collection: T,
+  id: string,
+  options: {
+    resolve?: boolean;
+    includeRoot?: boolean;
+  } = {}
+): Promise<Relation[]> {
+  const { resolve = false, includeRoot = true } = options;
+  const cleanId = normalizeId(id);
+  const relationMap = await getRelations(collection, cleanId, ['ancestor']);
   
-  while (current) {
-    ancestors.push(current);
-    current = await getParent(current, graph);
+  let ancestors = relationMap.ancestors;
+  
+  if (!includeRoot) {
+    // Exclude the root node (highest ancestor)
+    const maxDepth = Math.max(...ancestors.map(a => a.depth || 0));
+    ancestors = ancestors.filter(a => (a.depth || 0) < maxDepth);
+  }
+  
+  if (resolve) {
+    await resolveRelations(ancestors);
   }
   
   return ancestors;
 }
 
+/**
+ * Get all descendants (children down the tree)
+ */
 export async function getDescendants<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<T>[]> {
-  // ✅ Lazy import
-  const { getOrBuildGraph } = await import('./graph');
+  collection: T,
+  id: string,
+  options: {
+    resolve?: boolean;
+    maxDepth?: number;
+  } = {}
+): Promise<Relation[]> {
+  const { resolve = false, maxDepth = Infinity } = options;
+  const cleanId = normalizeId(id);
+  const relationMap = await getRelations(collection, cleanId, ['descendant']);
   
-  const g = graph || await getOrBuildGraph();
-  const descendants: CollectionEntry<T>[] = [];
-  const queue = [entry];
+  let descendants = relationMap.descendants;
   
-  while (queue.length > 0) {
-    const current = queue.shift()!;
-    const children = await getChildren(current, g);
-    
-    descendants.push(...children);
-    queue.push(...children);
+  // Filter by max depth
+  if (maxDepth < Infinity) {
+    descendants = descendants.filter(d => (d.depth || 0) <= maxDepth);
+  }
+  
+  if (resolve) {
+    await resolveRelations(descendants);
   }
   
   return descendants;
 }
 
+/**
+ * Get siblings (entries with same parent)
+ */
 export async function getSiblings<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<T>[]> {
-  const parent = await getParent(entry, graph);
-  if (!parent) return [];
+  collection: T,
+  id: string,
+  resolve: boolean = false
+): Promise<Relation[]> {
+  const cleanId = normalizeId(id);
+  const relationMap = await getRelations(collection, cleanId, ['sibling']);
+  const siblings = relationMap.siblings;
   
-  const siblings = await getChildren(parent, graph);
-  const entryKey = getEntryKey(entry as any);
+  if (resolve) {
+    await resolveRelations(siblings);
+  }
   
-  return siblings.filter(s => getEntryKey(s as any) !== entryKey);
+  return siblings;
 }
 
+/**
+ * Get root entries (entries with no parent)
+ */
 export async function getRoots<T extends CollectionKey>(
   collection: T,
-  graph?: RelationshipGraph
+  resolve: boolean = false
 ): Promise<CollectionEntry<T>[]> {
-  // ✅ Lazy import
-  const { getOrBuildGraph, getCollectionEntries } = await import('./graph');
+  const graph = await getOrBuildGraph();
+  const collectionMap = graph.nodes.get(collection);
   
-  const g = graph || await getOrBuildGraph();
-  const entries = getCollectionEntries(g, collection);
+  if (!collectionMap) return [];
   
-  return entries.filter(entry => {
-    const entryKey = getEntryKey(entry as any);
-    const parents = g.indexes.byParent.get(entryKey);
-    return !parents || parents.length === 0;
-  }) as CollectionEntry<T>[];
+  const roots: CollectionEntry<T>[] = [];
+  
+  for (const relationMap of collectionMap.values()) {
+    if (relationMap.isRoot) {
+      roots.push(relationMap.entry as CollectionEntry<T>);
+    }
+  }
+  
+  return roots;
 }
 
+/**
+ * Get leaf entries (entries with no children)
+ */
 export async function getLeaves<T extends CollectionKey>(
-  collection: T,
-  graph?: RelationshipGraph
+  collection: T
 ): Promise<CollectionEntry<T>[]> {
-  // ✅ Lazy import
-  const { getOrBuildGraph, getCollectionEntries } = await import('./graph');
+  const graph = await getOrBuildGraph();
+  const collectionMap = graph.nodes.get(collection);
   
-  const g = graph || await getOrBuildGraph();
-  const entries = getCollectionEntries(g, collection);
+  if (!collectionMap) return [];
   
   const leaves: CollectionEntry<T>[] = [];
   
-  for (const entry of entries) {
-    const children = await getChildren(entry as any, g);
-    if (children.length === 0) {
-      leaves.push(entry as CollectionEntry<T>);
+  for (const relationMap of collectionMap.values()) {
+    if (relationMap.isLeaf) {
+      leaves.push(relationMap.entry as CollectionEntry<T>);
     }
   }
   
   return leaves;
 }
 
-export interface TreeNode<T extends CollectionKey> {
+/**
+ * Tree node structure
+ */
+export interface TreeNode<T extends CollectionKey = CollectionKey> {
   entry: CollectionEntry<T>;
   children: TreeNode<T>[];
   depth: number;
+  hasChildren: boolean;
+  isLeaf: boolean;
 }
 
+/**
+ * Get full tree structure starting from a node
+ */
 export async function getTree<T extends CollectionKey>(
   collection: T,
-  graph?: RelationshipGraph
-): Promise<TreeNode<T>[]> {
-  const roots = await getRoots(collection, graph);
+  id: string,
+  maxDepth: number = Infinity
+): Promise<TreeNode<T>> {
+  const cleanId = normalizeId(id);
+  const graph = await getOrBuildGraph();
+  const relationMap = getRelationMap(graph, collection, cleanId);
   
-  async function buildNode(
-    entry: CollectionEntry<T>,
-    depth: number
-  ): Promise<TreeNode<T>> {
-    const children = await getChildren(entry, graph);
-    const childNodes = await Promise.all(
-      children.map(child => buildNode(child as CollectionEntry<T>, depth + 1))
-    );
-    
-    return {
-      entry,
-      children: childNodes,
-      depth,
-    };
+  if (!relationMap) {
+    throw new Error(`Entry not found: ${collection}/${cleanId}`);
   }
   
-  return Promise.all(roots.map(root => buildNode(root, 0)));
+  return buildTreeNode(relationMap, graph, 0, maxDepth);
 }
 
+/**
+ * Build tree node recursively
+ */
+function buildTreeNode<T extends CollectionKey>(
+  relationMap: RelationMap,
+  graph: any,
+  currentDepth: number,
+  maxDepth: number
+): TreeNode<T> {
+  const node: TreeNode<T> = {
+    entry: relationMap.entry as CollectionEntry<T>,
+    children: [],
+    depth: currentDepth,
+    hasChildren: relationMap.hasChildren,
+    isLeaf: relationMap.isLeaf,
+  };
+  
+  // Stop if max depth reached
+  if (currentDepth >= maxDepth) {
+    return node;
+  }
+  
+  // Build children recursively
+  const collectionMap = graph.nodes.get(relationMap.entry.collection);
+  
+  for (const child of relationMap.children) {
+    const childId = normalizeId(child.id);
+    const childMap = collectionMap?.get(childId);
+    if (childMap) {
+      node.children.push(buildTreeNode(childMap, graph, currentDepth + 1, maxDepth));
+    }
+  }
+  
+  return node;
+}
+
+/**
+ * Get breadcrumb path from root to entry
+ */
 export async function getBreadcrumbs<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  graph?: RelationshipGraph
-): Promise<CollectionEntry<T>[]> {
-  const ancestors = await getAncestors(entry, graph);
-  return [...ancestors.reverse(), entry];
+  collection: T,
+  id: string,
+  resolve: boolean = true
+): Promise<Relation[]> {
+  const cleanId = normalizeId(id);
+  const ancestors = await getAncestors(collection, cleanId, { resolve });
+  
+  // Sort by depth (deepest first) and reverse to get root to current
+  const breadcrumbs = ancestors
+    .sort((a, b) => (b.depth || 0) - (a.depth || 0))
+    .reverse();
+  
+  // Add current entry as last item
+  // ✅ Lazy import
+  const { getEntry } = await import('astro:content');
+  const currentEntry = await getEntry(collection, cleanId);
+  
+  breadcrumbs.push({
+    type: 'child',
+    collection,
+    id: cleanId,
+    entry: currentEntry,
+  });
+  
+  return breadcrumbs;
 }
 
-export async function isAncestorOf<T extends CollectionKey>(
-  ancestor: CollectionEntry<T>,
-  descendant: CollectionEntry<T>,
-  graph?: RelationshipGraph
+/**
+ * Check if entry is ancestor of another
+ */
+export async function isAncestorOf(
+  collection: CollectionKey,
+  ancestorId: string,
+  descendantId: string
 ): Promise<boolean> {
-  const ancestors = await getAncestors(descendant, graph);
-  const ancestorKey = getEntryKey(ancestor as any);
-  return ancestors.some(a => getEntryKey(a as any) === ancestorKey);
+  const cleanAncestorId = normalizeId(ancestorId);
+  const cleanDescendantId = normalizeId(descendantId);
+  const ancestors = await getAncestors(collection, cleanDescendantId);
+  return ancestors.some(a => normalizeId(a.id) === cleanAncestorId);
 }
 
-export async function isDescendantOf<T extends CollectionKey>(
-  descendant: CollectionEntry<T>,
-  ancestor: CollectionEntry<T>,
-  graph?: RelationshipGraph
+/**
+ * Check if entry is descendant of another
+ */
+export async function isDescendantOf(
+  collection: CollectionKey,
+  descendantId: string,
+  ancestorId: string
 ): Promise<boolean> {
-  return isAncestorOf(ancestor, descendant, graph);
+  return isAncestorOf(collection, ancestorId, descendantId);
 }
 
-export async function getLevel<T extends CollectionKey>(
-  entry: CollectionEntry<T>,
-  graph?: RelationshipGraph
+/**
+ * Get level in hierarchy (0 = root)
+ */
+export async function getLevel(
+  collection: CollectionKey,
+  id: string
 ): Promise<number> {
-  const ancestors = await getAncestors(entry, graph);
-  return ancestors.length;
+  const cleanId = normalizeId(id);
+  const relationMap = await getRelations(collection, cleanId);
+  return relationMap.depth;
 }

@@ -53,22 +53,19 @@ const linkClasses = isTopLevel
       : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
     }
   `;
+
+const dropdownId = `dropdown-${slug}-${level}`;
 ---
 
-<li 
-  class={`relative ${hasChildren ? 'menu-item' : ''}`}
-  role={isTopLevel ? 'none' : 'menuitem'}
->
+<li class={`relative ${hasChildren ? 'menu-item' : ''}`}>
   <a 
     href={url || '#'}
     target={openInNewTab ? '_blank' : undefined}
     rel={openInNewTab ? 'noopener noreferrer' : undefined}
     class={linkClasses.trim()}
     aria-current={isActive ? 'page' : undefined}
-    aria-haspopup={hasChildren ? 'true' : undefined}
-    aria-expanded={hasChildren ? 'false' : undefined}
+    aria-haspopup={hasChildren ? 'menu' : undefined}
     title={description}
-    role={isTopLevel ? 'menuitem' : undefined}
   >
     {icon && <span class="icon">{icon}</span>}
     <span>{title}</span>
@@ -86,6 +83,6 @@ const linkClasses = isTopLevel
   </a>
   
   {hasChildren && (
-    <MenuDropdown items={children} level={level + 1} />
+    <MenuDropdown items={children} level={level + 1} parentSlug={slug} />
   )}
 </li>

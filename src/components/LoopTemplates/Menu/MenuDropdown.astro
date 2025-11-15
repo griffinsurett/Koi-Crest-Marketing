@@ -4,22 +4,23 @@
  * Menu Dropdown Component
  * 
  * Dropdown/submenu that appears on hover.
- * Controlled by global CSS using direct child selectors.
+ * Uses semantic HTML with ARIA for accessibility.
  */
-
 import MenuList from './MenuList.astro';
 
 export interface Props {
   items: any[];
   level?: number;
+  parentSlug?: string;
 }
 
-const { items = [], level = 1 } = Astro.props;
+const { items = [], level = 1, parentSlug = 'menu' } = Astro.props;
+const dropdownId = `dropdown-${parentSlug}-${level}`;
 ---
 
 <div 
+  id={dropdownId}
   class="menu-dropdown hidden absolute top-full left-0 mt-0"
-  role="menu"
 >
   <MenuList items={items} level={level} />
 </div>

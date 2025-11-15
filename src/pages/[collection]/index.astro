@@ -1,59 +1,41 @@
 ---
 // src/pages/[collection]/index.astro
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import HeroLayout from "@/layouts/collections/HeroLayout.astro";
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { getCollectionMeta } from "@/utils/collections";
-import { buildCollectionSEOProps } from "@/utils/seo";
-import { shouldCollectionHavePage } from "@/utils/pages";
-import { getCollectionMetaMDX } from "@/utils/content";
-import { getPageCollections } from "@/utils/pageGeneration";
+/**
+ * Collection Index Pages
+ * 
+ * Generates index pages for collections at /collection path.
+ * Uses CollectionIndexLayout to render the page.
+ * 
+ * Works exactly like [slug].astro but for collection index pages:
+ * - Gets the layout component (CollectionIndexLayout)
+ * - Gets MDX Content from _meta.mdx body
+ * - Passes everything to the layout
+ * - Layout decides how to render
+ */
+
+import {
+  generateCollectionIndexPaths,
+  prepareCollectionIndexData,
+} from "@/utils/pageGeneration/collectionIndexHelpers";
 
 export async function getStaticPaths() {
-  const names = getPageCollections();
-  const paths = [];
-
-  for (const coll of names) {
-    const meta = getCollectionMeta(coll);
-
-    if (shouldCollectionHavePage(meta)) {
-      paths.push({
-        params: { collection: coll },
-        props: { meta },
-      });
-    }
-  }
-
-  return paths;
+  return generateCollectionIndexPaths();
 }
 
-const { collection } = Astro.params;
-const { meta } = Astro.props;
-
-const mdxResult = await getCollectionMetaMDX(collection);
-const MDXContent = mdxResult?.hasContent ? mdxResult.Component : null;
-
-const seoProps = buildCollectionSEOProps(meta, collection);
-const { title: pageTitle, description: pageDescription } = seoProps;
+const {
+  LayoutComponent,
+  Content,
+  collectionName,
+  collectionMeta,
+  seoProps,
+  hasContent,
+} = await prepareCollectionIndexData(Astro.params, Astro.props);
 ---
-
-<BaseLayout {...seoProps}>
-  <main class="flex-1">
-    {/* ✅ ALWAYS render the hero */}
-    <HeroLayout
-      title={pageTitle}
-      description={pageDescription}
-      bannerImage={meta.bannerImage}
-      featuredImage={meta.featuredImage}
-    />
-
-    {/* ✅ Then render MDX content OR default ContentRenderer */}
-    <div class="container mx-auto px-4 py-8 md:py-12">
-      {MDXContent ? (
-        <MDXContent />
-      ) : (
-        <ContentRenderer collection={collection} variant="GridVariant" />
-      )}
-    </div>
-  </main>
-</BaseLayout>
+<LayoutComponent
+  Content={Content}
+  collectionName={collectionName}
+  collectionMeta={collectionMeta}
+  seoProps={seoProps}
+  hasContent={hasContent}
+  {...collectionMeta}
+/>

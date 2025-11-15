@@ -7,12 +7,13 @@
  * function for the language switcher component.
  * 
  * Uses localStorage caching to avoid unnecessary API loads on subsequent visits.
+ * NOW WITH CONSENT: Only loads Google Translate API if functional consent is given.
  */
 ---
-
 <script>
   import { setCookie, clearCookie } from '@/utils/cookies';
   import { getStorageItem, setStorageItem, clearStorageByPrefix } from '@/utils/storage';
+  import { hasConsentFor } from '@/utils/consent/consent';
 
   // Type definitions for this file only
   declare global {
@@ -27,8 +28,13 @@
   const cacheKey = `translated_body_${savedLang}_${window.location.pathname}`;
   const hasCachedTranslation = savedLang && savedLang !== 'en' && getStorageItem(cacheKey);
   
-  // CRITICAL: Only load Google Translate if we DON'T have cached content
-  if (!hasCachedTranslation) {
+  // Check for functional consent
+  const hasFunctionalConsent = hasConsentFor('functional');
+  
+  // CRITICAL: Only load Google Translate if:
+  // 1. We DON'T have cached content AND
+  // 2. User has given functional consent
+  if (!hasCachedTranslation && hasFunctionalConsent) {
     // Initialize Google Translate
     window.initializeGoogleTranslate = function() {
       const google = (window as any).google;
@@ -75,9 +81,14 @@
       document.head.appendChild(script);
     })();
   } else {
-    console.log('🚀 Using cached translation - skipping Google Translate API load');
+    // Log why we're not loading
+    if (!hasFunctionalConsent) {
+      console.log('❌ No functional consent - Google Translate not loaded');
+    } else {
+      console.log('🚀 Using cached translation - skipping Google Translate API load');
+    }
     
-    // Still provide changeLanguage function
+    // Still provide changeLanguage function even without API
     window.changeLanguage = function(languageCode: string) {
       setStorageItem('user-language', languageCode);
       
@@ -96,6 +107,16 @@
       // Use href assignment instead of reload()
       window.location.href = window.location.href;
     };
+  }
+
+  // Listen for consent changes to load Google Translate dynamically
+  if (!hasCachedTranslation && !hasFunctionalConsent) {
+    window.addEventListener('consent-changed', () => {
+      if (hasConsentFor('functional')) {
+        console.log('🔄 Functional consent granted, reloading for Google Translate');
+        window.location.reload();
+      }
+    });
   }
 </script>
 

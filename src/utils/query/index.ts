@@ -32,7 +32,7 @@ export {
   safeGetEntry,
 } from './helpers';
 
-// ✅ Keep schema helpers - they're lazy now
+// Schema helpers
 export {
   relationSchema,
   parentSchema,

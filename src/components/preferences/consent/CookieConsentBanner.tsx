@@ -1,10 +1,17 @@
-// src/components/consent/CookieConsentBanner.tsx
-// Clear cookie and reload the page
-// document.cookie = 'cookie-consent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; location.reload();
-// src/components/consent/CookieConsentBanner.tsx
+// src/components/preferences/consent/CookieConsentBanner.tsx
+/**
+ * Cookie Consent Banner
+ * 
+ * Initial consent prompt that appears for first-time visitors.
+ * Lazy loads the detailed preferences modal only when needed.
+ * 
+ * After consent is given, enables scripts via scriptManager.
+ */
+
 import { useState, useEffect, lazy, Suspense, useTransition } from 'react';
 import { useCookieStorage } from '@/hooks/useCookieStorage';
-import Modal from '@/components/Modal'; // Now optimized!
+import { enableConsentedScripts } from '@/utils/scriptManager';
+import Modal from '@/components/Modal';
 import type { CookieConsent } from './types';
 
 const CookiePreferencesModal = lazy(() => import('./CookiePreferencesModal'));
@@ -16,9 +23,10 @@ export default function CookieConsentBanner() {
   const { getCookie, setCookie } = useCookieStorage();
 
   useEffect(() => {
-    // Quick inline check
+    // Quick inline check - if consent exists, don't show banner
     if (document.cookie.includes('cookie-consent=')) return;
 
+    // Delay banner appearance slightly for better UX
     const timer = setTimeout(() => {
       setShowBanner(true);
     }, 1000);
@@ -35,7 +43,15 @@ export default function CookieConsentBanner() {
       timestamp: Date.now(),
     };
     
+    // Save consent
     setCookie('cookie-consent', JSON.stringify(consent), { expires: 365 });
+    
+    // Enable all consented scripts immediately
+    enableConsentedScripts();
+    
+    // Dispatch custom event for cross-tab/component sync
+    window.dispatchEvent(new Event('consent-changed'));
+    
     startTransition(() => {
       setShowBanner(false);
     });
@@ -50,7 +66,15 @@ export default function CookieConsentBanner() {
       timestamp: Date.now(),
     };
     
+    // Save minimal consent
     setCookie('cookie-consent', JSON.stringify(consent), { expires: 365 });
+    
+    // Enable only necessary scripts (if any)
+    enableConsentedScripts();
+    
+    // Dispatch custom event
+    window.dispatchEvent(new Event('consent-changed'));
+    
     startTransition(() => {
       setShowBanner(false);
     });
@@ -83,20 +107,21 @@ export default function CookieConsentBanner() {
             <p className="text-sm text-gray-700">
               We use cookies to improve your browsing experience and for
               marketing purposes.{' '}
-              <a
-                href="/privacy-policy"
-                className="text-blue-600 underline hover:text-blue-700"
+              <button
+                onClick={handleOpenSettings}
+                className="text-blue-600 underline hover:text-blue-700 font-medium"
+                type="button"
               >
-                Read our Privacy Policy
-              </a>
+                Manage preferences
+              </button>
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={handleRejectAll}
-            className="flex-1 rounded-lg border-2 border-blue-600 bg-white px-4 py-2 font-semibold text-blue-600 transition-colors hover:bg-blue-50 disabled:opacity-50"
+            className="flex-1 rounded-lg border-2 border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
             type="button"
             disabled={isPending}
           >
@@ -104,22 +129,11 @@ export default function CookieConsentBanner() {
           </button>
           <button
             onClick={handleAcceptAll}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
             type="button"
             disabled={isPending}
           >
             Accept All
-          </button>
-        </div>
-
-        <div className="mt-3 text-center">
-          <button
-            onClick={handleOpenSettings}
-            className="text-sm text-blue-600 underline hover:text-blue-700"
-            type="button"
-            disabled={isPending}
-          >
-            Cookies Settings
           </button>
         </div>
       </Modal>

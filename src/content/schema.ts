@@ -196,16 +196,17 @@ export type RedirectFrom = z.infer<typeof redirectFromSchema>;
 // ============================================================================
 // IMAGE SCHEMA
 // ============================================================================
-
 export const imageInputSchema = ({ image }: { image: Function }) =>
   z.union([
-    z.string(),
+    // Direct Astro image (most common)
     image(),
+    
+    // Image object with alt text
     z.object({
-      src: z.union([z.string(), z.any()]),
+      src: image(),
       alt: z.string().optional(),
     }),
-  ]);
+  ]).optional();
 
 export type ImageInput = z.infer<ReturnType<typeof imageInputSchema>>;
 
@@ -289,7 +290,7 @@ export const baseSchema = ({ image }: { image: Function }) =>
         return new Date(val);
       }),
     order: z.number().default(0),
-    itemLayout: z.string().optional(),
+    layout: z.string().optional(),
   });
 
 export type BaseData = z.infer<ReturnType<typeof baseSchema>>;
@@ -310,7 +311,8 @@ export const metaSchema = ({ image }: { image: Function }) =>
     itemsHasPage: z.boolean().default(true),
     itemsRootPath: z.boolean().default(false),
     itemsAddToMenu: z.array(ItemsAddToMenuFields).optional(),
-    itemsLayout: z.string().default('CollectionLayout'),
+    layout: z.string().default('../layouts/collections/CollectionIndexLayout.astro'),
+    itemsLayout: z.string().default('../layouts/collections/CollectionLayout.astro'),
   });
 
 export type MetaData = z.infer<ReturnType<typeof metaSchema>>;

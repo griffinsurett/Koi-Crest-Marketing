@@ -1,50 +1,57 @@
 // src/utils/query/schema.ts
 /**
  * Schema Helpers for Relations
- * These functions BUILD schemas at config time, they don't ACCESS collections
+ * 
+ * Provides schema definitions and validators for relationships.
+ * These are pure Zod schemas - no astro:content imports at module level.
  */
 
-// ❌ This is the problem - module-level import
-// import { z, reference } from 'astro:content';
-
-// ✅ Import inside each function instead
+import { z, reference } from 'astro:content';
 import type { CollectionKey } from 'astro:content';
 
 /**
  * Create a relation field schema for a collection
+ * Supports single reference, array of references, or mixed
  */
 export function relationSchema(targetCollection: CollectionKey | CollectionKey[]) {
-  // ✅ Lazy import - only runs when building schema in config.ts
-  const { z, reference } = require('astro:content');
-  
   const collections = Array.isArray(targetCollection) ? targetCollection : [targetCollection];
   
+  // Single reference
   const singleRef = z.union(
-    collections.map((coll: CollectionKey) => reference(coll)) as any
+    collections.map(coll => reference(coll)) as any
   );
   
+  // Array of references
   const arrayRef = z.array(singleRef);
   
+  // Union of single or array
   return z.union([singleRef, arrayRef]).optional();
 }
 
+/**
+ * Parent field schema for hierarchical relationships
+ * Uses self-reference
+ */
 export function parentSchema(collection: CollectionKey) {
-  const { z, reference } = require('astro:content');
-  
   return z.union([
     reference(collection),
     z.array(reference(collection))
   ]).optional();
 }
 
+/**
+ * Create a full relational schema with common patterns
+ */
 export function createRelationalSchema(
   collection: CollectionKey,
   relations: Record<string, CollectionKey | CollectionKey[]>
 ) {
   const schema: Record<string, any> = {};
   
+  // Add parent field if hierarchical
   schema.parent = parentSchema(collection);
   
+  // Add relation fields
   for (const [field, targetCollection] of Object.entries(relations)) {
     schema[field] = relationSchema(targetCollection);
   }
@@ -52,6 +59,9 @@ export function createRelationalSchema(
   return schema;
 }
 
+/**
+ * Extract relation configuration from a schema
+ */
 export interface RelationConfig {
   field: string;
   targetCollections: CollectionKey[];
@@ -59,7 +69,7 @@ export interface RelationConfig {
 }
 
 /**
- * Extract relation configuration - RUNTIME function, no imports
+ * Parse schema to extract relation metadata
  */
 export function extractRelationConfig(
   data: Record<string, any>
@@ -69,13 +79,16 @@ export function extractRelationConfig(
   for (const [field, value] of Object.entries(data)) {
     if (!value) continue;
     
+    // Check if it's a reference
     if (isCollectionReference(value)) {
       configs.push({
         field,
         targetCollections: [value.collection],
         isArray: false,
       });
-    } else if (Array.isArray(value) && value.every(isCollectionReference)) {
+    }
+    // Check if it's an array of references
+    else if (Array.isArray(value) && value.every(isCollectionReference)) {
       const collections = [...new Set(value.map(v => v.collection))];
       configs.push({
         field,
@@ -89,7 +102,7 @@ export function extractRelationConfig(
 }
 
 /**
- * Normalize reference value to array - RUNTIME function, no imports
+ * Normalize reference value to array
  */
 export function normalizeReference(
   value: any
@@ -101,16 +114,16 @@ export function normalizeReference(
 }
 
 /**
- * Check if a field is a parent field - RUNTIME function, no imports
+ * Check if a field is a parent field
  */
 export function isParentField(field: string): boolean {
   return field === 'parent' || field === 'parentId' || field === 'parentRef';
 }
 
 /**
- * Type guard helper - RUNTIME function, no imports
+ * Type guard helper - exported for use in other modules
  */
-function isCollectionReference(value: any): value is { collection: CollectionKey; id: string } {
+export function isCollectionReference(value: any): value is { collection: CollectionKey; id: string } {
   return (
     value &&
     typeof value === 'object' &&

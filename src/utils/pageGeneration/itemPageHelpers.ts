@@ -12,7 +12,7 @@ import { getCollectionMeta, getItemKey } from "@/utils/collections";
 import { shouldItemHavePage, shouldItemUseRootPath, shouldProcessCollection } from "@/utils/pages";
 import { getPageCollections } from "@/utils/pageGeneration";
 import { buildItemSEOProps } from "@/utils/seo";
-import { getLayoutName, getLayoutComponent } from "@/layouts/collections/helpers/layoutUtils";
+import { getLayoutPath, getLayoutComponent } from "@/layouts/collections/helpers/layoutUtils";
 import type { MetaData } from "@/content/schema";
 
 /**
@@ -77,6 +77,7 @@ export interface PreparedPageData {
  * @param buildParams - Function to build path params from entry
  * @returns Array of static path entries
  */
+
 export async function generateItemPaths<TParams>(
   filter: ItemFilter,
   buildParams: (collection: string, slug: string) => TParams
@@ -85,22 +86,24 @@ export async function generateItemPaths<TParams>(
   const paths: StaticPath<TParams>[] = [];
 
   for (const coll of collections) {
-    const shouldProcess = await shouldProcessCollection(coll);
+    const collectionKey = coll as CollectionKey;
+    
+    const shouldProcess = await shouldProcessCollection(collectionKey);
     if (!shouldProcess) continue;
 
-    const meta = getCollectionMeta(coll);
-    const entries = await getCollection(coll);
+    const meta = getCollectionMeta(collectionKey);
+    const entries = (await getCollection(collectionKey)) as CollectionEntry<typeof collectionKey>[];
 
     entries
-      .filter((entry) => filter(entry, meta))
+      .filter((entry) => filter(entry as CollectionEntry<CollectionKey>, meta))
       .forEach((entry) => {
         const slug = getItemKey(entry);
         paths.push({
-          params: buildParams(coll, slug),
+          params: buildParams(collectionKey, slug),
           props: {
-            entry,
+            entry: entry as CollectionEntry<CollectionKey>,
             collectionMeta: meta,
-            collectionName: coll,
+            collectionName: collectionKey,
           },
         });
       });
@@ -125,11 +128,11 @@ export async function prepareItemPageData(
 ): Promise<PreparedPageData> {
   const { entry, collectionMeta, collectionName } = props;
 
-  // Get the layout name from meta or use default
-  const layoutName = getLayoutName(collectionMeta, entry, true);
+  // Get the layout path from meta/item
+  const layoutPath = getLayoutPath(collectionMeta, entry, true);
 
   // Get the actual layout component
-  const LayoutComponent = await getLayoutComponent(layoutName);
+  const LayoutComponent = await getLayoutComponent(layoutPath);
 
   // Prepare content if MDX - safe type assertion since we know it might have render
   let Content = null;

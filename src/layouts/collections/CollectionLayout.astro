@@ -5,16 +5,12 @@
  * 
  * The standard layout for individual collection items.
  * Features:
- * - Reusable hero section (via HeroLayout)
- * - MDX content rendering with proper typography
- * - Metadata display handled by hero
- * 
- * This is the default layout used when no custom layout is specified.
- * Falls back gracefully when images or metadata are missing.
+ * - Uses SecondaryHero with bannerImage (or default)
+ * - Metadata display (date, author, reading time)
+ * - MDX content rendering
  */
-
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import HeroLayout from './HeroLayout.astro';
+import SecondaryHero from '@/layouts/SecondaryHero.astro';
 import type { CollectionLayoutProps } from './types';
 
 const { 
@@ -29,15 +25,13 @@ const {
 
 const data = entry?.data || {};
 ---
-
 <BaseLayout {...seoProps}>
   <main class="flex-1">
-    {/* Hero section */}
-    <HeroLayout
+    {/* Hero section - always displayed */}
+    <SecondaryHero
       title={data.title}
       description={data.description}
-      bannerImage={data.bannerImage}
-      featuredImage={data.featuredImage}
+      image={data.bannerImage}
       publishDate={data.publishDate}
       author={data.author}
       readingTime={data.readingTime}

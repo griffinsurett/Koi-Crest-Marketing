@@ -33,9 +33,6 @@ export default function AccordionItem({
           </span>
           <div className="flex-1">
             <h3 className="font-semibold text-gray-900">{title}</h3>
-            {description && (
-              <p className="text-sm text-gray-600 mt-1">{description}</p>
-            )}
           </div>
         </div>
       </button>

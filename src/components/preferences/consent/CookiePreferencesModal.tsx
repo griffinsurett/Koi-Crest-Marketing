@@ -1,7 +1,17 @@
-// src/components/consent/CookiePreferencesModal.tsx
-import { useState, useEffect, useMemo, useTransition, memo } from 'react';
+// src/components/preferences/consent/CookiePreferencesModal.tsx
+/**
+ * Cookie Preferences Modal
+ * 
+ * Detailed consent preferences with granular category controls.
+ * Allows users to enable/disable specific cookie categories.
+ * 
+ * After preferences are saved, enables scripts via scriptManager.
+ */
+
+import { useState, useMemo, useTransition, memo } from 'react';
 import Modal from '@/components/Modal';
 import { useCookieStorage } from '@/hooks/useCookieStorage';
+import { enableConsentedScripts } from '@/utils/scriptManager';
 import type { CookieConsent, CookieCategoryInfo } from './types';
 
 interface CookiePreferencesModalProps {
@@ -162,7 +172,16 @@ function CookiePreferencesModal({
       targeting: false,
       timestamp: Date.now(),
     };
+    
+    // Save consent
     setCookie('cookie-consent', JSON.stringify(consent), { expires: 365 });
+    
+    // Enable scripts based on new consent
+    enableConsentedScripts();
+    
+    // Dispatch custom event
+    window.dispatchEvent(new Event('consent-changed'));
+    
     startTransition(() => {
       onClose();
     });
@@ -173,7 +192,16 @@ function CookiePreferencesModal({
       ...preferences,
       timestamp: Date.now(),
     };
+    
+    // Save consent
     setCookie('cookie-consent', JSON.stringify(consent), { expires: 365 });
+    
+    // Enable scripts based on new consent
+    enableConsentedScripts();
+    
+    // Dispatch custom event
+    window.dispatchEvent(new Event('consent-changed'));
+    
     startTransition(() => {
       onClose();
     });

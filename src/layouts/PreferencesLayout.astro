@@ -4,7 +4,7 @@
  * Preferences Layout
  * 
  * Consolidates all user preference systems:
- * - Cookie consent (localStorage-based)
+ * - Cookie consent (with script management)
  * - Accessibility preferences
  * - Language switcher (Google Translate)
  * 
@@ -14,6 +14,7 @@
 // Cookie Consent Preferences
 import CookiePreferencesButton from "@/components/preferences/consent/CookiePreferencesButton";
 import CookieConsentBanner from "@/components/preferences/consent/CookieConsentBanner";
+import ConsentScript from "@/components/preferences/consent/ConsentScript.astro";
 
 // Accessibility Preferences
 import AccessibilityButton from "@/components/preferences/accessibility/AccessibilityButton";
@@ -24,6 +25,9 @@ import LanguageSwitcher from "@/components/preferences/language/LanguageSwitcher
 import GoogleTranslateScript from "@/components/preferences/language/GoogleTranslateScript.astro";
 import "../styles/language-switcher.css";
 ---
+
+{/* Consent Script - Inline initialization, runs immediately */}
+<ConsentScript />
 
 {/* Google Translate Script - Only loads if user has language preference */}
 <GoogleTranslateScript />

@@ -1,15 +1,29 @@
 // src/utils/query/query.ts
 /**
  * Main Query Builder - FULLY LAZY
- * NO astro:content imports at module level
+ * 
+ * Fluent API for querying content collections with relations.
+ * ALL astro:content imports are lazy to prevent circular dependencies.
  */
 
 import type { CollectionEntry, CollectionKey } from 'astro:content';
-import type { QueryOptions, QueryResult, FilterFn, SortFn, SortConfig } from './types';
+import { 
+  type QueryOptions, 
+  type QueryResult, 
+  type FilterFn, 
+  type SortFn,
+  type SortConfig,
+} from './types';
+import { getRelations } from './relations';
 
-// ❌ NO IMPORTS FROM OTHER QUERY FILES THAT MIGHT IMPORT astro:content
-// ✅ All imports happen inside async functions
+// ❌ NO module-level imports of astro:content or filter/sort (they're pure functions, OK)
+// ✅ Import pure utility functions (no astro:content in them)
+import { applyFilters } from './filters';
+import { applySorting } from './sorting';
 
+/**
+ * Query builder class
+ */
 export class Query<T extends CollectionKey> {
   private _collection?: T | T[];
   private _filters: FilterFn<T>[] = [];
@@ -23,36 +37,57 @@ export class Query<T extends CollectionKey> {
     this._collection = collection;
   }
   
+  /**
+   * Set collection(s) to query
+   */
   from(collection: T | T[]): this {
     this._collection = collection;
     return this;
   }
   
+  /**
+   * Add filter condition
+   */
   where(filter: FilterFn<T>): this {
     this._filters.push(filter);
     return this;
   }
   
+  /**
+   * Add multiple filters (AND logic)
+   */
   whereAll(...filters: FilterFn<T>[]): this {
     this._filters.push(...filters);
     return this;
   }
   
+  /**
+   * Sort results
+   */
   orderBy(sort: SortFn<T> | SortConfig): this {
     this._sorts.push(sort);
     return this;
   }
   
+  /**
+   * Limit number of results
+   */
   limit(limit: number): this {
     this._limit = limit;
     return this;
   }
   
+  /**
+   * Skip number of results
+   */
   offset(offset: number): this {
     this._offset = offset;
     return this;
   }
   
+  /**
+   * Include relation data in results
+   */
   withRelations(include: boolean = true, maxDepth?: number): this {
     this._includeRelations = include;
     if (maxDepth !== undefined) {
@@ -62,89 +97,138 @@ export class Query<T extends CollectionKey> {
   }
   
   /**
-   * Execute query - ALL imports happen here
+   * Execute query and return results
    */
   async get(): Promise<QueryResult<T>> {
-    // ✅ Lazy import everything
+    // ✅ Lazy import
     const { getCollection } = await import('astro:content');
     
     if (!this._collection) {
-      throw new Error('Query must specify collection(s)');
+      throw new Error('Collection not specified');
     }
     
-    const collections = Array.isArray(this._collection) 
-      ? this._collection 
-      : [this._collection];
+    // Get entries
+    let entries: CollectionEntry<T>[];
     
-    let entries: CollectionEntry<T>[] = [];
-    
-    if (this._includeRelations) {
-      // ✅ Lazy import graph utilities
-      const { getOrBuildGraph } = await import('./graph');
-      const { getCollectionEntries } = await import('./graph');
-      
-      const graph = await getOrBuildGraph({ collections: collections as CollectionKey[] });
-      
-      for (const coll of collections) {
-        const collEntries = getCollectionEntries(graph, coll as CollectionKey);
-        entries.push(...collEntries as CollectionEntry<T>[]);
+    if (Array.isArray(this._collection)) {
+      // Multiple collections
+      entries = [];
+      for (const coll of this._collection) {
+        const collEntries = await getCollection(coll);
+        entries.push(...(collEntries as CollectionEntry<T>[]));
       }
     } else {
-      const results = await Promise.all(
-        collections.map(c => getCollection(c as any))
-      );
-      entries = results.flat() as CollectionEntry<T>[];
+      // Single collection
+      entries = await getCollection(this._collection) as CollectionEntry<T>[];
     }
     
-    // ✅ Lazy import filter/sort utilities
-    const { applyFilters } = await import('./filters');
-    const { applySorting } = await import('./sorting');
-    
-    entries = applyFilters(entries, this._filters);
-    entries = applySorting(entries, this._sorts);
-    
-    if (this._offset > 0) {
-      entries = entries.slice(this._offset);
-    }
-    if (this._limit !== undefined) {
-      entries = entries.slice(0, this._limit);
+    // Apply filters
+    if (this._filters.length > 0) {
+      entries = applyFilters(entries, this._filters);
     }
     
-    return {
-      entries,
-      total: entries.length,
+    const total = entries.length;
+    
+    // Apply sorting
+    if (this._sorts.length > 0) {
+      entries = applySorting(entries, this._sorts as any);
+    }
+    
+    // Apply pagination
+    const start = this._offset;
+    const end = this._limit ? start + this._limit : entries.length;
+    const paginatedEntries = entries.slice(start, end);
+    
+    // Build result
+    const result: QueryResult<T> = {
+      entries: paginatedEntries,
+      total,
     };
+    
+    // Add pagination metadata
+    if (this._limit) {
+      const pageSize = this._limit;
+      const page = Math.floor(this._offset / pageSize) + 1;
+      result.page = page;
+      result.pageSize = pageSize;
+      result.hasNext = end < entries.length;
+      result.hasPrev = this._offset > 0;
+    }
+    
+    // Include relations if requested
+    if (this._includeRelations) {
+      result.relations = new Map();
+      
+      for (const entry of paginatedEntries) {
+        const collection = entry.collection as T;
+        const id = entry.id;
+        const relations = await getRelations(collection, id);
+        result.relations.set(`${collection}:${id}`, relations);
+      }
+    }
+    
+    return result;
   }
   
+  /**
+   * Get first result
+   */
+  async first(): Promise<CollectionEntry<T> | undefined> {
+    const result = await this.limit(1).get();
+    return result.entries[0];
+  }
+  
+  /**
+   * Get all results (no pagination)
+   */
+  async all(): Promise<CollectionEntry<T>[]> {
+    this._limit = undefined;
+    this._offset = 0;
+    const result = await this.get();
+    return result.entries;
+  }
+  
+  /**
+   * Count results (without fetching)
+   */
+  async count(): Promise<number> {
+    const result = await this.get();
+    return result.total;
+  }
+  
+  /**
+   * Get collection name (for introspection)
+   */
   getCollectionName(): T | T[] | null {
     return this._collection ?? null;
   }
 }
 
+/**
+ * Create a new query
+ */
 export function query<T extends CollectionKey>(collection?: T | T[]): Query<T> {
-  return new Query(collection);
+  return new Query<T>(collection);
 }
 
+/**
+ * Quick query helpers
+ */
 export async function find<T extends CollectionKey>(
   collection: T,
-  slug: string
+  id: string
 ): Promise<CollectionEntry<T> | undefined> {
-  const result = await query(collection)
-    .where(entry => {
-      const entrySlug = 'slug' in entry ? entry.slug : entry.id;
-      return entrySlug === slug;
-    })
-    .get();
-  
-  return result.entries[0];
+  // ✅ Lazy import
+  const { getCollection } = await import('astro:content');
+  const entries = await getCollection(collection);
+  return entries.find(e => e.id === id) as CollectionEntry<T> | undefined;
 }
 
 export async function findWhere<T extends CollectionKey>(
   collection: T,
   filter: FilterFn<T>
 ): Promise<CollectionEntry<T> | undefined> {
-  const result = await query(collection).where(filter).limit(1).get();
-  return result.entries[0];
+  return query(collection).where(filter).first();
 }
 
 export async function findAll<T extends CollectionKey>(
@@ -153,6 +237,5 @@ export async function findAll<T extends CollectionKey>(
 ): Promise<CollectionEntry<T>[]> {
   const q = query(collection);
   if (filter) q.where(filter);
-  const result = await q.get();
-  return result.entries;
+  return q.all();
 }
