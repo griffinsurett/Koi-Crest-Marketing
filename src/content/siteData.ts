@@ -7,6 +7,8 @@ export const siteData = {
   description: "Finest Typesafe Static Sites with Astro, dynamically static with content collections.",
   domain: siteDomain,
   url: `https://${siteDomain}`,
+  location: "New Jersey, USA",
+  address: "123 Main St, Springfield, NJ 07081",
 };
 
 export const ctaData = {
