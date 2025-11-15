@@ -20,7 +20,7 @@ import {
   getLayoutPath,
   getLayoutComponent,
 } from "@/layouts/collections/helpers/layoutUtils";
-import type { MetaData } from "content/schema";
+import type { MetaData } from "@/content/schema";
 
 /**
  * Filter function type for determining which items to include

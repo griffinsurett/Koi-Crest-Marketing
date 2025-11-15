@@ -4,8 +4,8 @@
  */
 
 import type { CollectionKey, CollectionEntry } from "astro:content";
-import { collections } from "content/config";
-import type { MetaData } from "content/schema";
+import { collections } from "@/content/config";
+import type { MetaData } from "@/content/schema";
 
 // ❌ NO astro:content imports at module level
 

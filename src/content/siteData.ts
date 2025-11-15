@@ -2,9 +2,9 @@
 const siteDomain = import.meta.env.PUBLIC_SITE_DOMAIN;
 
 export const siteData = {
-  title: "Greastro",
-  legalName: "Greastro LLC",
-  description: "Finest Typesafe Static Sites with Astro, dynamically static with content collections.",
+  title: "Koi Crest Marketing",
+  legalName: "Koi Crest LLC",
+  description: "At Koi Crest, we specialize in comprehensive digital marketing services including Lead Generation, Content Creation and Social Media Management, etc. We will propel your business past the competition. Kickstart your growth with a free consultation and unlock your business’s potential and help you digitally swim past your competition!",
   domain: siteDomain,
   url: `https://${siteDomain}`,
   location: "New Jersey, USA",

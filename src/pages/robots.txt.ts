@@ -1,5 +1,5 @@
 // src/pages/robots.txt.ts
-import { siteData } from "content/siteData";
+import { siteData } from "@/content/siteData";
 import type { APIRoute } from "astro";
 
 export const GET: APIRoute = () => {

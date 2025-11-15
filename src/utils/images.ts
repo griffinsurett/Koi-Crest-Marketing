@@ -7,7 +7,7 @@
  * properly processed and have predictable structures.
  */
 
-import type { ImageInput } from "content/schema";
+import type { ImageInput } from "@/content/schema";
 
 /**
  * Extract image URL from Astro-processed image

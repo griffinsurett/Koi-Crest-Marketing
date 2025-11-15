@@ -12,7 +12,7 @@
  */
 
 import type { CollectionEntry, CollectionKey } from "astro:content";
-import type { SEOData, MetaData, ImageInput } from "content/schema";
+import type { SEOData, MetaData, ImageInput } from "@/content/schema";
 import { find, isCollectionReference } from "@/utils/query"; // ← Use query system
 
 /**

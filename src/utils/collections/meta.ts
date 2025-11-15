@@ -11,7 +11,7 @@
  * - SEO defaults
  */
 
-import { metaSchema, type MetaData } from "content/schema";
+import { metaSchema, type MetaData } from "@/content/schema";
 import { z } from "astro:content";
 
 /**

@@ -21,7 +21,7 @@ import AccessibilityButton from "@/components/preferences/accessibility/Accessib
 import "../styles/accessibility.css";
 
 // Language Switcher
-import LanguageSwitcher from "@/components/preferences/language/LanguageSwitcher";
+// import LanguageSwitcher from "@/components/preferences/language/LanguageSwitcher";
 import GoogleTranslateScript from "@/components/preferences/language/GoogleTranslateScript.astro";
 import "../styles/language-switcher.css";
 ---
@@ -33,7 +33,7 @@ import "../styles/language-switcher.css";
 <GoogleTranslateScript />
 
 {/* Language Switcher - Client-side only */}
-<LanguageSwitcher client:visible />
+<!-- <LanguageSwitcher client:visible /> -->
 
 {/* Cookie Preferences Button - Client-side only */}
 <CookiePreferencesButton client:visible />

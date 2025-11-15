@@ -16,7 +16,7 @@ import {
   getLayoutComponent,
   getCollectionIndexLayoutPath,
 } from "@/layouts/collections/helpers/layoutUtils";
-import type { MetaData } from "content/schema";
+import type { MetaData } from "@/content/schema";
 
 /**
  * Path parameters for collection index pages

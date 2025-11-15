@@ -5,7 +5,7 @@
 
 import type { CollectionKey, CollectionEntry } from "astro:content";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
-import type { MetaData, BaseData } from "content/schema";
+import type { MetaData, BaseData } from "@/content/schema";
 import { getItemKey } from "./core";
 
 // ❌ NO imports that touch pages/filesystem during module load
