@@ -2,7 +2,7 @@
 // src/layouts/SEO.astro
 /**
  * SEO Component - Meta Tag Generator
- * 
+ *
  * Comprehensive SEO meta tag generation for all pages.
  * Handles:
  * - Basic meta tags (title, description)
@@ -11,24 +11,24 @@
  * - JSON-LD structured data (Schema.org)
  * - Canonical URLs
  * - Author and publisher information
- * 
+ *
  * Uses fallback chain: SEO overrides → Base props → Site defaults
  * Generates absolute URLs for social sharing.
  */
 
 import defaultOGImage from "@/assets/astro.svg";
-import { siteData } from "@/content/siteData";
+import { siteData } from "content/siteData";
 import { getImageUrl } from "@/utils/images";
-import type { ImageInput, SEOData } from "@/content/schema";
+import type { ImageInput, SEOData } from "content/schema";
 
 export interface Props {
-  title?: string;              // Page title
-  description?: string;        // Page description
-  image?: ImageInput;          // Featured image
-  author?: string;            // Author name
+  title?: string; // Page title
+  description?: string; // Page description
+  image?: ImageInput; // Featured image
+  author?: string; // Author name
   publishDate?: Date | string; // Publication date (for articles)
-  seo?: SEOData;              // SEO overrides
-  siteName?: string;          // Site name override
+  seo?: SEOData; // SEO overrides
+  siteName?: string; // Site name override
 }
 
 const {
@@ -52,19 +52,29 @@ const finalMetaDescription = seo?.metaDescription || baseDescription;
 
 // Open Graph values (with fallbacks)
 const finalOgTitle = seo?.ogTitle || seo?.metaTitle || baseTitle;
-const finalOgDescription = seo?.ogDescription || seo?.metaDescription || baseDescription;
+const finalOgDescription =
+  seo?.ogDescription || seo?.metaDescription || baseDescription;
 const finalOgImageUrl = getImageUrl(seo?.ogImage, baseImageUrl);
 const finalOgType = seo?.ogType || "website";
 
 // Twitter Card values (with fallbacks to OG values)
 const finalTwitterTitle = seo?.twitterTitle || seo?.ogTitle || finalOgTitle;
-const finalTwitterDescription = seo?.twitterDescription || seo?.ogDescription || finalOgDescription;
-const finalTwitterImageUrl = getImageUrl(seo?.twitterImage || seo?.ogImage, finalOgImageUrl);
+const finalTwitterDescription =
+  seo?.twitterDescription || seo?.ogDescription || finalOgDescription;
+const finalTwitterImageUrl = getImageUrl(
+  seo?.twitterImage || seo?.ogImage,
+  finalOgImageUrl
+);
 const finalTwitterCard = seo?.twitterCard || "summary_large_image";
 
 // Additional SEO fields
-const finalKeywords = seo?.keywords || ["astro", "static site generator", "web development"];
-const finalCanonicalUrl = seo?.canonicalUrl || `${siteData.url}${Astro.url.pathname}`;
+const finalKeywords = seo?.keywords || [
+  "astro",
+  "static site generator",
+  "web development",
+];
+const finalCanonicalUrl =
+  seo?.canonicalUrl || `${siteData.url}${Astro.url.pathname}`;
 const effectiveRobots = seo?.robots || "index, follow";
 
 // Author and publisher
@@ -76,8 +86,8 @@ const publisherName = siteData.legalName || siteData.title;
  * Social platforms require absolute URLs for images
  */
 const makeAbsolute = (url: string): string => {
-  if (url.startsWith('http')) return url;
-  if (url.startsWith('/')) return `${siteData.url}${url}`;
+  if (url.startsWith("http")) return url;
+  if (url.startsWith("/")) return `${siteData.url}${url}`;
   return `${siteData.url}/${url}`;
 };
 
@@ -94,35 +104,35 @@ const schemaType = !publishDate ? "WebSite" : "Article";
 const structuredData = {
   "@context": "https://schema.org",
   "@type": schemaType,
-  "name": finalOgTitle,
-  "headline": finalOgTitle,
-  "description": finalOgDescription,
-  "image": absoluteOgImage,
-  "url": finalCanonicalUrl,
-  "publisher": {
+  name: finalOgTitle,
+  headline: finalOgTitle,
+  description: finalOgDescription,
+  image: absoluteOgImage,
+  url: finalCanonicalUrl,
+  publisher: {
     "@type": "Organization",
-    "name": publisherName,
-    "url": siteData.url,
-    "logo": {
+    name: publisherName,
+    url: siteData.url,
+    logo: {
       "@type": "ImageObject",
-      "url": makeAbsolute(defaultOGImage.src),
-      "width": 60,
-      "height": 60
-    }
+      url: makeAbsolute(defaultOGImage.src),
+      width: 60,
+      height: 60,
+    },
   },
-  "author": {
+  author: {
     "@type": publishDate ? "Person" : "Organization",
-    "name": authorName,
+    name: authorName,
   },
   // Article-specific fields
   ...(publishDate && {
-    "datePublished": new Date(publishDate).toISOString(),
-    "dateModified": new Date(publishDate).toISOString(),
+    datePublished: new Date(publishDate).toISOString(),
+    dateModified: new Date(publishDate).toISOString(),
   }),
-  "mainEntityOfPage": {
+  mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": finalCanonicalUrl
-  }
+    "@id": finalCanonicalUrl,
+  },
 };
 ---
 
@@ -143,7 +153,14 @@ const structuredData = {
 <meta property="og:type" content={finalOgType} />
 <meta property="og:url" content={finalCanonicalUrl} />
 <meta property="og:site_name" content={siteName} />
-{publishDate && <meta property="article:published_time" content={new Date(publishDate).toISOString()} />}
+{
+  publishDate && (
+    <meta
+      property="article:published_time"
+      content={new Date(publishDate).toISOString()}
+    />
+  )
+}
 <meta property="article:author" content={authorName} />
 <meta property="article:publisher" content={publisherName} />
 

@@ -1,7 +1,7 @@
 // src/utils/pageGeneration/itemPageHelpers.ts
 /**
  * Item Page Generation Helpers
- * 
+ *
  * Shared utilities for generating individual item pages.
  * Used by both root-level and collection-level page routes.
  */
@@ -9,11 +9,18 @@
 import type { CollectionKey, CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import { getCollectionMeta, getItemKey } from "@/utils/collections";
-import { shouldItemHavePage, shouldItemUseRootPath, shouldProcessCollection } from "@/utils/pages";
+import {
+  shouldItemHavePage,
+  shouldItemUseRootPath,
+  shouldProcessCollection,
+} from "@/utils/pages";
 import { getPageCollections } from "@/utils/pageGeneration";
 import { buildItemSEOProps } from "@/utils/seo";
-import { getLayoutPath, getLayoutComponent } from "@/layouts/collections/helpers/layoutUtils";
-import type { MetaData } from "@/content/schema";
+import {
+  getLayoutPath,
+  getLayoutComponent,
+} from "@/layouts/collections/helpers/layoutUtils";
+import type { MetaData } from "content/schema";
 
 /**
  * Filter function type for determining which items to include
@@ -69,10 +76,10 @@ export interface PreparedPageData {
 
 /**
  * Generate static paths for items matching a filter
- * 
+ *
  * Generic function that handles path generation for both
  * root-level and collection-level routes.
- * 
+ *
  * @param filter - Function to determine which items to include
  * @param buildParams - Function to build path params from entry
  * @returns Array of static path entries
@@ -87,12 +94,14 @@ export async function generateItemPaths<TParams>(
 
   for (const coll of collections) {
     const collectionKey = coll as CollectionKey;
-    
+
     const shouldProcess = await shouldProcessCollection(collectionKey);
     if (!shouldProcess) continue;
 
     const meta = getCollectionMeta(collectionKey);
-    const entries = (await getCollection(collectionKey)) as CollectionEntry<typeof collectionKey>[];
+    const entries = (await getCollection(collectionKey)) as CollectionEntry<
+      typeof collectionKey
+    >[];
 
     entries
       .filter((entry) => filter(entry as CollectionEntry<CollectionKey>, meta))
@@ -114,12 +123,12 @@ export async function generateItemPaths<TParams>(
 
 /**
  * Prepare all data needed to render an item page
- * 
+ *
  * This function handles ALL the logic for preparing a page:
  * - Getting the layout component
  * - Rendering MDX content
  * - Building SEO props
- * 
+ *
  * @param props - Props from getStaticPaths
  * @returns All data needed to render the page
  */

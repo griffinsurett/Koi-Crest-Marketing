@@ -1,22 +1,22 @@
 // src/utils/query/graph.ts
 /**
  * Relationship Graph Builder - FULLY LAZY WITH COMPLETE FUNCTIONALITY
- * 
+ *
  * Builds a complete relationship graph for all content collections.
  * Handles direct references, hierarchical relations, and indirect connections.
  * ALL astro:content imports are lazy to prevent circular dependencies.
  */
 
-import type { CollectionEntry, CollectionKey } from 'astro:content';
-import { 
-  type RelationshipGraph, 
-  type RelationMap, 
+import type { CollectionEntry, CollectionKey } from "astro:content";
+import {
+  type RelationshipGraph,
+  type RelationMap,
   type Relation,
   type GraphBuildOptions,
   getEntryKey,
   parseEntryKey,
-} from './types';
-import { getQueryKey, normalizeId } from './helpers';
+} from "./types";
+import { getQueryKey, normalizeId } from "./helpers";
 
 // ❌ NO module-level imports of astro:content or anything that imports it
 
@@ -31,7 +31,7 @@ export async function getOrBuildGraph(
   if (_cachedGraph && options?.cache !== false) {
     return _cachedGraph;
   }
-  
+
   _cachedGraph = await buildRelationshipGraph(options);
   return _cachedGraph;
 }
@@ -50,21 +50,22 @@ export async function buildRelationshipGraph(
   options: GraphBuildOptions = {}
 ): Promise<RelationshipGraph> {
   // ✅ Lazy import everything
-  const { getCollection } = await import('astro:content');
-  const { extractRelationConfig, normalizeReference, isParentField } = await import('./schema');
-  
+  const { getCollection } = await import("astro:content");
+  const { extractRelationConfig, normalizeReference, isParentField } =
+    await import("./schema");
+
   // Get collection names without importing collections utilities that might have circular deps
-  const { collections } = await import('@/content/config');
+  const { collections } = await import("content/config");
   const allCollections = Object.keys(collections).filter(
-    c => c !== 'menus' && c !== 'menu-items'
+    (c) => c !== "menus" && c !== "menu-items"
   ) as CollectionKey[];
-  
+
   const {
     collections: requestedCollections = allCollections,
     includeIndirect = true,
     maxIndirectDepth = 3,
   } = options;
-  
+
   // Initialize graph
   const graph: RelationshipGraph = {
     nodes: new Map(),
@@ -76,27 +77,34 @@ export async function buildRelationshipGraph(
     collections: requestedCollections,
     totalEntries: 0,
   };
-  
+
   // Phase 1: Load all entries and create base nodes
-  console.log('📊 Building relationship graph...');
+  console.log("📊 Building relationship graph...");
   await loadAllEntries(graph, requestedCollections, getCollection);
-  
+
   // Phase 2: Build direct references
-  console.log('🔗 Mapping direct references...');
-  await buildDirectReferences(graph, extractRelationConfig, normalizeReference, isParentField);
-  
+  console.log("🔗 Mapping direct references...");
+  await buildDirectReferences(
+    graph,
+    extractRelationConfig,
+    normalizeReference,
+    isParentField
+  );
+
   // Phase 3: Build hierarchical relationships
-  console.log('🌲 Building hierarchy...');
+  console.log("🌲 Building hierarchy...");
   await buildHierarchy(graph, normalizeReference);
-  
+
   // Phase 4: Build indirect relationships
   if (includeIndirect) {
-    console.log('🔄 Finding indirect relations...');
+    console.log("🔄 Finding indirect relations...");
     await buildIndirectRelations(graph, maxIndirectDepth);
   }
-  
-  console.log(`✅ Graph built: ${graph.totalEntries} entries, ${graph.collections.length} collections`);
-  
+
+  console.log(
+    `✅ Graph built: ${graph.totalEntries} entries, ${graph.collections.length} collections`
+  );
+
   return graph;
 }
 
@@ -112,11 +120,11 @@ async function loadAllEntries(
     const entries = await getCollection(collection);
     const collectionMap = new Map<string, RelationMap>();
     const idSet = new Set<string>();
-    
+
     for (const entry of entries) {
       // Use getQueryKey for consistent ID handling
       const id = getQueryKey(entry);
-      
+
       // Create base relation map with full structure
       const relationMap: RelationMap = {
         entry,
@@ -133,12 +141,12 @@ async function loadAllEntries(
         isRoot: true,
         isLeaf: true,
       };
-      
+
       collectionMap.set(id, relationMap);
       idSet.add(id);
       graph.totalEntries++;
     }
-    
+
     graph.nodes.set(collection, collectionMap);
     graph.indexes.byCollection.set(collection, idSet);
   }
@@ -157,43 +165,43 @@ async function buildDirectReferences(
     for (const [id, relationMap] of collectionMap) {
       const entry = relationMap.entry;
       const data = entry.data as any;
-      
+
       // Extract all relation fields
       const relationConfigs = extractRelationConfig(data);
-      
+
       for (const config of relationConfigs) {
         // Skip parent fields (handled in hierarchy phase)
         if (isParentField(config.field)) continue;
-        
+
         const refs = normalizeReference(data[config.field]);
-        
+
         for (const ref of refs) {
           // Normalize the reference ID
           const refId = normalizeId(ref.id);
-          
+
           // Add forward reference
           relationMap.references.push({
-            type: 'reference',
+            type: "reference",
             collection: ref.collection,
             id: refId,
             field: config.field,
           });
-          
+
           // Add reverse reference
           const targetMap = graph.nodes.get(ref.collection)?.get(refId);
           if (targetMap) {
             targetMap.referencedBy.push({
-              type: 'referenced-by',
+              type: "referenced-by",
               collection: collection as CollectionKey,
               id,
               field: config.field,
             });
           }
-          
+
           // Index reference
           const refKey = getEntryKey(ref.collection, refId);
           const entryKey = getEntryKey(collection as CollectionKey, id);
-          
+
           if (!graph.indexes.byReference.has(refKey)) {
             graph.indexes.byReference.set(refKey, new Set());
           }
@@ -216,30 +224,30 @@ async function buildHierarchy(
     for (const [id, relationMap] of collectionMap) {
       const data = relationMap.entry.data as any;
       const parentRef = normalizeReference(data.parent)[0];
-      
+
       if (parentRef && parentRef.collection === collection) {
         const parentId = normalizeId(parentRef.id);
         const parentMap = collectionMap.get(parentId);
-        
+
         if (parentMap) {
           // Set parent
           relationMap.parent = {
-            type: 'parent',
+            type: "parent",
             collection: collection as CollectionKey,
             id: parentId,
           };
-          
+
           // Add child to parent
           parentMap.children.push({
-            type: 'child',
+            type: "child",
             collection: collection as CollectionKey,
             id,
           });
-          
+
           relationMap.isRoot = false;
           parentMap.hasChildren = true;
           parentMap.isLeaf = false;
-          
+
           // Index parent relationship
           const parentKey = getEntryKey(collection as CollectionKey, parentId);
           if (!graph.indexes.byParent.has(parentKey)) {
@@ -250,22 +258,22 @@ async function buildHierarchy(
       }
     }
   }
-  
+
   // Second pass: calculate depth and find ancestors/descendants
   for (const [collection, collectionMap] of graph.nodes) {
     for (const [id, relationMap] of collectionMap) {
       // Calculate depth and ancestors
       calculateAncestors(relationMap, collectionMap);
-      
+
       // Calculate descendants
       calculateDescendants(relationMap, collectionMap);
-      
+
       // Find siblings
       if (relationMap.parent) {
         const parentMap = collectionMap.get(relationMap.parent.id);
         if (parentMap) {
           relationMap.siblings = parentMap.children.filter(
-            child => child.id !== id
+            (child) => child.id !== id
           );
         }
       }
@@ -283,19 +291,19 @@ function calculateAncestors(
   const ancestors: Relation[] = [];
   let depth = 0;
   let current = relationMap.parent;
-  
+
   while (current) {
     depth++;
     ancestors.push({
       ...current,
-      type: 'ancestor',
+      type: "ancestor",
       depth,
     });
-    
+
     const parentMap = collectionMap.get(current.id);
     current = parentMap?.parent;
   }
-  
+
   relationMap.ancestors = ancestors;
   relationMap.depth = depth;
 }
@@ -308,22 +316,22 @@ function calculateDescendants(
   collectionMap: Map<string, RelationMap>
 ): void {
   const descendants: Relation[] = [];
-  
+
   function traverse(childIds: Relation[], depth: number): void {
     for (const child of childIds) {
       descendants.push({
         ...child,
-        type: 'descendant',
+        type: "descendant",
         depth,
       });
-      
+
       const childMap = collectionMap.get(child.id);
       if (childMap && childMap.children.length > 0) {
         traverse(childMap.children, depth + 1);
       }
     }
   }
-  
+
   traverse(relationMap.children, 1);
   relationMap.descendants = descendants;
 }
@@ -340,10 +348,10 @@ async function buildIndirectRelations(
       const entryKey = getEntryKey(collection as CollectionKey, id);
       const visited = new Set<string>([entryKey]);
       const indirect: Relation[] = [];
-      
+
       // BFS to find indirect relations
       const queue: Array<{ key: string; path: string[]; depth: number }> = [];
-      
+
       // Start with direct references
       for (const ref of relationMap.references) {
         const refKey = getEntryKey(ref.collection, ref.id);
@@ -353,30 +361,30 @@ async function buildIndirectRelations(
           depth: 1,
         });
       }
-      
+
       while (queue.length > 0) {
         const { key, path, depth } = queue.shift()!;
-        
+
         if (depth >= maxDepth) continue;
         if (visited.has(key)) continue;
-        
+
         visited.add(key);
         const { collection: currentColl, id: currentId } = parseEntryKey(key);
         const currentMap = graph.nodes.get(currentColl)?.get(currentId);
-        
+
         if (!currentMap) continue;
-        
+
         // Add as indirect relation
         if (depth > 1) {
           indirect.push({
-            type: 'indirect',
+            type: "indirect",
             collection: currentColl,
             id: currentId,
             depth,
             path,
           });
         }
-        
+
         // Queue next level
         for (const ref of currentMap.references) {
           const refKey = getEntryKey(ref.collection, ref.id);
@@ -389,7 +397,7 @@ async function buildIndirectRelations(
           }
         }
       }
-      
+
       relationMap.indirect = indirect;
     }
   }
@@ -416,6 +424,6 @@ export function getCollectionEntries(
 ): CollectionEntry<CollectionKey>[] {
   const collectionMap = graph.nodes.get(collection);
   if (!collectionMap) return [];
-  
-  return Array.from(collectionMap.values()).map(rm => rm.entry);
+
+  return Array.from(collectionMap.values()).map((rm) => rm.entry);
 }

@@ -1,7 +1,7 @@
 // src/utils/pageGeneration/collectionIndexHelpers.ts
 /**
  * Collection Index Page Generation Helpers
- * 
+ *
  * Helpers for generating collection index pages (e.g., /blog, /services).
  * Follows the same pattern as itemPageHelpers but for collection index pages.
  */
@@ -12,8 +12,11 @@ import { shouldCollectionHavePage } from "@/utils/pages";
 import { getPageCollections } from "@/utils/pageGeneration";
 import { buildCollectionSEOProps } from "@/utils/seo";
 import { getCollectionMetaMDX } from "@/utils/content";
-import { getLayoutComponent, getCollectionIndexLayoutPath } from "@/layouts/collections/helpers/layoutUtils";
-import type { MetaData } from "@/content/schema";
+import {
+  getLayoutComponent,
+  getCollectionIndexLayoutPath,
+} from "@/layouts/collections/helpers/layoutUtils";
+import type { MetaData } from "content/schema";
 
 /**
  * Path parameters for collection index pages
@@ -52,7 +55,9 @@ export interface PreparedCollectionIndexData {
 /**
  * Generate static paths for collection index pages
  */
-export async function generateCollectionIndexPaths(): Promise<CollectionIndexStaticPath[]> {
+export async function generateCollectionIndexPaths(): Promise<
+  CollectionIndexStaticPath[]
+> {
   const names = getPageCollections();
   const paths: CollectionIndexStaticPath[] = [];
 
@@ -72,7 +77,7 @@ export async function generateCollectionIndexPaths(): Promise<CollectionIndexSta
 
 /**
  * Prepare all data needed to render a collection index page
- * 
+ *
  * Works just like prepareItemPageData but for collection index pages.
  * Gets the layout component from meta.layout field
  * and the MDX content from _meta.mdx body.

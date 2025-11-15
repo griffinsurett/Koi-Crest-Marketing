@@ -2,13 +2,13 @@
 // src/layouts/LegalLayout.astro
 /**
  * Legal Layout - Base layout for legal documents
- * 
+ *
  * Extends BaseLayout and provides consistent structure for:
  * - Privacy Policy
  * - Cookie Policy
  * - Terms of Service
  * - Other legal documents
- * 
+ *
  * Features:
  * - Consistent prose styling
  * - Automatic date display (Last Updated + Effective Date)
@@ -16,16 +16,16 @@
  * - SEO optimized for legal content
  * - Print-friendly styling
  * - Easy to extend for future legal pages
- * 
+ *
  * Props:
  * - title: Page title (passed to BaseLayout and displayed as H1)
  * - description: Meta description (passed to BaseLayout)
  * - lastUpdated: When the document was last modified (required)
  * - effectiveDate: When the policy takes effect (optional, but recommended)
  * - showDates: Whether to show dates (default: true)
- * 
+ *
  * Usage:
- *   <LegalLayout 
+ *   <LegalLayout
  *     title="Privacy Policy"
  *     description="How we handle your data"
  *     lastUpdated="November 14, 2025"
@@ -37,7 +37,7 @@
 
 import BaseLayout from "./BaseLayout.astro";
 import LastUpdated from "@/components/preferences/consent/PrivacyPolicy/LastUpdated.astro";
-import { siteData } from "@/content/siteData";
+import { siteData } from "content/siteData";
 
 interface Props {
   title: string;
@@ -67,12 +67,11 @@ const fullTitle = `${title} — ${siteData.title}`;
     <h1>{title}</h1>
 
     {/* Dates Section */}
-    {showDates && (
-      <LastUpdated 
-        lastUpdated={lastUpdated} 
-        effectiveDate={effectiveDate} 
-      />
-    )}
+    {
+      showDates && (
+        <LastUpdated lastUpdated={lastUpdated} effectiveDate={effectiveDate} />
+      )
+    }
 
     {/* Legal Content */}
     <slot />

@@ -11,7 +11,7 @@
  */
 
 import type { CollectionKey } from "astro:content";
-import { collections } from "@/content/config";
+import { collections } from "content/config";
 
 /**
  * Get all collection names that should generate pages

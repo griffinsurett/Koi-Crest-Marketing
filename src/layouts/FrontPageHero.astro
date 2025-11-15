@@ -2,9 +2,9 @@
 // src/layouts/FrontPageHero.astro
 /**
  * Front Page Hero Layout
- * 
+ *
  * Full-width hero section with optimized background media for homepage.
- * 
+ *
  * Features:
  * - Responsive background images with LCP optimization
  * - Optional video background with poster image
@@ -12,14 +12,14 @@
  * - Primary and secondary CTAs
  * - Configurable minimum height (default 95vh)
  * - Supports both static images and video backgrounds
- * 
+ *
  * This is a layout component for landing pages.
  * Use directly in your homepage or marketing pages.
  */
 
 import Button from "@/components/Button/Button";
 import BackgroundMedia from "@/components/BackgroundMedia.astro";
-import { ctaData } from "@/content/siteData";
+import { ctaData } from "content/siteData";
 import DefaultImg from "@/assets/background.svg";
 
 export interface Props {
@@ -70,23 +70,25 @@ const backgroundMedia = {
     imageClass: "bg-cover bg-center",
     aboveTheFold: true, // Front page hero is always LCP
   },
-  video: video ? {
-    src: video.src,
-    autoPlay: video.autoPlay ?? true,
-    muted: video.muted ?? true,
-    loop: video.loop ?? true,
-    playsInline: video.playsInline ?? true,
-    controls: video.controls ?? false,
-    preload: video.preload ?? "metadata",
-    videoClass: "object-cover",
-  } : undefined,
+  video: video
+    ? {
+        src: video.src,
+        autoPlay: video.autoPlay ?? true,
+        muted: video.muted ?? true,
+        loop: video.loop ?? true,
+        playsInline: video.playsInline ?? true,
+        controls: video.controls ?? false,
+        preload: video.preload ?? "metadata",
+        videoClass: "object-cover",
+      }
+    : undefined,
   overlayClass: "bg-gradient-to-b from-black/30 to-black/60",
 };
 ---
 
 <section id={id} class={`relative ${className}`}>
-  <div 
-    class="relative flex items-center justify-center overflow-hidden" 
+  <div
+    class="relative flex items-center justify-center overflow-hidden"
     style={`min-height: ${minHeight}`}
   >
     {/* Optimized background media with overlay */}
@@ -97,36 +99,42 @@ const backgroundMedia = {
       <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
         {title}
       </h1>
-      
-      {description && (
-        <p class="text-xl md:text-2xl mb-10 opacity-95 leading-relaxed max-w-3xl mx-auto">
-          {description}
-        </p>
-      )}
+
+      {
+        description && (
+          <p class="text-xl md:text-2xl mb-10 opacity-95 leading-relaxed max-w-3xl mx-auto">
+            {description}
+          </p>
+        )
+      }
 
       {/* CTA Buttons */}
       <div class="flex gap-4 justify-center flex-wrap">
-        {primaryCTA && (
-          <Button 
-            href={primaryCTA.link} 
-            variant="primary" 
-            size="lg"
-            className="shadow-xl hover:shadow-2xl transition-shadow"
-          >
-            {primaryCTA.text}
-          </Button>
-        )}
+        {
+          primaryCTA && (
+            <Button
+              href={primaryCTA.link}
+              variant="primary"
+              size="lg"
+              className="shadow-xl hover:shadow-2xl transition-shadow"
+            >
+              {primaryCTA.text}
+            </Button>
+          )
+        }
 
-        {secondaryCTA && (
-          <Button
-            href={secondaryCTA.link}
-            variant="ghost"
-            size="lg"
-            className="bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 hover:bg-white/20"
-          >
-            {secondaryCTA.text}
-          </Button>
-        )}
+        {
+          secondaryCTA && (
+            <Button
+              href={secondaryCTA.link}
+              variant="ghost"
+              size="lg"
+              className="bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 hover:bg-white/20"
+            >
+              {secondaryCTA.text}
+            </Button>
+          )
+        }
       </div>
     </div>
   </div>
@@ -137,7 +145,8 @@ const backgroundMedia = {
 
 <style>
   /* Ensure text is readable on all backgrounds */
-  h1, p {
+  h1,
+  p {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   }
 </style>
