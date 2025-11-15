@@ -58,7 +58,7 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
       gap="lg"
     />
 
-    <!-- projects with sorting -->
+    <!-- Portfolio with sorting -->
     <ContentRenderer
       query={query("projects")
         .orderBy(sortByDate("publishDate", "desc"))
@@ -91,7 +91,7 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
       query={query(["blog", "projects"]).orderBy(sortByDate()).limit(10)}
       variant="ListVariant"
       title="Recent Updates"
-      description="Latest from our blog and projects"
+      description="Latest from our blog and portfolio"
     />
   </main>
 </BaseLayout>

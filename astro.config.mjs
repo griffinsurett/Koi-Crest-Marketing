@@ -16,7 +16,7 @@ console.log(`Site URL: ${siteUrl}`);
 
 export default defineConfig({
   site: siteUrl,
-  server: { port: 4345 },
+  server: { port: 4535 },
   
   vite: {
     plugins: [tailwindcss()],
