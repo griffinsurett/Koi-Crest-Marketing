@@ -26,7 +26,7 @@ export function getItemKey(item: AnyItem): string {
 }
 
 export async function getCollectionWithMeta(collectionName: CollectionKey) {
-  const { metaSchema } = await import("content/schema");
+  const { metaSchema } = await import("@/content/schema");
 
   const mdxModules = import.meta.glob<{ frontmatter?: Record<string, any> }>(
     "../../content/**/_meta.mdx",
