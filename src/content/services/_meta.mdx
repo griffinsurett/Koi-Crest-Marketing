@@ -1,6 +1,6 @@
 ---
 title: "Services"
-description: "Propelling your brand to new heights in the digital realm"
+description: "Our professional services"
 hasPage: true
 itemsHasPage: true
 itemsRootPath: true
@@ -9,12 +9,11 @@ itemsAddToMenu:
 addToMenu:
   - menu: "main-menu"
 ---
-import CollectionLayout from '@/layouts/collections/CollectionLayout.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
-import { query } from '@/utils/query';
+import { query, sortByOrder } from '@/utils/query';
 
- <ContentRenderer
-      query={query("services")}
+    <ContentRenderer
+      query={query("services").orderBy(sortByOrder())}
       variant="GridVariant"
       columns={3}
       gap="lg"

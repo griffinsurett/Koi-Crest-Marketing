@@ -1,0 +1,75 @@
+---
+title: "Privacy Policy"
+description: "How we collect and use your information"
+publishDate: 2025-11-14T00:00:00Z
+effectiveDate: 2025-12-14T00:00:00Z
+order: 0
+seo:
+  metaTitle: "Privacy Policy"
+  metaDescription: "How we collect and use your information"
+---
+
+import { siteData } from "@/content/siteData";
+import CCPARights from "@/components/preferences/consent/PrivacyPolicy/CCPARights.astro";
+import LegalContactSection from "@/components/preferences/consent/PrivacyPolicy/LegalContactSection.astro";
+
+export let sectionNumber = 0;
+
+## {++sectionNumber}. Introduction
+
+Welcome to {siteData.title}. We respect your privacy and are committed to 
+protecting your personal information. This Privacy Policy explains how we 
+collect, use, disclose, and safeguard your information when you visit our website.
+
+## {++sectionNumber}. Information We Collect
+
+When you interact with {siteData.title}, we may collect:
+
+- **Contact Information:** Name, email address, and phone number when you submit forms or contact us.
+- **Technical Data:** IP address, browser type, device information, and pages visited (via cookies when you consent).
+- **Usage Data:** How you interact with our site, pages viewed, time spent, and referral sources (via cookies when you consent).
+
+## {++sectionNumber}. How We Use Your Information
+
+- To provide and maintain our services
+- To respond to your inquiries and requests
+- To improve our website and user experience
+- To analyze site performance and usage (with consent)
+- To send marketing communications (with consent)
+
+## {++sectionNumber}. Third-Party Services
+
+With your consent, we may share information with:
+
+- **Google Translate:** For website translation (functional cookies)
+- **Google Analytics:** For site analytics (performance cookies, if enabled)
+- **Advertising Networks:** Facebook, Google Ads (targeting cookies, if enabled)
+
+We use Vercel for hosting and Vercel Analytics for basic traffic metrics. 
+These services are privacy-first and do not use cookies or track personal information.
+
+## {++sectionNumber}. Cookies & Tracking
+
+We use cookies and similar technologies to enhance your experience. You can 
+manage your cookie preferences at any time. For full details, see our 
+[Cookie Policy](/cookie-policy).
+
+<CCPARights sectionNumber={++sectionNumber} />
+
+## {++sectionNumber}. Data Security
+
+We implement reasonable technical and organizational measures to protect 
+your data against unauthorized access, disclosure, alteration, or destruction. 
+However, no method of transmission over the Internet is 100% secure.
+
+## {++sectionNumber}. Changes to This Policy
+
+We may update this Privacy Policy from time to time. Changes will be posted 
+on this page with a revised "Effective date." We encourage you to review 
+this policy periodically. Your continued use of our services after any changes 
+indicates your acceptance of the updated policy.
+
+<LegalContactSection 
+  sectionNumber={++sectionNumber}
+  introText="If you have questions about this Privacy Policy or wish to exercise your rights, contact us:"
+/>
