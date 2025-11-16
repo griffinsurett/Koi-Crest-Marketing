@@ -1,9 +1,9 @@
-// src/components/Form/forms/KoiCrestContactForm.tsx
+// src/components/Form/forms/ContactForm.tsx
 /**
- * Koi Crest Contact Form
+ * Contact Form - Reduced Spacing
  * 
- * Contact form using the built-in Form system with validation.
- * Fields: First name, last name, email, phone, company, privacy checkbox
+ * Contact form with tighter spacing between fields.
+ * Changed containerClassName from mb-4 to mb-0 for all inputs.
  */
 
 import { z } from "zod";
@@ -12,7 +12,7 @@ import Input from "@/components/Form/inputs/Input";
 import Checkbox from "@/components/Form/inputs/Checkbox";
 import FormMessages from "@/components/Form/FormMessages";
 
-const koiCrestContactSchema = z.object({
+const contactSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
@@ -23,21 +23,16 @@ const koiCrestContactSchema = z.object({
   }),
 });
 
-export default function KoiCrestContactForm() {
+export default function ContactForm() {
   const handleSubmit = async (values: any) => {
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    
     console.log("Form submitted:", values);
-    
-    // TODO: Replace with actual form submission logic
-    // Example: await fetch('/api/contact', { method: 'POST', body: JSON.stringify(values) })
   };
 
   return (
     <Form
       onSubmit={handleSubmit}
-      validationSchema={koiCrestContactSchema}
+      validationSchema={contactSchema}
       successMessage="Thank you for contacting us! We'll get back to you soon."
       resetOnSuccess={true}
       className="w-full gap-0"
@@ -45,13 +40,14 @@ export default function KoiCrestContactForm() {
       <FormMessages />
 
       {/* Name Fields Row */}
-      <div className="flex flex-col lg:flex-row gap-4">
+      <div className="flex flex-col lg:flex-row gap-4 mb-0">
         <Input
           name="firstName"
           label="First Name"
           type="text"
           required
           placeholder="First Name"
+          containerClassName="mb-0"
           inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
@@ -61,6 +57,7 @@ export default function KoiCrestContactForm() {
           type="text"
           required
           placeholder="Last Name"
+          containerClassName="mb-0"
           inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -72,6 +69,7 @@ export default function KoiCrestContactForm() {
         type="email"
         required
         placeholder="me@website.com"
+        containerClassName="mb-0"
         inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 
@@ -82,6 +80,7 @@ export default function KoiCrestContactForm() {
         type="tel"
         required
         placeholder="012-345-6789"
+        containerClassName="mb-0"
         inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 
@@ -91,6 +90,7 @@ export default function KoiCrestContactForm() {
         label="Company Name"
         type="text"
         placeholder="LLC or whatever you trade as"
+        containerClassName="mb-0"
         inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 
@@ -111,6 +111,7 @@ export default function KoiCrestContactForm() {
           </>
         }
         required
+        containerClassName="mb-4"
       />
 
       {/* Submit Button */}
