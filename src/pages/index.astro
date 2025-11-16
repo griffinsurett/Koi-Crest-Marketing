@@ -11,7 +11,7 @@ import {
   sortByOrder,
   sortBy,
 } from "@/utils/query";
-import FrontPageHero from "@/layouts/MainHero.astro";
+import MainHero from "@/layouts/MainHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import CTASection from "@/layouts/CTASection.astro";
 ---
@@ -19,7 +19,7 @@ import CTASection from "@/layouts/CTASection.astro";
 <BaseLayout title={`${siteData.title} - home`} description={siteData.description}>
   <main class="flex-1">
     <!-- Hero ContentRenderer with static content -->
-    <FrontPageHero
+    <MainHero
       title={siteData.title}
       description={siteData.description}
       subtitle={siteData.tagline}
