@@ -88,6 +88,7 @@ export const collections = {
         client: z.string(),
         projectUrl: z.string().url().optional(),
         technologies: z.array(z.string()).default([]),
+        industry: z.string().optional(),
       }),
   }),
   "testimonials": defineCollection({

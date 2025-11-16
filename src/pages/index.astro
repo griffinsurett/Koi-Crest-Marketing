@@ -43,6 +43,11 @@ import CTASection from "@/layouts/CTASection.astro";
       gap="lg"
     />
 
+    <ContentRenderer
+      query={query("reasons")}
+      variant="WhyChooseUsVariant"
+    />
+
     <!-- Filtered query - still gets meta from authors -->
     <!-- <ContentRenderer
       query={query("authors").where(whereArrayContains("tags", "featured"))}
@@ -56,7 +61,7 @@ import CTASection from "@/layouts/CTASection.astro";
       query={query("projects")
         .orderBy(sortByDate("publishDate", "desc"))
         .limit(5)}
-      variant="ListVariant"
+      variant="PortfolioVariant"
     />
 
     <!-- Testimonials with rating filter -->
