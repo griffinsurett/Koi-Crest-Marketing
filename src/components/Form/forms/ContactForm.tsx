@@ -40,7 +40,7 @@ export default function ContactForm() {
       <FormMessages />
 
       {/* Name Fields Row */}
-      <div className="flex flex-col lg:flex-row gap-4 mb-0">
+      <div className="flex flex-col lg:flex-row justify-between gap-2 mb-0">
         <Input
           name="firstName"
           label="First Name"
@@ -48,7 +48,7 @@ export default function ContactForm() {
           required
           placeholder="First Name"
           containerClassName="mb-0"
-          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
         />
 
         <Input
@@ -58,7 +58,7 @@ export default function ContactForm() {
           required
           placeholder="Last Name"
           containerClassName="mb-0"
-          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
         />
       </div>
 
@@ -70,7 +70,7 @@ export default function ContactForm() {
         required
         placeholder="me@website.com"
         containerClassName="mb-0"
-        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
       />
 
       {/* Phone Field */}
@@ -81,7 +81,7 @@ export default function ContactForm() {
         required
         placeholder="012-345-6789"
         containerClassName="mb-0"
-        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
       />
 
       {/* Company Field (Optional) */}
@@ -91,7 +91,7 @@ export default function ContactForm() {
         type="text"
         placeholder="LLC or whatever you trade as"
         containerClassName="mb-0"
-        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
       />
 
       {/* Privacy Policy Checkbox */}

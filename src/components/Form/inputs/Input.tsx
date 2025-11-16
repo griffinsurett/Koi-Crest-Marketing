@@ -34,7 +34,7 @@ export default function Input({
   validate,
   containerClassName = "mb-4",
   labelClassName = "block text-sm font-medium text-gray-700 mb-1",
-  inputClassName = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors",
+  inputClassName = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-colors",
   errorClassName = "text-red-600 text-sm mt-1 min-h-[1.25rem]",
   showError = true,
   showLabel = true,
