@@ -4,7 +4,7 @@
  * Testimonial Card Component
  * 
  * Displays customer testimonials with:
- * - Quote text
+ * - Quote text from MDX content (via contentSlotId)
  * - Customer name and role
  * - Star rating (if provided)
  * - Optional avatar/image
@@ -14,7 +14,7 @@
 
 export interface Props {
   title: string;           // Customer name or testimonial title
-  description?: string;    // The testimonial quote/text
+  description?: string;    // The testimonial quote/text (fallback if no MDX)
   role?: string;          // Customer's role/position
   company?: string;       // Customer's company
   rating?: number;        // Star rating (1-5)
@@ -22,6 +22,7 @@ export interface Props {
     src: string;
     alt: string;
   };
+  contentSlotId?: string; // ID of the slot containing MDX content
 }
 
 const { 
@@ -30,22 +31,28 @@ const {
   role, 
   company, 
   rating, 
-  image 
+  image,
+  contentSlotId
 } = Astro.props;
 
 // Build role/company display
 const roleCompany = [role, company].filter(Boolean).join(' at ');
 ---
 
-<div class="bg-gray-700 px-10 py-12 shadow-md hover:shadow-lg transition-shadow h-full flex flex-col">
+<div class="bg-gray-700 p-8 shadow-md hover:shadow-lg transition-shadow h-full flex flex-col">
 
-  <!-- Testimonial Text -->
-   <!-- Testimonial Text from MDX Body -->
-  <!-- {Content && (
-    <div class="text-MainLight leading-relaxed mb-6 flex-1 prose prose-invert prose-sm max-w-none">
-      <Content />
+  <!-- Testimonial Text from MDX Body -->
+  {contentSlotId ? (
+    <div 
+      id={`${contentSlotId}-display`}
+      class="text-MainLight leading-relaxed text-xl mb-6 flex-1 prose prose-invert prose-sm max-w-none testimonial-content"
+    >
     </div>
-  )} -->
+  ) : description && (
+    <div class="text-MainLight leading-relaxed mb-6 flex-1">
+      <p>{description}</p>
+    </div>
+  )}
 
   <!-- Customer Info -->
   <div class="flex items-center gap-4 mt-auto">
@@ -54,7 +61,7 @@ const roleCompany = [role, company].filter(Boolean).join(' at ');
       <img 
         src={image.src} 
         alt={image.alt}
-        class="w-16 h-16 rounded-full object-cover"
+        class="w-12 h-12 rounded-full object-cover"
       />
     ) : (
       <div class="w-12 h-12 rounded-full bg-MainDark flex items-center justify-center text-MainLight font-bold">
@@ -71,3 +78,17 @@ const roleCompany = [role, company].filter(Boolean).join(' at ');
     </div>
   </div>
 </div>
+
+{contentSlotId && (
+  <script define:vars={{ contentSlotId }}>
+    // Move content from hidden slot to visible display area
+    document.addEventListener('DOMContentLoaded', () => {
+      const sourceSlot = document.getElementById(contentSlotId);
+      const targetDisplay = document.getElementById(`${contentSlotId}-display`);
+      
+      if (sourceSlot && targetDisplay && sourceSlot.innerHTML.trim()) {
+        targetDisplay.innerHTML = sourceSlot.innerHTML;
+      }
+    });
+  </script>
+)}

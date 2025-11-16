@@ -2,10 +2,11 @@
 // src/components/ContentRenderer/variants/TestimonialsVariant.astro
 /**
  * Testimonials Variant - Customer testimonials in grid layout
- * Features: SectionHeader integration, Button CTA, 1-4 column grid
+ * Features: SectionHeader integration, Button CTA, 1-4 column grid, MDX content support
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
+import ContentBridge from "../ContentBridge/ContentBridge.astro";
 import TestimonialCard from "@/components/LoopComponents/TestimonialCard.astro";
 import SectionHeader from "@/components/SectionHeader";
 import Button from "@/components/Button/Button";
@@ -27,6 +28,7 @@ const {
 } = Astro.props as Props;
 
 const viewAllText = `All ${collectionTitle || "Testimonials"}`;
+const bridgeId = id || "testimonials";
 
 const columnClasses = {
   1: "grid-cols-1",
@@ -65,13 +67,18 @@ const columnClasses = {
       )}
     </div>
 
-    <!-- Testimonials Grid -->
+    <!-- Testimonials Grid with ContentBridge -->
     {items.length > 0 && (
-      <div class={`grid ${columnClasses[columns]} gap-4`}>
-        {items.map((item) => (
-          <TestimonialCard {...item} />
-        ))}
-      </div>
+      <ContentBridge items={items} bridgeId={bridgeId}>
+        <div class={`grid ${columnClasses[columns]} gap-6`}>
+          {items.map((item, index) => (
+            <TestimonialCard 
+              {...item} 
+              contentSlotId={`${bridgeId}-slot-${index}`}
+            />
+          ))}
+        </div>
+      </ContentBridge>
     )}
   </div>
 </section>
