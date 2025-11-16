@@ -16,6 +16,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import SecondaryHero from "@/layouts/SecondaryHero.astro";
 import { query } from "@/utils/query";
+import CTASection from "../CTASection.astro";
 
 export interface Props {
   Content?: any;
@@ -62,5 +63,7 @@ const heroImage = collectionMeta.featuredImage;
         )
       }
     </div>
+
+    <CTASection />
   </main>
 </BaseLayout>

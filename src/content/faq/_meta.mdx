@@ -3,5 +3,17 @@ title: "Frequently Asked Questions"
 description: "Find answers to commonly asked questions"
 hasPage: true
 itemsHasPage: false
-order: 5
+addToMenu:
+  - menu: "main-menu"
+    title: "FAQ"
 ---
+
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import { query, sortByOrder } from '@/utils/query';
+
+  <ContentRenderer
+      query={query("faq").orderBy(sortByOrder())}
+      variant="AccordionVariant"
+      columns={1}
+      gap="lg"
+      />

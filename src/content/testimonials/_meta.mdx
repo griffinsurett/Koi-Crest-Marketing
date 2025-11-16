@@ -7,3 +7,12 @@ addToMenu:
   - menu: "main-menu"
   - menu: "links-menu"
 ---
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import { query, sortByOrder } from '@/utils/query';
+
+  <ContentRenderer
+      query={query("testimonials").orderBy(sortByOrder())}
+      variant="TestimonialsVariant"
+      columns={1}
+      gap="lg"
+      />
