@@ -2,6 +2,7 @@
 @import "tailwindcss";
 @import "@/styles/language-switcher.css";
 @import "@/styles/legal.css";
+@import "@/styles/menu.css";
 
 @theme {
     --color-MainDark: var(--color-black);

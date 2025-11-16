@@ -1,0 +1,46 @@
+---
+// src/layouts/collections/ServicesLayout.astro
+/**
+ * Services Layout - Default Item Page Layout
+ * 
+ * The standard layout for individual services collection items.
+ * Features:
+ * - Uses MainHero with bannerImage (or default)
+ * - Metadata display (date, author, reading time)
+ * - MDX content rendering
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SecondaryHero from '@/layouts/SecondaryHero.astro';
+import type { CollectionLayoutProps } from './types';
+import MainHero from '../MainHero.astro';
+
+const { 
+  entry,
+  collection,
+  collectionMeta,
+  Content,
+  isIndexPage,
+  seoProps = {},
+  ...extraProps
+} = Astro.props as CollectionLayoutProps;
+
+const data = entry?.data || {};
+---
+<BaseLayout {...seoProps}>
+  <main class="flex-1">
+    {/* Hero section - always displayed */}
+    <MainHero
+      title={data.title}
+      description={data.description}
+    />
+
+    {/* MDX content */}
+    {Content && (
+      <article class="container mx-auto px-4 py-8 md:py-12">
+        <div class="prose prose-lg max-w-4xl mx-auto">
+          <Content />
+        </div>
+      </article>
+    )}
+  </main>
+</BaseLayout>

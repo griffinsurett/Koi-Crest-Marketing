@@ -37,6 +37,8 @@ const isActive = isActivePath(url, currentPath);
 const hasChildren = children.length > 0;
 const childIsActive = hasChildren ? hasActiveDescendant({ children }, currentPath) : false;
 const isTopLevel = level === 0;
+// Ensure parent nodes stay clickable even if a URL wasn't provided explicitly.
+const href = url ?? (slug ? `/${slug.replace(/^\//, '')}` : '#');
 
 const linkClasses = isTopLevel
   ? `
@@ -59,7 +61,7 @@ const dropdownId = `dropdown-${slug}-${level}`;
 
 <li class={`relative ${hasChildren ? 'menu-item' : ''}`}>
   <a 
-    href={url || '#'}
+    href={href}
     target={openInNewTab ? '_blank' : undefined}
     rel={openInNewTab ? 'noopener noreferrer' : undefined}
     class={linkClasses.trim()}
