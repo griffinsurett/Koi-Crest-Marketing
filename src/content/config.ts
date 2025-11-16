@@ -106,13 +106,10 @@ export const collections = {
       }),
   }),
   "reasons": defineCollection({
-    loader: file("src/content/reasons/reasons.json"),
-    schema: ({ image }) =>
-      baseSchema({ image }).extend({
-        number: z.string(),
-        reason: z.string(),
-      }),
-  }),
+  loader: file("src/content/reasons/reasons.json"),
+  schema: ({ image }) =>
+    baseSchema({ image }),
+}),
   "benefits": defineCollection({
     loader: file("src/content/benefits/benefits.json"),
     schema: ({ image }) =>
