@@ -1,9 +1,9 @@
 // src/components/Button/variants/LinkButton.tsx
 /**
- * Link Button Variant
+ * Link Button Variant - Koi Crest Style
  * 
  * Styled as an underlined text link rather than a button.
- * Uses link-specific styling classes instead of button classes.
+ * Uses MainDark color for links with pink accent on hover (matching Privacy Policy links).
  * Can still render as either <a> or <button> based on href.
  */
 
@@ -19,9 +19,8 @@ export default function LinkButton({
   children,
   ...props
 }: ButtonProps) {
-  // Map size to link-specific classes (no padding like buttons)
-  const sizeClass = size === 'sm' ? 'link-sm' : size === 'lg' ? 'link-lg' : 'link-md';
-  const baseClasses = `link-base ${sizeClass} ${className}`.trim();
+  // Koi Crest link styling - dark text with pink hover and underline
+  const baseClasses = `inline-flex items-center gap-2 text-MainDark hover:text-pink-600 underline font-medium transition duration-200 ${className}`.trim();
 
   // Render as anchor if href provided
   if (href) {

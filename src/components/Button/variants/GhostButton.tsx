@@ -1,8 +1,9 @@
 // src/components/Button/variants/GhostButton.tsx
 /**
- * Ghost Button Variant
+ * Ghost Button Variant - Koi Crest Style
  * 
  * Transparent button that shows background on hover.
+ * Uses subtle gray colors that work with both light and dark sections.
  * Used for tertiary actions or when subtle interaction is needed.
  */
 
@@ -15,8 +16,8 @@ export default function GhostButton({
   className = '',
   ...props
 }: ButtonProps) {
-  // Transparent with hover effect
-  const variantClasses = 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500';
+  // Koi Crest ghost styling - transparent with subtle hover
+  const variantClasses = 'inline-flex items-center gap-2 bg-transparent text-gray-700 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition duration-200';
 
   return (
     <ButtonBase

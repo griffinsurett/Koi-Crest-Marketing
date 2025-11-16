@@ -1,8 +1,9 @@
 // src/components/Button/variants/PrimaryButton.tsx
 /**
- * Primary Button Variant
+ * Primary Button Variant - Koi Crest Style
  * 
- * Solid blue button - the default and most prominent button style.
+ * Solid dark button - the default and most prominent button style.
+ * Uses MainDark background with MainLight text.
  * Used for primary actions like form submissions, main CTAs.
  */
 
@@ -10,7 +11,7 @@ import { ButtonBase, type ButtonProps } from '../Button';
 import { renderButtonIcon } from '../utils';
 
 /**
- * Primary button with blue background and white text
+ * Primary button with MainDark background and MainLight text
  */
 export default function PrimaryButton({
   leftIcon,
@@ -18,8 +19,8 @@ export default function PrimaryButton({
   className = '',
   ...props
 }: ButtonProps) {
-  // Primary button styling
-  const variantClasses = 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500';
+  // Koi Crest primary styling - dark background
+  const variantClasses = 'bg-MainDark text-MainLight inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition duration-200';
 
   return (
     <ButtonBase

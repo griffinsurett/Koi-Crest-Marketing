@@ -1,10 +1,12 @@
 // src/components/Button/Button.tsx
 /**
- * Button Component System
+ * Button Component System - Koi Crest Marketing
  * 
  * Polymorphic button component that renders as either <button> or <a> based on props.
  * Supports multiple variants (primary, secondary, ghost, link) with consistent API.
  * Uses TypeScript discriminated unions for type safety between button and link modes.
+ * 
+ * Styled with Koi Crest colors (MainDark/MainLight).
  */
 
 import { forwardRef } from 'react';

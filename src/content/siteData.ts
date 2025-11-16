@@ -4,6 +4,7 @@ const siteDomain = import.meta.env.PUBLIC_SITE_DOMAIN;
 export const siteData = {
   title: "Koi Crest Marketing",
   legalName: "Koi Crest LLC",
+  tagline: "Veteran Owned and Operated Marketing Agency.",
   description: "At Koi Crest, we specialize in comprehensive digital marketing services including Lead Generation, Content Creation and Social Media Management, etc. We will propel your business past the competition. Kickstart your growth with a free consultation and unlock your business’s potential and help you digitally swim past your competition!",
   domain: siteDomain,
   url: `https://${siteDomain}`,

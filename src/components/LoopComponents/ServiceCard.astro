@@ -1,0 +1,48 @@
+---
+// src/components/ServiceCard.astro
+/**
+ * Service Card Component
+ * 
+ * Card for displaying service with:
+ * - Icon from Icon component (supports lu:, fa:, etc.)
+ * - Title and description
+ * - Clickable CTA button using Button component
+ */
+
+import Icon from '@/components/Icon';
+import Button from '@/components/Button/Button';
+
+interface Props {
+    icon?: string;       // Icon name for Icon component (e.g., "lu:code", "fa:bullhorn")
+    title: string;
+    description: string;
+    url?: string;
+}
+
+const { icon, title, description, url } = Astro.props;
+const cardLink = url || "#";
+const displayIcon = icon || "lu:shield"; // Default icon if none provided
+---
+
+<div class="bg-gray-100 p-8 space-y-6">
+    <!-- Icon -->
+    <div class="w-16 h-16 bg-black rounded-lg flex items-center justify-center">
+        <Icon icon={displayIcon} className="w-8 h-8 text-white" />
+    </div>
+
+    <!-- Title -->
+    <h3 class="text-2xl font-bold text-black">{title}</h3>
+
+    <!-- Description -->
+    <p class="text-gray-600 leading-relaxed">{description}</p>
+
+    <!-- Get Started Button -->
+    <Button 
+        href={cardLink}
+        variant="primary"
+        size="md"
+        client:visible
+    >
+        Get Started
+    </Button>
+</div>

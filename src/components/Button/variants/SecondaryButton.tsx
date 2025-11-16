@@ -1,8 +1,9 @@
 // src/components/Button/variants/SecondaryButton.tsx
 /**
- * Secondary Button Variant
+ * Secondary Button Variant - Koi Crest Style
  * 
- * Outlined button with transparent background.
+ * White button with dark border.
+ * Uses white background with MainDark text and border.
  * Used for secondary actions that need less emphasis than primary buttons.
  */
 
@@ -15,8 +16,8 @@ export default function SecondaryButton({
   className = '',
   ...props
 }: ButtonProps) {
-  // Outlined style with blue border
-  const variantClasses = 'bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-50 focus:ring-blue-500';
+  // Koi Crest secondary styling - white background with dark border
+  const variantClasses = 'inline-flex items-center gap-2 bg-white text-MainDark border-2 border-gray-300 px-6 py-3 rounded-md font-medium hover:bg-gray-50 transition duration-200';
 
   return (
     <ButtonBase

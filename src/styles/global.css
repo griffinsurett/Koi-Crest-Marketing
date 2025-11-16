@@ -3,97 +3,46 @@
 @import "@/styles/language-switcher.css";
 @import "@/styles/legal.css";
 
+@theme {
+    --color-MainDark: var(--color-black);
+    --color-MainLight: var(--color-white);
+}
+
 @layer components {
-    button, a {
-    @apply cursor-pointer;
+    .h1 {
+        @apply text-6xl lg:text-7xl font-bold;
     }
-
-  /* Base button styles */
-  .btn-base {
-    @apply inline-flex items-center justify-center gap-2;
-    @apply font-semibold rounded-lg transition-all duration-200;
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
-    @apply disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  /* Size variants */
-  .btn-sm {
-    @apply px-3 py-1.5 text-sm;
-  }
-  
-  .btn-md {
-    @apply px-4 py-2 text-base;
-  }
-  
-  .btn-lg {
-    @apply px-6 py-3 text-lg;
-  }
-
-  /* Link base styles */
-  .link-base {
-    @apply inline-flex items-center gap-1;
-    @apply text-blue-600 hover:text-blue-700 underline;
-    @apply bg-transparent font-normal;
-    @apply transition-colors duration-200;
-    @apply focus:outline-none focus:ring-0 focus:ring-offset-0;
-    @apply disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  /* Link sizes (no padding) */
-  .link-sm {
-    @apply text-sm;
-  }
-  
-  .link-md {
-    @apply text-base;
-  }
-  
-  .link-lg {
-    @apply text-lg;
-  }
+    .h2 {
+        @apply text-4xl lg:text-5xl font-semibold;
+    }
+    .h3 {
+        @apply text-2xl lg:text-3xl font-semibold;
+    }
+    .h4 {
+        @apply text-xl lg:text-2xl font-semibold;
+    }
+    .h5 {
+        @apply text-lg lg:text-xl font-semibold;
+    }
+    .h6 {
+        @apply text-base lg:text-lg font-semibold;
+    }
+    .main-text {
+        @apply text-lg;
+    }
+    .small-text {
+        @apply text-sm;
+    }
 }
 
-@layer utilities {
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(1rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@utility rating-star {
+    @apply w-5 h-5 lg:w-6 lg:h-6 p-0 text-yellow-400 fill-current;
 }
 
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
-}
-}
-
-/* src/styles/global.css */
-
-/* Menu hover behavior - works for infinite nesting */
-.menu-item:hover > .menu-dropdown {
-  display: block;
+@utility nav-link {
+    @apply text-lg text-gray-600 hover:text-black transition;
 }
 
-/* Arrow rotation on hover */
-.menu-item:hover > a .menu-arrow {
-  transform: rotate(180deg);
-}
-
-/* Dropdown animation */
-.menu-dropdown {
-  animation: menu-slide-down 0.2s ease-out;
-}
-
-@keyframes menu-slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@utility inner-container {
+    @apply container mx-auto px-4 max-w-7xl;
 }

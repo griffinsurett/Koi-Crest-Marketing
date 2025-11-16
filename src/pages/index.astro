@@ -20,6 +20,7 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
     <FrontPageHero
       title={siteData.title}
       description={siteData.description}
+      subtitle={siteData.tagline}
       primaryCTA={{
         text: "Get Started",
         link: "/contact-us",
@@ -31,7 +32,7 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
     />
 
     <!-- Blog with limit - auto-populates from blog meta -->
-    <ContentRenderer
+    <!-- <ContentRenderer
       query={query("blog").limit(2)}
       variant="BlogVariant"
       columns={2}
@@ -40,12 +41,12 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
       query={query("blog").limit(2)}
       variant="BlogVariant"
       columns={2}
-    />
+    /> -->
 
     <!-- Services - auto-populates from services meta -->
     <ContentRenderer
       query={query("services").orderBy(sortByOrder())}
-      variant="GridVariant"
+      variant="ServicesVariant"
       columns={3}
       gap="lg"
     />
