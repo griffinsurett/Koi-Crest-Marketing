@@ -6,17 +6,34 @@
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortBy } from "@/utils/query";
 import { siteData } from "@/content/siteData";
+import { Image } from "astro:assets";
 ---
 
 <header class="z-[40] bg-white border-b border-gray-200 shadow-sm">
-  <div class="">
-    <div class="flex items-center justify-between h-16 w-full">
+  <div
+    class="container mx-auto px-4 max-w-7xl py-2 flex items-center justify-between"
+  >
+    <div class="flex items-center justify-between w-full">
       <!-- Logo -->
       <a
         href="/"
-        class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
+        class="text-2xl font-bold text-gray-900 transition-colors flex flex-col items-center justify-center gap-0"
       >
-        {siteData.title}
+        <Image
+          src={siteData.Logo}
+          alt={`${siteData.title} Logo`}
+          width={72}
+          height={72}
+          quality={90}
+          format="webp"
+          loading="eager"
+          decoding="async"
+          class="h-auto w-18"
+        />
+        <span class="text-lg leading-none uppercase m-0 p-0"
+          >{siteData.title}</span
+        >
+        <span class="text-sm leading-3 text-gray-400">Marketing</span>
       </a>
 
       <!-- Navigation Menu using query -->
