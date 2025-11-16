@@ -21,13 +21,13 @@ import { Image } from "astro:assets";
         <Image
           src={siteData.Logo}
           alt={`${siteData.title} Logo`}
-          width={72}
-          height={72}
+          width={100}
+          height={100}
           quality={90}
           format="webp"
           loading="eager"
           decoding="async"
-          class="h-auto w-18"
+          class="h-auto w-18 rotate-center"
         />
         <span class="text-lg leading-none uppercase m-0 p-0"
           >{siteData.title}</span
