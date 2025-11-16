@@ -44,15 +44,15 @@ const linkClasses = isTopLevel
   ? `
     flex items-center gap-1 px-4 py-2 text-lg rounded-md transition-colors font-medium
     ${isActive || childIsActive
-      ? 'text-blue-600 bg-blue-50'
-      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+      ? 'text-MainText'
+      : 'text-gray-500 hover:text-MainDark'
     }
   `
   : `
     flex items-center gap-1 px-4 py-2 text-lg transition-colors whitespace-nowrap
     ${isActive
-      ? 'text-blue-600 bg-blue-50 font-medium'
-      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+      ? 'text-MainLight bg-MainDark hover:bg-MainDark hover:text-MainLight'
+      : 'text-gray-500 hover:bg-MainDark hover:text-MainLight'
     }
   `;
 
