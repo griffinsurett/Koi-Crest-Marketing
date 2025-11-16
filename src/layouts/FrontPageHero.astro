@@ -46,7 +46,6 @@ const displayDescription = description || heroContent.description || "";
         titleTag="h1"
         subtitleClass="text-gray-400 font-semibold h6 m-0 p-0"
         titleClass="h1 text-black m-0"
-        client:load
       />
 
       <!-- Description -->
@@ -80,7 +79,7 @@ const displayDescription = description || heroContent.description || "";
 
     <!-- Right Column - Form -->
     <div class="lg:w-2/5 w-full">
-      <ContactForm client:visible />
+      <ContactForm client:load />
     </div>
   </div>
 </section>
