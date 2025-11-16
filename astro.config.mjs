@@ -8,6 +8,18 @@ import partytown from '@astrojs/partytown';
 import { buildRedirectConfig } from './src/utils/redirects';
 import { manualChunks, assetFileNames } from './vite.chunks.js';
 
+const clientChunkingPlugin = {
+  name: 'disable-ssr-manual-chunks',
+  config: (_, { ssrBuild }) => ({
+    build: {
+      rollupOptions: {
+        // Only customize client chunking; Astro's SSR build can break when manualChunks runs there.
+        output: ssrBuild ? {} : { assetFileNames, manualChunks },
+      },
+    },
+  }),
+};
+
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 const redirects = await buildRedirectConfig();
 const siteUrl = `https://${env.PUBLIC_SITE_DOMAIN}`;
@@ -17,16 +29,14 @@ console.log(`Site URL: ${siteUrl}`);
 export default defineConfig({
   site: siteUrl,
   server: { port: 4535 },
-  
+
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), clientChunkingPlugin],
     build: {
       assetsInlineLimit: 10240, // 10KB - will inline your 7.3KB CSS automatically
       cssCodeSplit: true,
       cssMinify: 'esbuild',
-      rollupOptions: {
-        output: { assetFileNames, manualChunks },
-      },
+      rollupOptions: {},
     },
     css: {
       devSourcemap: false,
@@ -36,7 +46,7 @@ export default defineConfig({
       exclude: ['@astrojs/react'],
     },
   },
-  
+
   integrations: [
     mdx(),
     react({
@@ -49,12 +59,12 @@ export default defineConfig({
       },
     }),
   ],
-  
+
   build: {
     inlineStylesheets: 'always',
     split: true,
   },
-  
+
   compressHTML: true,
   redirects,
 });
