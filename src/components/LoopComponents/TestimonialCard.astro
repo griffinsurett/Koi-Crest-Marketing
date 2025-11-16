@@ -1,0 +1,73 @@
+---
+// src/components/LoopComponents/TestimonialCard.astro
+/**
+ * Testimonial Card Component
+ * 
+ * Displays customer testimonials with:
+ * - Quote text
+ * - Customer name and role
+ * - Star rating (if provided)
+ * - Optional avatar/image
+ * 
+ * Used in TestimonialsVariant for customer reviews.
+ */
+
+export interface Props {
+  title: string;           // Customer name or testimonial title
+  description?: string;    // The testimonial quote/text
+  role?: string;          // Customer's role/position
+  company?: string;       // Customer's company
+  rating?: number;        // Star rating (1-5)
+  image?: {               // Customer photo
+    src: string;
+    alt: string;
+  };
+}
+
+const { 
+  title, 
+  description, 
+  role, 
+  company, 
+  rating, 
+  image 
+} = Astro.props;
+
+// Build role/company display
+const roleCompany = [role, company].filter(Boolean).join(' at ');
+---
+
+<div class="bg-gray-700 p-8 shadow-md hover:shadow-lg transition-shadow h-full flex flex-col">
+
+  <!-- Testimonial Text -->
+   <!-- Testimonial Text from MDX Body -->
+  {Content && (
+    <div class="text-MainLight leading-relaxed mb-6 flex-1 prose prose-invert prose-sm max-w-none">
+      <Content />
+    </div>
+  )}
+
+  <!-- Customer Info -->
+  <div class="flex items-center gap-4 mt-auto">
+    {/* Avatar */}
+    {image ? (
+      <img 
+        src={image.src} 
+        alt={image.alt}
+        class="w-12 h-12 rounded-full object-cover"
+      />
+    ) : (
+      <div class="w-12 h-12 rounded-full bg-MainDark flex items-center justify-center text-MainLight font-bold">
+        {title.charAt(0).toUpperCase()}
+      </div>
+    )}
+
+    {/* Name and Role */}
+    <div class="flex-1">
+      <p class="font-semibold text-MainLight">{title}</p>
+      {roleCompany && (
+        <p class="text-sm text-MainLight">{roleCompany}</p>
+      )}
+    </div>
+  </div>
+</div>

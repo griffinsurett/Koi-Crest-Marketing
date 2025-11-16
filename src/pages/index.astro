@@ -12,6 +12,7 @@ import {
   sortBy,
 } from "@/utils/query";
 import FrontPageHero from "@/layouts/FrontPageHero.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
 ---
 
 <BaseLayout title={`${siteData.title} - home`} description={siteData.description}>
@@ -30,6 +31,8 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
         link: "/services",
       }}
     />
+
+    <AboutSection />
 
     <!-- Blog with limit - auto-populates from blog meta -->
     <!-- <ContentRenderer
@@ -52,12 +55,12 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
     />
 
     <!-- Filtered query - still gets meta from authors -->
-    <ContentRenderer
+    <!-- <ContentRenderer
       query={query("authors").where(whereArrayContains("tags", "featured"))}
       variant="GridVariant"
       columns={3}
       gap="lg"
-    />
+    /> -->
 
     <!-- Portfolio with sorting -->
     <ContentRenderer
@@ -69,8 +72,8 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
 
     <!-- Testimonials with rating filter -->
     <ContentRenderer
-      query={query("testimonials").where((entry) => entry.data.rating >= 4)}
-      variant="MasonryVariant"
+      query={query("testimonials")}
+      variant="TestimonialsVariant"
     />
 
     <!-- FAQ ContentRenderer -->

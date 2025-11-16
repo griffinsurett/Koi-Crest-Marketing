@@ -36,7 +36,7 @@ const displayDescription = description || heroContent.description || "";
 ---
 
 <section id={id} class={`min-h-9/10 flex justify-center items-center w-full bg-gray-50 ${className}`}>
-  <div class="flex flex-col lg:flex-row inner-container py-5 gap-16 lg:gap-12 items-start">
+  <div class="flex flex-col lg:flex-row inner-container py-15 gap-16 lg:gap-25 items-start">
     <!-- Left Column -->
     <div class="space-y-6 py-8 lg:py-0 flex flex-col justify-center items-start gap-6 lg:sticky lg:top-0 lg:w-3/5">
       <!-- Main Heading -->
@@ -44,13 +44,13 @@ const displayDescription = description || heroContent.description || "";
         subtitle={displaySubtitle}
         title={displayTitle}
         titleTag="h1"
-        subtitleClass="text-gray-400 font-semibold h6 m-0"
+        subtitleClass="text-gray-400 font-semibold h6 m-0 p-0"
         titleClass="h1 text-black m-0"
         client:load
       />
 
       <!-- Description -->
-      <p class="text-gray-700 main-text leading-relaxed m-0">
+      <p class="text-gray-700 text-xl main-text leading-relaxed p-0 m-0">
         {displayDescription}
       </p>
 

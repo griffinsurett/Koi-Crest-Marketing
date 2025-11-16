@@ -40,7 +40,7 @@ export default function KoiCrestContactForm() {
       validationSchema={koiCrestContactSchema}
       successMessage="Thank you for contacting us! We'll get back to you soon."
       resetOnSuccess={true}
-      className="w-full"
+      className="w-full gap-0"
     >
       <FormMessages />
 

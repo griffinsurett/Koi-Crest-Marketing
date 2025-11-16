@@ -8,6 +8,7 @@
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import ServiceCard from "@/components/LoopComponents/ServiceCard.astro";
 import Button from "@/components/Button/Button";
+import SectionHeader from "@/components/SectionHeader";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 
 interface Props extends BaseVariantProps {
@@ -38,15 +39,20 @@ const columnClasses = {
   <div class="max-w-7xl">
     <!-- Section Header -->
     {(title || description) && (
-      <div class="text-center mb-16">
-        {title && <h2 class="text-5xl lg:text-6xl font-bold text-black max-w-5xl mx-auto">{title}</h2>}
-        {description && <p class="text-lg text-gray-600 max-w-2xl mx-auto mt-4">{description}</p>}
+      <div class="mb-16">
+        <SectionHeader
+          subtitle={`Our ${title}`}
+          title={description || ""}
+          align="center"
+          containerClass="space-y-4 mx-auto max-w-5xl"
+          client:load
+        />
       </div>
     )}
 
     <!-- Service Cards -->
     {items.length > 0 && (
-      <ul class={`grid ${columnClasses[columns]} gap-8 list-none`}>
+      <ul class={`grid ${columnClasses[columns]} gap-4 list-none`}>
         {items.map((item) => (
           <li>
             <ServiceCard {...item} />
@@ -60,7 +66,7 @@ const columnClasses = {
         <Button
           href={collectionUrl}
           rightIcon="lu:arrow-right"
-          variant="primary"
+          variant="tertiary"
           size="lg"
         >
           {viewAllText}

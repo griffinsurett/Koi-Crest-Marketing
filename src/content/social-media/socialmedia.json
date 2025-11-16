@@ -3,19 +3,19 @@
     "id": "1",
     "title": "Twitter",
     "link": "https://twitter.com/griffin",
-    "icon": "lucide:twitter"
+    "icon": "lu:twitter"
   },
   {
     "id": "2",
     "title": "LinkedIn",
     "link": "https://linkedin.com/griffin",
-    "icon": "lucide:linkedin"
+    "icon": "lu:linkedin"
   },
   {
     "id": "3",
     "title": "GitHub",
     "link": "https://github.com/griffin",
-    "icon": "lucide:github"
+    "icon": "lu:github"
   },
   {
     "id": "4",

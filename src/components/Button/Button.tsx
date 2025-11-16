@@ -13,6 +13,7 @@ import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from 'react';
 import PrimaryButton from './variants/PrimaryButton';
 import SecondaryButton from './variants/SecondaryButton';
+import TertiaryButton from './variants/TertiaryButton';
 import GhostButton from './variants/GhostButton';
 import LinkButton from './variants/LinkButton';
 
@@ -97,6 +98,7 @@ ButtonBase.displayName = 'ButtonBase';
 const VARIANT_MAP = {
   primary: PrimaryButton,
   secondary: SecondaryButton,
+  tertiary: TertiaryButton,
   ghost: GhostButton,
   link: LinkButton,
 };

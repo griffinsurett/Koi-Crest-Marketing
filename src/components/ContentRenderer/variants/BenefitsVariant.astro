@@ -1,0 +1,36 @@
+---
+// src/components/ContentRenderer/variants/BenefitsVariant.astro
+/**
+ * Benefits Variant - Display benefits list with consistent styling
+ * Features: Simple text list, customizable styling
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import Benefits from "@/components/LoopComponents/Benefits.astro";
+
+interface Props extends BaseVariantProps {
+  layout?: 'list' | 'grid';
+}
+
+const {
+  items = [],
+  title,
+  description,
+  className = "",
+  layout = 'list',
+  id,
+} = Astro.props as Props;
+
+// Extract benefit text from items
+const benefits = items.map((item) => item.title || item.benefit || item.description || '');
+---
+
+<div id={id} class={`space-y-8 ${className}`}>
+  {title && (
+    <h3 class="h3 font-bold text-MainLight">{title}</h3>
+  )}
+  
+  {benefits.length > 0 && (
+    <Benefits benefits={benefits} />
+  )}
+</div>

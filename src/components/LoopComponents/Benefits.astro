@@ -1,0 +1,15 @@
+---
+// Benefits Component
+interface Props {
+    benefits: string[];
+}
+
+const { benefits } = Astro.props;
+---
+<div class="flex gap-5 lg:gap-10">
+    {benefits.map((benefit) => (
+        <div class="text-base lg:text-xl">
+            {benefit}
+        </div>
+    ))}
+</div>
