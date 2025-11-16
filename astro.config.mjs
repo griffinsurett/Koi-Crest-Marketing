@@ -6,19 +6,6 @@ import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import partytown from '@astrojs/partytown';
 import { buildRedirectConfig } from './src/utils/redirects';
-import { manualChunks, assetFileNames } from './vite.chunks.js';
-
-const clientChunkingPlugin = {
-  name: 'disable-ssr-manual-chunks',
-  config: (_, { ssrBuild }) => ({
-    build: {
-      rollupOptions: {
-        // Only customize client chunking; Astro's SSR build can break when manualChunks runs there.
-        output: ssrBuild ? {} : { assetFileNames, manualChunks },
-      },
-    },
-  }),
-};
 
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 const redirects = await buildRedirectConfig();
@@ -31,7 +18,7 @@ export default defineConfig({
   server: { port: 4535 },
 
   vite: {
-    plugins: [tailwindcss(), clientChunkingPlugin],
+    plugins: [tailwindcss()],
     build: {
       assetsInlineLimit: 10240, // 10KB - will inline your 7.3KB CSS automatically
       cssCodeSplit: true,
