@@ -13,6 +13,7 @@ import {
 } from "@/utils/query";
 import FrontPageHero from "@/layouts/FrontPageHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
+import CTASection from "@/layouts/CTASection.astro";
 ---
 
 <BaseLayout title={`${siteData.title} - home`} description={siteData.description}>
@@ -33,18 +34,6 @@ import AboutSection from "@/layouts/AboutSection.astro";
     />
 
     <AboutSection />
-
-    <!-- Blog with limit - auto-populates from blog meta -->
-    <!-- <ContentRenderer
-      query={query("blog").limit(2)}
-      variant="BlogVariant"
-      columns={2}
-    />
-    <ContentRenderer
-      query={query("blog").limit(2)}
-      variant="BlogVariant"
-      columns={2}
-    /> -->
 
     <!-- Services - auto-populates from services meta -->
     <ContentRenderer
@@ -84,11 +73,7 @@ import AboutSection from "@/layouts/AboutSection.astro";
     />
 
     <!-- Contact ContentRenderer -->
-    <ContentRenderer
-      query={query("contact-us")}
-      variant="ContactVariant"
-      columns={2}
-    />
+    <CTASection>
 
     <!-- Multi-collection query - requires manual title/description -->
     <ContentRenderer

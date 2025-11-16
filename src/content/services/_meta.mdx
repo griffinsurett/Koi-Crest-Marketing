@@ -14,7 +14,14 @@ import { query, sortByOrder } from '@/utils/query';
 
     <ContentRenderer
       query={query("services").orderBy(sortByOrder())}
-      variant="GridVariant"
+      variant="ServicesVariant"
       columns={3}
       gap="lg"
     />
+
+    <ContentRenderer
+      query={query("testimonials").orderBy(sortByOrder())}
+      variant="TestimonialsVariant"
+      columns={3}
+      gap="lg"
+      />

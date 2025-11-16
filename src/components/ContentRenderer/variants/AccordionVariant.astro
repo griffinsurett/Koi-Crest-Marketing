@@ -1,15 +1,14 @@
 ---
 // src/components/ContentRenderer/variants/AccordionVariant.astro
 /**
- * AccordionVariant - Refactored to use ContentBridge
- * 
- * The ONLY change: Wrap Accordion in ContentBridge instead of manually
- * rendering hidden slots. Your existing Accordion.tsx works unchanged!
+ * AccordionVariant - FAQ accordion with ContentBridge
+ * Features: SectionHeader integration, Button CTA, proper FAQ styling
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import ContentBridge from "../ContentBridge/ContentBridge.astro";
 import Accordion from "@/components/LoopTemplates/Accordion";
+import SectionHeader from "@/components/SectionHeader";
 import Button from "@/components/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 
@@ -28,53 +27,57 @@ const {
   id,
 } = Astro.props as Props;
 
-const viewAllText = `View All ${collectionTitle || ""}`.trim();
+const viewAllText = `All ${collectionTitle || "Questions"}`;
 const bridgeId = id || "accordion";
 ---
 
-<section id={id} class={`py-16 ${className}`}>
-  {/* Header Section */}
-  {(title || description) && (
-    <div class="mb-12">
-      {title && <h2 class="text-4xl font-bold mb-4">{title}</h2>}
-      {description && (
-        <p class="text-lg text-gray-600 max-w-3xl">{description}</p>
+<section id={id} class={`bg-MainLight py-20 ${className}`}>
+  <div class="container mx-auto px-4 max-w-7xl">
+    <!-- Header with CTA Button -->
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-16">
+      {(title || description) && (
+        <SectionHeader
+          subtitle={title}
+          title={description || ""}
+          titleTag="h2"
+          subtitleClass="text-gray-400 h6 tracking-wider uppercase"
+          titleClass="text-4xl lg:text-5xl font-bold leading-tight max-w-4xl text-MainDark"
+          client:load
+        />
+      )}
+
+      {shouldShowCollectionCTA(collectionUrl, items.length) && (
+        <div class="flex-shrink-0">
+          <Button
+            href={collectionUrl}
+            variant="tertiary"
+            size="lg"
+            client:load
+          >
+            {viewAllText}
+          </Button>
+        </div>
       )}
     </div>
-  )}
 
-  {/* Accordion with ContentBridge */}
-  {items.length > 0 && (
-    <ContentBridge items={items} bridgeId={bridgeId}>
-      {/* 
-        Your existing Accordion component!
-        ContentBridge generates slot IDs as: `${bridgeId}-slot-${index}`
-        Just pass that pattern to your Accordion as contentSlotId
-      */}
-      <Accordion
-        items={items.map((item, index) => ({
-          slug: item.slug,
-          title: item.title || "Untitled",
-          description: item.description,
-          contentSlotId: `${bridgeId}-slot-${index}`,  // ← ContentBridge created this ID
-        }))}
-        allowMultiple={allowMultiple}
-        client:visible
-      />
-    </ContentBridge>
-  )}
-
-  {/* Collection CTA */}
-  {shouldShowCollectionCTA(collectionUrl, items.length) && (
-    <div class="mt-12 text-center">
-      <Button
-        href={collectionUrl}
-        rightIcon="lu:arrow-right"
-        variant="primary"
-        size="lg"
-      >
-        {viewAllText}
-      </Button>
-    </div>
-  )}
+    <!-- Accordion with ContentBridge - 2 Column Grid -->
+    {items.length > 0 && (
+      <ContentBridge items={items} bridgeId={bridgeId}>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {items.map((item, index) => (
+            <Accordion
+              items={[{
+                slug: item.slug,
+                title: item.data?.title || item.title || "Untitled",
+                description: item.data?.description || item.description,
+                contentSlotId: `${bridgeId}-slot-${index}`,
+              }]}
+              allowMultiple={allowMultiple}
+              client:visible
+            />
+          ))}
+        </div>
+      </ContentBridge>
+    )}
+  </div>
 </section>
