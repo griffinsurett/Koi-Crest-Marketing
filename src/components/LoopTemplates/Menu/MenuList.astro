@@ -15,12 +15,17 @@ export interface Props {
 
 const { items = [], level = 0 } = Astro.props;
 const isTopLevel = level === 0;
+
+const nestedClasses = `
+  relative flex flex-col min-w-[220px] bg-gray-100 shadow-lg py-0 z-50
+  border border-gray-100
+`;
 ---
 
 <ul 
   class={isTopLevel 
     ? 'flex items-center gap-2' 
-    : 'absolute left-0 top-full min-w-[200px] bg-gray-100 shadow-lg py-0 z-50 border border-gray-100'
+    : nestedClasses
   }
 >
   {items.map(item => (

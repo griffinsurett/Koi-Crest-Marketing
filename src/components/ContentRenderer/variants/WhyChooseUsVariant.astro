@@ -28,14 +28,6 @@ const {
   featuredImage,
   id,
 } = Astro.props as Props;
-
-// Debug log
-console.log('WhyChooseUsVariant:', {
-  itemsCount: items.length,
-  title,
-  description,
-  firstItem: items[0]
-});
 ---
 
 <section id={id} class={`bg-gray-50 py-20 ${className}`}>

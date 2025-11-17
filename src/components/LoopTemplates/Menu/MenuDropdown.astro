@@ -16,11 +16,15 @@ export interface Props {
 
 const { items = [], level = 1, parentSlug = 'menu' } = Astro.props;
 const dropdownId = `dropdown-${parentSlug}-${level}`;
+const isFirstLevel = level === 1;
+const positionClasses = isFirstLevel
+  ? 'top-full left-0 mt-0'
+  : 'top-0 left-full';
 ---
 
 <div 
   id={dropdownId}
-  class="menu-dropdown hidden absolute top-full left-0 mt-0"
+  class={`menu-dropdown hidden absolute ${positionClasses}`}
 >
   <MenuList items={items} level={level} />
 </div>

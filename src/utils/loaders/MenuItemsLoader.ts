@@ -15,19 +15,61 @@ const idRegistry = new SimpleIdRegistry();
 
 function resolveParentReference(parent: any, store: any): string | null {
   if (!parent) return null;
-  if (typeof parent === 'object' && parent.id) return parent.id;
-  
-  if (typeof parent === 'string') {
-    if (store.has(parent)) return parent;
-    
-    for (const [id] of store.entries()) {
-      if (id.toLowerCase() === parent.toLowerCase()) return id;
+
+  const candidates = Array.isArray(parent) ? parent : [parent];
+  let fallback: string | null = null;
+
+  const matchString = (value: string): string | null => {
+    if (!value) return null;
+
+    if (store.has(value)) return value;
+
+    const normalized = value.toLowerCase();
+    const normalizedPath = normalized.startsWith('/') ? normalized.slice(1) : normalized;
+
+    for (const [id, entry] of store.entries()) {
+      const idMatch = id.toLowerCase() === normalized;
+      const url = entry.data?.url;
+      const normalizedUrl = typeof url === 'string' ? url.toLowerCase() : null;
+      const normalizedUrlPath = normalizedUrl?.startsWith('/') ? normalizedUrl.slice(1) : normalizedUrl;
+
+      if (idMatch) return id;
+
+      if (normalizedUrl && (normalizedUrl === normalized || normalizedUrlPath === normalizedPath)) {
+        return id;
+      }
     }
-    
-    return parent;
+
+    return null;
+  };
+
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+
+    if (typeof candidate === 'object' && !Array.isArray(candidate)) {
+      if (candidate.id) return String(candidate.id);
+
+      if (candidate.slug) {
+        const resolvedBySlug = matchString(String(candidate.slug));
+        if (resolvedBySlug) return resolvedBySlug;
+        if (!fallback) fallback = String(candidate.slug);
+      }
+
+      if (candidate.url) {
+        const resolvedByUrl = matchString(String(candidate.url));
+        if (resolvedByUrl) return resolvedByUrl;
+        if (!fallback) fallback = String(candidate.url);
+      }
+    }
+
+    if (typeof candidate === 'string') {
+      const resolved = matchString(candidate);
+      if (resolved) return resolved;
+      if (!fallback) fallback = candidate;
+    }
   }
-  
-  return null;
+
+  return fallback;
 }
 
 function getAncestorChain(parentRef: any, store: any): string[] {
@@ -36,7 +78,12 @@ function getAncestorChain(parentRef: any, store: any): string[] {
   const visited = new Set<string>();
   
   while (current) {
-    const parentId = typeof current === 'string' ? current : current.id || String(current);
+    const resolvedId = resolveParentReference(current, store);
+    const parentId = resolvedId ?? (
+      typeof current === 'string'
+        ? current
+        : (current?.id || String(current))
+    );
     
     if (visited.has(parentId)) {
       console.warn(`Circular parent reference detected: ${parentId}`);
