@@ -13,6 +13,7 @@ import { useCookieStorage } from '@/hooks/useCookieStorage';
 import { enableConsentedScripts } from '@/utils/scriptManager';
 import Modal from '@/components/Modal';
 import type { CookieConsent } from './types';
+import Button from '@/components/Button/Button';
 
 const CookiePreferencesModal = lazy(() => import('./CookiePreferencesModal'));
 
@@ -109,7 +110,7 @@ export default function CookieConsentBanner() {
               marketing purposes.{' '}
               <button
                 onClick={handleOpenSettings}
-                className="text-blue-600 underline hover:text-blue-700 font-medium"
+                className="text-gray-700 underline hover:text-MainDark font-medium"
                 type="button"
               >
                 Manage preferences
@@ -119,22 +120,24 @@ export default function CookieConsentBanner() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <button
+          <Button
+            variant='tertiary'
             onClick={handleRejectAll}
-            className="flex-1 rounded-lg border-2 border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
+            className="text-justify w-full justify-center transition-colors"
             type="button"
             disabled={isPending}
           >
             Reject All
-          </button>
-          <button
+          </Button>
+          <Button
+            variant='primary'
             onClick={handleAcceptAll}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+            className="text-justify w-full justify-center transition-colors"
             type="button"
             disabled={isPending}
           >
             Accept All
-          </button>
+          </Button>
         </div>
       </Modal>
 

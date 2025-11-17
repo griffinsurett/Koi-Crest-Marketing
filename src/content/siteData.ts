@@ -1,6 +1,6 @@
 // src/siteData.ts - Compatible with both Astro and React
 const siteDomain = import.meta.env.PUBLIC_SITE_DOMAIN;
-import LogoImage from '../assets/cropped-koi-crest-JPEG-scaled-1.jpg';
+import LogoImage from '../assets/koi-crest-logo.png';
 
 export const siteData = {
   title: "Koi Crest",
