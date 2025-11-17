@@ -53,12 +53,14 @@ export function sortByDate<T extends CollectionKey>(
     const bData = b.data as any;
     const aDate = aData[field] ? new Date(aData[field]) : null;
     const bDate = bData[field] ? new Date(bData[field]) : null;
+    const aValid = aDate instanceof Date && isFinite(aDate.getTime());
+    const bValid = bDate instanceof Date && isFinite(bDate.getTime());
     
-    if (!aDate && !bDate) return 0;
-    if (!aDate) return direction === 'desc' ? 1 : -1;
-    if (!bDate) return direction === 'desc' ? -1 : 1;
+    if (!aValid && !bValid) return 0;
+    if (!aValid) return direction === 'desc' ? 1 : -1;
+    if (!bValid) return direction === 'desc' ? -1 : 1;
     
-    const diff = aDate.getTime() - bDate.getTime();
+    const diff = aDate!.getTime() - bDate!.getTime();
     return direction === 'asc' ? diff : -diff;
   };
 }

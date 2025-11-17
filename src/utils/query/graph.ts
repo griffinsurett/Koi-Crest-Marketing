@@ -79,11 +79,12 @@ export async function buildRelationshipGraph(
   };
 
   // Phase 1: Load all entries and create base nodes
-  console.log("📊 Building relationship graph...");
+  const verbose = options.verbose ?? false;
+  if (verbose) console.log("📊 Building relationship graph...");
   await loadAllEntries(graph, requestedCollections, getCollection);
 
   // Phase 2: Build direct references
-  console.log("🔗 Mapping direct references...");
+  if (verbose) console.log("🔗 Mapping direct references...");
   await buildDirectReferences(
     graph,
     extractRelationConfig,
@@ -92,18 +93,20 @@ export async function buildRelationshipGraph(
   );
 
   // Phase 3: Build hierarchical relationships
-  console.log("🌲 Building hierarchy...");
+  if (verbose) console.log("🌲 Building hierarchy...");
   await buildHierarchy(graph, normalizeReference);
 
   // Phase 4: Build indirect relationships
   if (includeIndirect) {
-    console.log("🔄 Finding indirect relations...");
+    if (verbose) console.log("🔄 Finding indirect relations...");
     await buildIndirectRelations(graph, maxIndirectDepth);
   }
 
-  console.log(
-    `✅ Graph built: ${graph.totalEntries} entries, ${graph.collections.length} collections`
-  );
+  if (verbose) {
+    console.log(
+      `✅ Graph built: ${graph.totalEntries} entries, ${graph.collections.length} collections`
+    );
+  }
 
   return graph;
 }
@@ -223,38 +226,42 @@ async function buildHierarchy(
   for (const [collection, collectionMap] of graph.nodes) {
     for (const [id, relationMap] of collectionMap) {
       const data = relationMap.entry.data as any;
-      const parentRef = normalizeReference(data.parent)[0];
+      const parentRefs = normalizeReference(data.parent);
 
-      if (parentRef && parentRef.collection === collection) {
+      // Support multiple parents; guard against duplicate/invalid references
+      for (const parentRef of parentRefs) {
+        if (parentRef.collection !== collection) continue;
         const parentId = normalizeId(parentRef.id);
         const parentMap = collectionMap.get(parentId);
 
-        if (parentMap) {
-          // Set parent
+        if (!parentMap) continue;
+
+        // Set primary parent (first valid one) for depth calculations if not already set
+        if (!relationMap.parent) {
           relationMap.parent = {
             type: "parent",
             collection: collection as CollectionKey,
             id: parentId,
           };
-
-          // Add child to parent
-          parentMap.children.push({
-            type: "child",
-            collection: collection as CollectionKey,
-            id,
-          });
-
           relationMap.isRoot = false;
-          parentMap.hasChildren = true;
-          parentMap.isLeaf = false;
-
-          // Index parent relationship
-          const parentKey = getEntryKey(collection as CollectionKey, parentId);
-          if (!graph.indexes.byParent.has(parentKey)) {
-            graph.indexes.byParent.set(parentKey, new Set());
-          }
-          graph.indexes.byParent.get(parentKey)!.add(id);
         }
+
+        // Add child to each valid parent
+        parentMap.children.push({
+          type: "child",
+          collection: collection as CollectionKey,
+          id,
+        });
+
+        parentMap.hasChildren = true;
+        parentMap.isLeaf = false;
+
+        // Index parent relationship
+        const parentKey = getEntryKey(collection as CollectionKey, parentId);
+        if (!graph.indexes.byParent.has(parentKey)) {
+          graph.indexes.byParent.set(parentKey, new Set());
+        }
+        graph.indexes.byParent.get(parentKey)!.add(id);
       }
     }
   }

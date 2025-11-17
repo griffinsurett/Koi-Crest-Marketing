@@ -31,7 +31,22 @@ export async function getRelations(
   const relationMap = getRelationMap(graph, collection, cleanId);
   
   if (!relationMap) {
-    throw new Error(`Entry not found: ${collection}/${cleanId}`);
+    // Return an empty relation map instead of throwing to avoid cascading failures
+    return {
+      entry: undefined as any,
+      references: [],
+      referencedBy: [],
+      parent: undefined,
+      children: [],
+      siblings: [],
+      ancestors: [],
+      descendants: [],
+      indirect: [],
+      depth: 0,
+      hasChildren: false,
+      isRoot: true,
+      isLeaf: true,
+    };
   }
   
   // Filter by types if specified

@@ -174,7 +174,8 @@ export class Query<T extends CollectionKey> {
    * Get first result
    */
   async first(): Promise<CollectionEntry<T> | undefined> {
-    const result = await this.limit(1).get();
+    const working = this.clone();
+    const result = await working.limit(1).get();
     return result.entries[0];
   }
   
@@ -182,9 +183,10 @@ export class Query<T extends CollectionKey> {
    * Get all results (no pagination)
    */
   async all(): Promise<CollectionEntry<T>[]> {
-    this._limit = undefined;
-    this._offset = 0;
-    const result = await this.get();
+    const working = this.clone();
+    working._limit = undefined;
+    working._offset = 0;
+    const result = await working.get();
     return result.entries;
   }
   
@@ -192,7 +194,8 @@ export class Query<T extends CollectionKey> {
    * Count results (without fetching)
    */
   async count(): Promise<number> {
-    const result = await this.get();
+    const working = this.clone();
+    const result = await working.get();
     return result.total;
   }
   
@@ -201,6 +204,21 @@ export class Query<T extends CollectionKey> {
    */
   getCollectionName(): T | T[] | null {
     return this._collection ?? null;
+  }
+
+  /**
+   * Internal helper to clone query state so terminal operations
+   * don't mutate the original builder
+   */
+  private clone(): Query<T> {
+    const q = new Query<T>(this._collection);
+    q._filters = [...this._filters];
+    q._sorts = [...this._sorts];
+    q._limit = this._limit;
+    q._offset = this._offset;
+    q._includeRelations = this._includeRelations;
+    q._maxDepth = this._maxDepth;
+    return q;
   }
 }
 
