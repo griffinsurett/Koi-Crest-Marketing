@@ -19,6 +19,7 @@ interface Props extends BaseVariantProps {
 const {
   items = [],
   title,
+  heading,
   description,
   className = "",
   allowMultiple = false,
@@ -38,7 +39,7 @@ const bridgeId = id || "accordion";
       {(title || description) && (
         <SectionHeader
           subtitle={title}
-          title={description || ""}
+          title={heading || description || ""}
           titleTag="h2"
           subtitleClass="text-gray-400 h6 tracking-wider uppercase"
           titleClass="text-4xl lg:text-5xl font-bold leading-tight max-w-4xl text-MainDark"

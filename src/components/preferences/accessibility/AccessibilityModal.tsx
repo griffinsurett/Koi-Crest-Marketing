@@ -10,6 +10,7 @@ import ToggleControl from "./controls/ToggleControl";
 import SelectControl from "./controls/SelectControl";
 import ButtonGroupControl from "./controls/ButtonGroupControl";
 import LanguageSwitcher from "../language/LanguageSwitcher";
+import Button from "@/components/Button/Button";
 
 interface AccessibilityModalProps {
   isOpen: boolean;
@@ -90,11 +91,6 @@ function AccessibilityModal({ isOpen, onClose }: AccessibilityModalProps) {
           saved locally and sync across tabs.
         </p>
       </div>
-
-      <Section title="Language">
-        {/* Language Switcher - Client-side only */}
-        <LanguageSwitcher />
-      </Section>
 
       {/* TEXT & TYPOGRAPHY */}
       <Section title="Text & Typography">
@@ -291,32 +287,36 @@ function AccessibilityModal({ isOpen, onClose }: AccessibilityModalProps) {
           </li>
           <li>
             For accessibility support, please{" "}
-            <a
+            <Button
+              variant='link'
+              size="sm"
               href="/contact"
-              className="underline text-blue-600 hover:text-blue-700"
+              className="underline text-gray-600 hover:text-gray-700"
             >
               contact us
-            </a>
+            </Button>
           </li>
         </ul>
       </div>
 
       {/* ACTIONS */}
       <div className="flex gap-3 mt-6">
-        <button
+        <Button
+          variant="tertiary"
           onClick={handleReset}
           disabled={isPending}
-          className="flex-1 px-6 py-3 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          className="flex-1"
         >
           Reset All
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="primary"
           onClick={handleSave}
           disabled={isPending}
-          className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
+          className="flex-1 justify-center"
         >
           Save Preferences
-        </button>
+        </Button>
       </div>
     </Modal>
   );

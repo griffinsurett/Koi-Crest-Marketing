@@ -13,6 +13,7 @@ import Modal from '@/components/Modal';
 import { useCookieStorage } from '@/hooks/useCookieStorage';
 import { enableConsentedScripts } from '@/utils/scriptManager';
 import type { CookieConsent, CookieCategoryInfo } from './types';
+import Button from '@/components/Button/Button';
 
 interface CookiePreferencesModalProps {
   isOpen: boolean;
@@ -78,16 +79,13 @@ const CategoryItem = memo(({
       </button>
 
       {category.required ? (
-        <span className="text-sm text-blue-600 font-medium">
+        <span className="text-sm text-gray-600 font-medium">
           Always Active
         </span>
       ) : (
         <button
           onClick={onToggleEnabled}
-          className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          style={{
-            backgroundColor: isEnabled ? '#3B82F6' : '#D1D5DB',
-          }}
+          className={`relative ${isEnabled ? 'bg-MainDark' : 'bg-gray-300'} inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
           type="button"
           role="switch"
           aria-checked={isEnabled}
@@ -218,25 +216,27 @@ function CookiePreferencesModal({
       ssr={false}
     >
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">
+        <h2 className="text-2xl font-bold text-MainDark mb-3">
           Manage Consent Preferences
         </h2>
         <p className="text-gray-600 text-sm leading-relaxed">
           We use cookies and similar technologies to help personalize content
           and offer a better experience. You can click{' '}
-          <a
+          <Button
+            variant='link'
+            size="sm"
             href="/cookie-policy"
-            className="text-blue-600 underline hover:text-blue-700"
           >
             here
-          </a>{' '}
+          </Button>{' '}
           to find out more and change our default settings. However, blocking
           some types of cookies may impact your experience of the site and the
           services we are able to offer.
         </p>
-        <a
+        <Button
+          variant='link'
+          size="sm"
           href="/cookie-policy"
-          className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 mt-2"
         >
           More information
           <svg
@@ -252,7 +252,7 @@ function CookiePreferencesModal({
               d="M9 5l7 7-7 7"
             />
           </svg>
-        </a>
+        </Button>
       </div>
 
       <div className="space-y-3 mb-6">
@@ -269,22 +269,24 @@ function CookiePreferencesModal({
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <button
+        <Button
+          variant='tertiary'
           onClick={handleRejectAll}
-          className="flex-1 rounded-lg border-2 border-blue-600 bg-white px-6 py-3 font-semibold text-blue-600 transition-colors hover:bg-blue-50 disabled:opacity-50"
+          className="flex-1"
           type="button"
           disabled={isPending}
         >
           Reject All
-        </button>
-        <button
+        </Button>
+        <Button
+          variant='primary'
           onClick={handleConfirm}
-          className="flex-1 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+          className="flex-1 justify-center"
           type="button"
           disabled={isPending}
         >
           Confirm My Choices
-        </button>
+        </Button>
       </div>
     </Modal>
   );

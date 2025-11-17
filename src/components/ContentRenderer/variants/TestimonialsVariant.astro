@@ -19,6 +19,7 @@ interface Props extends BaseVariantProps {
 const {
   items = [],
   title,
+  heading,
   description,
   className = "",
   columns = 2,
@@ -45,7 +46,7 @@ const columnClasses = {
       {(title || description) && (
         <SectionHeader
           subtitle={title}
-          title={description || ""}
+          title={heading || description || ""}
           titleTag="h2"
           subtitleClass="text-gray-400 h6 tracking-wider"
           titleClass="text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-white"

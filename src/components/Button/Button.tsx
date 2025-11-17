@@ -55,7 +55,7 @@ export const ButtonBase = forwardRef<HTMLButtonElement | HTMLAnchorElement, Butt
   ({ href, className = '', leftIcon, rightIcon, size = 'md', children, ...props }, ref) => {
     // Map size prop to Tailwind classes
     const sizeClass = size === 'sm' ? 'btn-sm' : size === 'lg' ? 'btn-lg' : 'btn-md';
-    const baseClasses = `btn-base ${sizeClass} ${className}`.trim();
+    const baseClasses = `btn-base cursor-pointer ${sizeClass} ${className}`.trim();
 
     // Render as anchor if href is provided
     if (href) {

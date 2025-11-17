@@ -15,7 +15,8 @@ import type { PreparedItem } from '@/utils/collections';
  */
 export interface BaseVariantProps {
   items?: PreparedItem[];      // Prepared collection items or static items
-  title?: string;              // Section heading
+  title?: string;              // Section title
+  heading?: string;            // Section heading
   description?: string;        // Section description/subtitle
   className?: string;          // Additional CSS classes
   collectionUrl?: string;      // URL to collection index page (for "View All" links)

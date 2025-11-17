@@ -64,6 +64,7 @@ const {
   query: queryProp,              // Query object for fetching collection items
   variant = "GridVariant",       // Which variant to render (defaults to GridVariant)
   title: titleOverride,          // Manual title override
+  heading: headingOverride,      // Manual heading override
   description: descriptionOverride, // Manual description override
   id: manualId,                  // Manual ID override (skips auto-generation)
   ...restProps                   // All other props (passed to variant)
@@ -121,6 +122,7 @@ if (queryProp) {
       // Use manual override if provided, otherwise use meta title
       // (but not on the collection page itself to avoid redundancy)
       title: titleOverride ?? (isOnCollectionPage ? undefined : meta.title),
+      heading: headingOverride ?? meta.heading,
       
       // Same logic for description
       description:
@@ -169,6 +171,7 @@ if (queryProp) {
     data = {
       items: preparedItems,
       title: titleOverride,
+      heading: headingOverride,
       description: descriptionOverride,
       // No collectionUrl or collectionTitle for multi-collection
       ...restProps,

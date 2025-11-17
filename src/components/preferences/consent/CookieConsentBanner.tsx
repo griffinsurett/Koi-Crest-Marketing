@@ -108,13 +108,15 @@ export default function CookieConsentBanner() {
             <p className="text-sm text-gray-700">
               We use cookies to improve your browsing experience and for
               marketing purposes.{' '}
-              <button
+              <Button
+                variant='link'
+                size="sm"
                 onClick={handleOpenSettings}
-                className="text-gray-700 underline hover:text-MainDark font-medium"
+                className="text-blue-600 underline hover:text-blue-700"
                 type="button"
               >
                 Manage preferences
-              </button>
+              </Button>
             </p>
           </div>
         </div>
@@ -123,7 +125,7 @@ export default function CookieConsentBanner() {
           <Button
             variant='tertiary'
             onClick={handleRejectAll}
-            className="text-justify w-full justify-center transition-colors"
+            className="flex-1"
             type="button"
             disabled={isPending}
           >
@@ -132,7 +134,7 @@ export default function CookieConsentBanner() {
           <Button
             variant='primary'
             onClick={handleAcceptAll}
-            className="text-justify w-full justify-center transition-colors"
+            className="flex-1"
             type="button"
             disabled={isPending}
           >

@@ -39,7 +39,7 @@ export default function SliderControl({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-600"
       />
       <div className="flex justify-between text-xs text-gray-500 mt-1">
         <span>{min}{suffix}</span>

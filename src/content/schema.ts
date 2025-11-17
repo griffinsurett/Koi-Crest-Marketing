@@ -302,6 +302,7 @@ export type BaseData = z.infer<ReturnType<typeof baseSchema>>;
 export const metaSchema = ({ image }: { image: Function }) =>
   z.object({
     title: z.string().optional(),
+    heading: z.string().optional(),
     description: z.string().optional(),
     hasPage: z.boolean().default(true),
     featuredImage: imageInputSchema({ image }).optional(),
