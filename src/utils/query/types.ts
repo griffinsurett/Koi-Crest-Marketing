@@ -45,6 +45,7 @@ export interface RelationMap<T extends CollectionKey = CollectionKey> {
   
   // Hierarchical relations
   parent?: Relation;                // Direct parent
+  parents: Relation[];              // All direct parents (multi-parent support)
   children: Relation[];             // Direct children
   siblings: Relation[];             // Same parent
   ancestors: Relation[];            // All parents up the tree
@@ -137,6 +138,7 @@ export interface GraphBuildOptions {
   includeIndirect?: boolean;
   maxIndirectDepth?: number;
   cache?: boolean;
+  verbose?: boolean;
 }
 
 /**

@@ -14,7 +14,7 @@ import {
   type RelationType,
 } from './types';
 import { getRelationMap, getOrBuildGraph } from './graph';
-import { normalizeId } from './helpers';
+import { normalizeId, safeGetEntry } from './helpers';
 
 // ❌ NO module-level imports of astro:content
 
@@ -28,15 +28,24 @@ export async function getRelations(
 ): Promise<RelationMap> {
   const cleanId = normalizeId(id);
   const graph = await getOrBuildGraph();
-  const relationMap = getRelationMap(graph, collection, cleanId);
+  let relationMap = getRelationMap(graph, collection, cleanId);
   
   if (!relationMap) {
+    // Retry with a fresh graph in case cache was built with limited options
+    const freshGraph = await getOrBuildGraph({ cache: false });
+    relationMap = getRelationMap(freshGraph, collection, cleanId);
+  }
+  
+  if (!relationMap) {
+    const fallbackEntry = await safeGetEntry(collection, cleanId);
     // Return an empty relation map instead of throwing to avoid cascading failures
+    const entry = fallbackEntry ?? ({ id: cleanId, collection, data: {} } as any);
     return {
-      entry: undefined as any,
+      entry,
       references: [],
       referencedBy: [],
       parent: undefined,
+      parents: [],
       children: [],
       siblings: [],
       ancestors: [],

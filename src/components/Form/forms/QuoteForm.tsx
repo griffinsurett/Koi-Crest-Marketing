@@ -47,7 +47,7 @@ export default function ContactForm() {
           type="text"
           required
           placeholder="First Name"
-          containerClassName="mb-0"
+          containerClassName="mb-0 flex-1"
           inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
         />
 
@@ -57,7 +57,7 @@ export default function ContactForm() {
           type="text"
           required
           placeholder="Last Name"
-          containerClassName="mb-0"
+          containerClassName="mb-0 flex-1"
           inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
         />
       </div>

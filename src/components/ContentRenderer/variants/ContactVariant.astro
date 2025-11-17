@@ -42,11 +42,16 @@ const columnClasses = {
       {
         items.length > 0 && (
           <ul class={`flex flex-col gap-6 list-none`}>
-            {items.map((item) => (
-              <li>
-                <ContactCard {...item} />
-              </li>
-            ))}
+            {items.map((item) => {
+              const linkPrefix = item.linkPrefix ?? item.data?.linkPrefix;
+              const title = item.title ?? item.data?.title;
+              const url = item.url ?? (linkPrefix ? `${linkPrefix}${title}` : undefined);
+              return (
+                <li>
+                  <ContactCard {...item} href={url} title={title} />
+                </li>
+              );
+            })}
           </ul>
         )
       }

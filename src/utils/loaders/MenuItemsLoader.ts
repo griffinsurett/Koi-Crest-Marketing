@@ -389,27 +389,6 @@ async function processCollectionMenus(
           ? collection
           : menuConfig.attachTo;
         
-        if (attachTo === collection && !store.has(collection)) {
-          const semanticId = buildSemanticId(
-            collection,
-            { parent: null, menu: menuConfig.menu, includeMenu: false },
-            store
-          );
-          const parentId = getUniqueId(semanticId);
-          
-          store.set({
-            id: parentId,
-            data: {
-              title: meta.title ?? capitalize(collection),
-              description: meta.description,
-              url: `/${collection}`,
-              menu: menus,
-              parent: null,
-              openInNewTab: false,
-            },
-          });
-        }
-
         for (const [itemPath, itemMod] of Object.entries(modules)) {
           if (!itemPath.includes(`content/${collection}/`)) continue;
           if (isMetaFile(itemPath)) continue;
@@ -423,6 +402,11 @@ async function processCollectionMenus(
           const itemUrl = useRootPath ? `/${slug}` : `/${collection}/${slug}`;
           
           let parent = attachTo;
+          // If attachTo is the collection but no explicit collection parent exists in the store,
+          // avoid creating an implicit menu item and instead drop to root.
+          if (attachTo === collection && !store.has(collection)) {
+            parent = null;
+          }
           if (itemData.parent && menuConfig.respectHierarchy !== false) {
             parent = itemData.parent;
           }

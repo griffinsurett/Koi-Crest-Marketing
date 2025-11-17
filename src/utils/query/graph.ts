@@ -20,7 +20,25 @@ import { getQueryKey, normalizeId } from "./helpers";
 
 // ❌ NO module-level imports of astro:content or anything that imports it
 
-let _cachedGraph: RelationshipGraph | null = null;
+const _graphCache: Map<string, RelationshipGraph> = new Map();
+
+function getGraphCacheKey(options: GraphBuildOptions = {}): string {
+  const {
+    collections,
+    includeIndirect = true,
+    maxIndirectDepth = 3,
+  } = options;
+  
+  const collKey = collections
+    ? [...collections].sort().join(',')
+    : 'all';
+  
+  return [
+    collKey,
+    `indirect:${includeIndirect}`,
+    includeIndirect ? `depth:${maxIndirectDepth}` : 'depth:0',
+  ].join('|');
+}
 
 /**
  * Get or build the relationship graph
@@ -28,19 +46,27 @@ let _cachedGraph: RelationshipGraph | null = null;
 export async function getOrBuildGraph(
   options?: GraphBuildOptions
 ): Promise<RelationshipGraph> {
-  if (_cachedGraph && options?.cache !== false) {
-    return _cachedGraph;
+  const cacheKey = getGraphCacheKey(options ?? {});
+  
+  if (options?.cache !== false) {
+    const cached = _graphCache.get(cacheKey);
+    if (cached) return cached;
   }
 
-  _cachedGraph = await buildRelationshipGraph(options);
-  return _cachedGraph;
+  const graph = await buildRelationshipGraph(options);
+  
+  if (options?.cache !== false) {
+    _graphCache.set(cacheKey, graph);
+  }
+  
+  return graph;
 }
 
 /**
  * Clear cached graph
  */
 export function clearGraphCache(): void {
-  _cachedGraph = null;
+  _graphCache.clear();
 }
 
 /**
@@ -134,6 +160,7 @@ async function loadAllEntries(
         references: [],
         referencedBy: [],
         parent: undefined,
+        parents: [],
         children: [],
         siblings: [],
         ancestors: [],
@@ -236,13 +263,21 @@ async function buildHierarchy(
 
         if (!parentMap) continue;
 
+        const parentRelation: Relation = {
+          type: "parent",
+          collection: collection as CollectionKey,
+          id: parentId,
+        };
+        const hasParentAlready = relationMap.parents.some(
+          (rel) => rel.collection === parentRelation.collection && rel.id === parentRelation.id
+        );
+        if (!hasParentAlready) {
+          relationMap.parents.push(parentRelation);
+        }
+
         // Set primary parent (first valid one) for depth calculations if not already set
         if (!relationMap.parent) {
-          relationMap.parent = {
-            type: "parent",
-            collection: collection as CollectionKey,
-            id: parentId,
-          };
+          relationMap.parent = parentRelation;
           relationMap.isRoot = false;
         }
 
@@ -269,20 +304,27 @@ async function buildHierarchy(
   // Second pass: calculate depth and find ancestors/descendants
   for (const [collection, collectionMap] of graph.nodes) {
     for (const [id, relationMap] of collectionMap) {
-      // Calculate depth and ancestors
+      // Calculate depth and ancestors (supports multi-parent)
       calculateAncestors(relationMap, collectionMap);
 
       // Calculate descendants
       calculateDescendants(relationMap, collectionMap);
 
-      // Find siblings
-      if (relationMap.parent) {
-        const parentMap = collectionMap.get(relationMap.parent.id);
-        if (parentMap) {
-          relationMap.siblings = parentMap.children.filter(
-            (child) => child.id !== id
-          );
+      // Find siblings across all parents
+      if (relationMap.parents.length > 0) {
+        const siblingSet = new Map<string, Relation>();
+        for (const parentRel of relationMap.parents) {
+          const parentMap = collectionMap.get(parentRel.id);
+          if (!parentMap) continue;
+          for (const child of parentMap.children) {
+            if (child.id === id) continue;
+            const key = `${child.collection}:${child.id}`;
+            if (!siblingSet.has(key)) {
+              siblingSet.set(key, child);
+            }
+          }
         }
+        relationMap.siblings = Array.from(siblingSet.values());
       }
     }
   }
@@ -296,23 +338,35 @@ function calculateAncestors(
   collectionMap: Map<string, RelationMap>
 ): void {
   const ancestors: Relation[] = [];
-  let depth = 0;
-  let current = relationMap.parent;
+  const visited = new Set<string>();
+  const queue: Array<{ rel: Relation; depth: number }> = relationMap.parents.map((rel) => ({ rel, depth: 1 }));
+  let minDepth = relationMap.parents.length === 0 ? 0 : Infinity;
 
-  while (current) {
-    depth++;
+  while (queue.length > 0) {
+    const { rel, depth } = queue.shift()!;
+    const key = `${rel.collection}:${rel.id}`;
+    if (visited.has(key)) continue;
+    visited.add(key);
+
     ancestors.push({
-      ...current,
+      ...rel,
       type: "ancestor",
       depth,
     });
 
-    const parentMap = collectionMap.get(current.id);
-    current = parentMap?.parent;
+    const parentMap = collectionMap.get(rel.id);
+    if (parentMap && parentMap.parents.length > 0) {
+      for (const parentRel of parentMap.parents) {
+        queue.push({ rel: parentRel, depth: depth + 1 });
+      }
+    } else {
+      minDepth = Math.min(minDepth, depth);
+    }
   }
 
   relationMap.ancestors = ancestors;
-  relationMap.depth = depth;
+  relationMap.depth = minDepth === Infinity ? 0 : minDepth;
+  relationMap.isRoot = relationMap.parents.length === 0;
 }
 
 /**
@@ -323,9 +377,14 @@ function calculateDescendants(
   collectionMap: Map<string, RelationMap>
 ): void {
   const descendants: Relation[] = [];
+  const visited = new Set<string>();
 
   function traverse(childIds: Relation[], depth: number): void {
     for (const child of childIds) {
+      const key = `${child.collection}:${child.id}`;
+      if (visited.has(key)) continue;
+      visited.add(key);
+
       descendants.push({
         ...child,
         type: "descendant",

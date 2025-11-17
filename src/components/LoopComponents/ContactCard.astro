@@ -17,12 +17,13 @@ import Icon from '@/components/Icon';
 export interface Props {
   title: string;           // Contact info (phone number, email, etc.)
   linkPrefix?: string;     // URL prefix (tel:, mailto:, etc.)
-  tags?: string[];        // Used to determine default icon
+  href?: string;           // Full href override
+  tags?: string[];         // Used to determine default icon
   description?: string;    // Optional label/description
-  icon?: any;             // Custom icon (overrides default)
+  icon?: any;              // Custom icon (overrides default)
 }
 
-const { title, linkPrefix, tags, description, icon } = Astro.props;
+const { title, linkPrefix, href: hrefProp, tags, description, icon } = Astro.props;
 
 // Smart icon selection based on tags if no custom icon provided
 const defaultIcon = tags?.includes('phone') 
@@ -34,7 +35,7 @@ const defaultIcon = tags?.includes('phone')
 const displayIcon = icon || defaultIcon;
 
 // Build full link if prefix provided (tel:, mailto:, etc.)
-const href = linkPrefix ? `${linkPrefix}${title}` : undefined;
+const href = hrefProp || (linkPrefix ? `${linkPrefix}${title}` : undefined);
 ---
 
 <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6">

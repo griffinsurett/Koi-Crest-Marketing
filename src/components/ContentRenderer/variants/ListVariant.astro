@@ -41,6 +41,14 @@ const getDisplayTitle = (item: any) => {
   }
   return rawTitle;
 };
+
+const getHref = (item: any) => {
+  const href = item?.url ?? item?.data?.url;
+  if (href) return href;
+  const linkPrefix = item?.linkPrefix ?? item?.data?.linkPrefix;
+  const title = item?.title ?? item?.data?.title;
+  return linkPrefix && title ? `${linkPrefix}${title}` : undefined;
+};
 ---
 
 <section id={id} class={`${className}`}>
@@ -56,7 +64,7 @@ const getDisplayTitle = (item: any) => {
         {items.map((item) => (
           <li>
             <a 
-              href={item.url || '#'} 
+              href={getHref(item) || '#'} 
               class="text-gray-600 hover:text-gray-900 transition text-sm block py-1"
               target={item.openInNewTab ? '_blank' : undefined}
               rel={item.openInNewTab ? 'noopener noreferrer' : undefined}

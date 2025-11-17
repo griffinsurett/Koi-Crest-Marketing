@@ -11,6 +11,7 @@ import Form from "@/components/Form/Form";
 import Input from "@/components/Form/inputs/Input";
 import Checkbox from "@/components/Form/inputs/Checkbox";
 import FormMessages from "@/components/Form/FormMessages";
+import Textarea from "../inputs/Textarea";
 
 const contactSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -47,7 +48,7 @@ export default function ContactForm() {
           type="text"
           required
           placeholder="First Name"
-          containerClassName="mb-0"
+          containerClassName="mb-0 flex-1"
           inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
         />
 
@@ -57,7 +58,7 @@ export default function ContactForm() {
           type="text"
           required
           placeholder="Last Name"
-          containerClassName="mb-0"
+          containerClassName="mb-0 flex-1"
           inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
         />
       </div>
@@ -92,6 +93,15 @@ export default function ContactForm() {
         placeholder="LLC or whatever you trade as"
         containerClassName="mb-0"
         inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+      />
+
+      <Textarea
+        name="message"
+        label="Your Message"
+        placeholder="Write your message here..."
+        rows={5}
+        containerClassName="mb-0"
+        textareaClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
       />
 
       {/* Privacy Policy Checkbox */}
