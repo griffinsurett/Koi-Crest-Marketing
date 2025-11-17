@@ -6,7 +6,7 @@
  * These will make it easier to reuse complex queries
  */
 
-import { query, whereEquals, whereArrayContains, sortByDate, sortByOrder, and, or } from '@/utils/query';
+import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, and, or } from '@/utils/query';
 import type { CollectionKey } from 'astro:content';
 
 // ============================================================================
@@ -36,8 +36,13 @@ import type { CollectionKey } from 'astro:content';
 // HIERARCHICAL QUERIES
 // ============================================================================
 
-// TODO: Root level items only
-// export const roots = (collection: CollectionKey) => {}
+/**
+ * Root level items only (no parent)
+ */
+export const roots = (collection: CollectionKey) =>
+  query(collection)
+    .where(whereNoParent())
+    .orderBy(sortByOrder());
 
 // TODO: Leaf items only (no children)
 // export const leaves = (collection: CollectionKey) => {}
@@ -103,5 +108,5 @@ import type { CollectionKey } from 'astro:content';
 // ============================================================================
 
 export const snippets = {
-  // Will be populated with the above functions
+  roots,
 };

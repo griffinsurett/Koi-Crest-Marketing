@@ -5,11 +5,9 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import { siteData } from "@/content/siteData";
 import {
   query,
-  whereArrayContains,
-  whereEquals,
   sortByDate,
   sortByOrder,
-  sortBy,
+  whereNoParent,
 } from "@/utils/query";
 import MainHero from "@/layouts/MainHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
@@ -37,7 +35,7 @@ import CTASection from "@/layouts/CTASection.astro";
 
     <!-- Services - auto-populates from services meta -->
     <ContentRenderer
-      query={query("services").orderBy(sortByOrder())}
+      query={query("services").where(whereNoParent()).orderBy(sortByOrder())}
       variant="ServicesVariant"
       columns={3}
       gap="lg"

@@ -14,10 +14,10 @@ order: 3
 ---
 
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, sortByOrder } from "@/utils/query";
+import { query, sortByOrder, whereNoParent } from "@/utils/query";
 
     <ContentRenderer
-      query={query("services").orderBy(sortByOrder())}
+      query={query("services").where(whereNoParent()).orderBy(sortByOrder())}
       variant="ServicesVariant"
       columns={3}
       gap="lg"

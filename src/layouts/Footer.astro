@@ -14,7 +14,7 @@
 import { siteData } from "@/content/siteData";
 import { Image } from "astro:assets";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, sortBy } from "@/utils/query";
+import { query, sortBy, whereNoParent } from "@/utils/query";
 import CookiePreferencesButton from "@/components/preferences/consent/CookiePreferencesButton";
 import AccessibilityButton from "@/components/preferences/accessibility/AccessibilityButton";
 import Logo from "@/components/Logo.astro";
@@ -39,7 +39,7 @@ import Logo from "@/components/Logo.astro";
       <!-- Column 2: Quick Links (Footer Menu) - VERTICAL LIST -->
       <div>
         <ContentRenderer
-          query={query("services")}
+          query={query("services").where(whereNoParent())}
           variant="ListVariant"
           orientation="vertical"
           className="py-0"

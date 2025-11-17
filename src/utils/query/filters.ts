@@ -173,6 +173,24 @@ export function whereArrayContainsAny<T extends CollectionKey>(
 }
 
 /**
+ * Filter entries that do not have a parent (string, reference, or array)
+ */
+export function whereNoParent<T extends CollectionKey>(
+  field: string = 'parent'
+): FilterFn<T> {
+  return (entry: CollectionEntry<T>) => {
+    const data = entry.data as any;
+    const parent = data[field];
+
+    if (Array.isArray(parent)) {
+      return parent.length === 0;
+    }
+
+    return !parent;
+  };
+}
+
+/**
  * Logical combinators
  */
 export function and<T extends CollectionKey>(

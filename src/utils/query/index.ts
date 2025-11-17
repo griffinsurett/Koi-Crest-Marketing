@@ -91,6 +91,7 @@ export {
   whereBefore,
   whereArrayContains,
   whereArrayContainsAny,
+  whereNoParent,
   and,
   or,
   not,

@@ -78,8 +78,9 @@ export const collections = {
   "services": defineCollection({
     schema: ({ image }) =>
       baseSchema({ image }).extend({
+        parent: refSchema("services"),
         price: z.string().optional(),
-        features: z.array(z.string()).default([]),
+        tags: z.array(z.string()).default([]),
       }),
   }),
   "projects": defineCollection({
