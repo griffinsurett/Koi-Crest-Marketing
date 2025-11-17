@@ -12,6 +12,7 @@ import Input from "@/components/Form/inputs/Input";
 import Checkbox from "@/components/Form/inputs/Checkbox";
 import FormMessages from "@/components/Form/FormMessages";
 import Textarea from "../inputs/Textarea";
+import Button from "@/components/Button/Button";
 
 const contactSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -125,12 +126,13 @@ export default function ContactForm() {
       />
 
       {/* Submit Button */}
-      <button
+      <Button
+        variant="primary"
         type="submit"
-        className="w-full bg-MainDark text-MainLight py-4 px-6 rounded-md font-medium hover:bg-gray-800 transition duration-200"
+        className="w-full mx-auto"
       >
         Submit Form
-      </button>
+      </Button>
     </Form>
   );
 }
