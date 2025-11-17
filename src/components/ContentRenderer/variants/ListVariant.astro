@@ -1,15 +1,20 @@
 ---
 // src/components/ContentRenderer/variants/ListVariant.astro
 /**
- * List Variant - Vertical stack of horizontal cards
- * Features: Side-by-side image/content, full width, left-aligned header
+ * List Variant - Flexible list layout
+ * 
+ * Features: 
+ * - Horizontal cards (default): Side-by-side image/content, full width
+ * - Vertical links (orientation="vertical"): Simple stacked links for footer/sidebar
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import ListCard from '@/components/LoopComponents/ListCard.astro';
 import { shouldShowCollectionCTA } from "../utils/helpers";
 
-type Props = BaseVariantProps;
+interface Props extends BaseVariantProps {
+  orientation?: 'horizontal' | 'vertical';
+}
 
 const { 
   items = [],
@@ -19,40 +24,44 @@ const {
   collectionUrl,
   collectionTitle,
   id,
+  orientation = 'horizontal',
 } = Astro.props as Props;
 
 const viewAllText = `See Complete ${collectionTitle || 'List'}`;
+const isVertical = orientation === 'vertical';
 ---
 
-<section id={id} class={`py-16 ${className}`}>
-  {(title || description) && (
-    <div class="mb-12">
-      {title && <h2 class="text-4xl font-bold mb-4">{title}</h2>}
-      {description && <p class="text-lg text-gray-600 max-w-3xl">{description}</p>}
+<section id={id} class={`${className}`}>
+  {title && (
+    <div class="mb-0">
+      {title && <h3 class="text-base uppercase font-bold mb-4">{title}</h3>}
     </div>
   )}
   
   {items.length > 0 && (
-    <ul class="flex flex-col gap-8 list-none">
-      {items.map((item) => (
-        <li>
-          <ListCard {...item} />
-        </li>
-      ))}
-    </ul>
-  )}
-  
-  {shouldShowCollectionCTA(collectionUrl, items.length) && (
-    <div class="mt-12">
-      <a 
-        href={collectionUrl} 
-        class="inline-flex items-center px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors"
-      >
-        {viewAllText}
-        <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-        </svg>
-      </a>
-    </div>
+    isVertical ? (
+      <ul class="space-y-2 list-none">
+        {items.map((item) => (
+          <li>
+            <a 
+              href={item.url || '#'} 
+              class="text-gray-600 hover:text-gray-900 transition text-sm block py-1"
+              target={item.openInNewTab ? '_blank' : undefined}
+              rel={item.openInNewTab ? 'noopener noreferrer' : undefined}
+            >
+              {item.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <ul class="flex flex-col gap-8 list-none">
+        {items.map((item) => (
+          <li>
+            <ListCard {...item} />
+          </li>
+        ))}
+      </ul>
+    )
   )}
 </section>

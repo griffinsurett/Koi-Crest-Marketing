@@ -23,7 +23,7 @@ function CookiePreferencesButton() {
     <>
       <button
         onClick={handleOpenModal}
-        className="text-gray-400 hover:text-white transition-colors inline-flex items-center gap-2"
+        className="text-gray-600 hover:text-MainDark transition-colors inline-flex items-center gap-2"
         type="button"
         aria-label="Manage cookie preferences"
         disabled={isPending}
