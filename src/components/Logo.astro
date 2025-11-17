@@ -1,0 +1,122 @@
+---
+// src/components/Logo.astro
+/**
+ * Reusable Logo Component
+ * Displays the Koi Crest Marketing logo with title and subtitle
+ */
+import { Image } from "astro:assets";
+import { siteData } from "@/content/siteData";
+
+interface Props {
+  /**
+   * Size variant for the logo
+   * @default "default"
+   */
+  size?: "small" | "default" | "large";
+  /**
+   * Whether to show the title
+   * @default true
+   */
+  showTitle?: boolean;
+  /**
+   * Whether to show the "Marketing" subtitle
+   * @default true
+   */
+  showSubtitle?: boolean;
+  /**
+   * Custom width for the logo image (in pixels)
+   */
+  width?: number;
+  /**
+   * Custom height for the logo image (in pixels)
+   */
+  height?: number;
+  /**
+   * Image quality (0-100)
+   * @default 90
+   */
+  quality?: number;
+  /**
+   * Additional CSS classes for the wrapper
+   */
+  className?: string;
+  textContainerClassName?: string;
+    /**
+     * Additional CSS classes for the link
+     */
+    linkClassName?: string;
+    loading?: "eager" | "lazy";
+    decoding?: "async" | "sync" | "auto";
+}
+
+const {
+  size = "default",
+  showTitle = true,
+  showSubtitle = true,
+  width,
+  height,
+  quality = 90,
+  className = "",
+  linkClassName = "items-center justify-center",
+  loading = "eager",
+  decoding = "async",
+  textContainerClassName = "flex flex-col items-center justify-center mt-1",
+
+} = Astro.props;
+
+// Size configurations
+const sizeConfig = {
+  small: {
+    imageSize: 100,
+    titleClass: "text-base",
+    subtitleClass: "text-xs",
+  },
+  default: {
+    imageSize: 150,
+    titleClass: "text-lg",
+    subtitleClass: "text-sm",
+  },
+  large: {
+    imageSize: 180,
+    titleClass: "text-2xl",
+    subtitleClass: "text-base",
+  },
+};
+
+const config = sizeConfig[size];
+const logoWidth = width || config.imageSize;
+const logoHeight = height || config.imageSize;
+---
+
+<a
+  href="/"
+  class={`text-2xl font-bold transition-colors flex flex-col gap-0 ${linkClassName}`}
+>
+  <Image
+    src={siteData.Logo}
+    alt={`${siteData.title} Logo`}
+    width={logoWidth}
+    height={logoHeight}
+    quality={quality}
+    format="webp"
+    loading={loading}
+    decoding={decoding}
+    class={`h-auto rotate-center ${className}`}
+  />
+  <div class={`${textContainerClassName}`}>
+  {
+    showTitle && (
+      <span class={`${config.titleClass} leading-none uppercase m-0 p-0`}>
+        {siteData.title}
+      </span>
+    )
+  }
+  {
+    showSubtitle && (
+      <span class={`${config.subtitleClass} leading-3 text-gray-400`}>
+        Marketing
+      </span>
+    )
+  }
+  </div>
+</a>
