@@ -79,7 +79,6 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         parent: refSchema("services"),
-        price: z.string().optional(),
         tags: z
           .union([z.string(), z.array(z.string())])
           .optional()

@@ -58,8 +58,7 @@ import CTASection from "@/layouts/CTASection.astro";
     <!-- Portfolio with sorting -->
     <ContentRenderer
       query={query("projects")
-        .orderBy(sortByDate("publishDate", "desc"))
-        .limit(5)}
+        .orderBy(sortByDate("publishDate", "desc"))}
       variant="PortfolioVariant"
     />
 

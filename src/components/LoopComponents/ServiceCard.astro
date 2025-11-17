@@ -22,6 +22,13 @@ interface Props {
 const { icon, title, description, url } = Astro.props;
 const cardLink = url || "#";
 const displayIcon = icon || "lu:shield"; // Default icon if none provided
+const truncatedDescription = (() => {
+  if (!description) return "";
+  const maxLength = 140;
+  return description.length > maxLength
+    ? `${description.slice(0, maxLength).trimEnd()}...`
+    : description;
+})();
 ---
 
 <div class="bg-gray-100 p-8 space-y-6">
@@ -34,7 +41,7 @@ const displayIcon = icon || "lu:shield"; // Default icon if none provided
     <h3 class="text-2xl font-bold text-black">{title}</h3>
 
     <!-- Description -->
-    <p class="text-gray-600 leading-relaxed">{description}</p>
+    <p class="text-gray-600 leading-relaxed">{truncatedDescription}</p>
 
     <!-- Get Started Button -->
     <Button 
