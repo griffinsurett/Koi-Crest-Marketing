@@ -11,6 +11,7 @@
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import ListCard from '@/components/LoopComponents/ListCard.astro';
 import { shouldShowCollectionCTA } from "../utils/helpers";
+import { formatPhoneNumber } from '@/utils/string';
 
 interface Props extends BaseVariantProps {
   orientation?: 'horizontal' | 'vertical';
@@ -29,12 +30,23 @@ const {
 
 const viewAllText = `See Complete ${collectionTitle || 'List'}`;
 const isVertical = orientation === 'vertical';
+
+const getDisplayTitle = (item: any) => {
+  const rawTitle = item?.title ?? item?.data?.title;
+  const id = item?.id ?? item?.slug ?? item?.data?.id ?? item?.data?.slug;
+  const linkPrefix = item?.linkPrefix ?? item?.data?.linkPrefix;
+  // Format only the contact phone entry (id = phone or tel: link).
+  if (typeof rawTitle === 'string' && (id === 'phone' || (typeof linkPrefix === 'string' && linkPrefix.startsWith('tel')))) {
+    return formatPhoneNumber(rawTitle);
+  }
+  return rawTitle;
+};
 ---
 
 <section id={id} class={`${className}`}>
   {title && (
     <div class="mb-0">
-      {title && <h3 class="text-base uppercase font-bold mb-4">{title}</h3>}
+      {title && <h3 class="text-base uppercase font-bold mb-2">{title}</h3>}
     </div>
   )}
   
@@ -49,7 +61,7 @@ const isVertical = orientation === 'vertical';
               target={item.openInNewTab ? '_blank' : undefined}
               rel={item.openInNewTab ? 'noopener noreferrer' : undefined}
             >
-              {item.title}
+              {getDisplayTitle(item)}
             </a>
           </li>
         ))}
@@ -58,7 +70,7 @@ const isVertical = orientation === 'vertical';
       <ul class="flex flex-col gap-8 list-none">
         {items.map((item) => (
           <li>
-            <ListCard {...item} />
+            <ListCard {...item} title={getDisplayTitle(item)} />
           </li>
         ))}
       </ul>
