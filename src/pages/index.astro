@@ -7,7 +7,7 @@ import {
   query,
   sortByDate,
   sortByOrder,
-  whereNoParent,
+  whereArrayContains,
 } from "@/utils/query";
 import MainHero from "@/layouts/MainHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
@@ -35,7 +35,8 @@ import CTASection from "@/layouts/CTASection.astro";
 
     <!-- Services - auto-populates from services meta -->
     <ContentRenderer
-      query={query("services").where(whereNoParent()).orderBy(sortByOrder())}
+      query={query("services")
+        .where(whereArrayContains("tags", "featured"))}
       variant="ServicesVariant"
       columns={3}
       gap="lg"

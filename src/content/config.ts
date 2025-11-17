@@ -80,7 +80,13 @@ export const collections = {
       baseSchema({ image }).extend({
         parent: refSchema("services"),
         price: z.string().optional(),
-        tags: z.array(z.string()).default([]),
+        tags: z
+          .union([z.string(), z.array(z.string())])
+          .optional()
+          .transform((val) => {
+            if (!val) return [];
+            return Array.isArray(val) ? val : [val];
+          }),
       }),
   }),
   "projects": defineCollection({
