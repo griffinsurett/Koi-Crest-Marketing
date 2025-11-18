@@ -12,7 +12,7 @@
  * Used in ContactVariant to display phone, email, address, etc.
  */
 
-import Icon from '@/components/Icon';
+// import Icon from '@/components/Icon';
 
 export interface Props {
   title: string;           // Contact info (phone number, email, etc.)
@@ -26,44 +26,36 @@ export interface Props {
 const { title, linkPrefix, href: hrefProp, tags, description, icon } = Astro.props;
 
 // Smart icon selection based on tags if no custom icon provided
-const defaultIcon = tags?.includes('phone') 
-  ? 'lu:phone' 
-  : tags?.includes('email')
-  ? 'lu:mail'
-  : 'lu:contact';
+// const defaultIcon = tags?.includes('phone') 
+//   ? 'lu:phone' 
+//   : tags?.includes('email')
+//   ? 'lu:mail'
+//   : 'lu:contact';
 
-const displayIcon = icon || defaultIcon;
+// const displayIcon = icon || defaultIcon;
 
 // Build full link if prefix provided (tel:, mailto:, etc.)
 const href = hrefProp || (linkPrefix ? `${linkPrefix}${title}` : undefined);
 ---
 
-<div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6">
-  <div class="flex items-start gap-4">
-    {/* Icon circle */}
-    <div class="flex-shrink-0">
-      <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-        <Icon icon={displayIcon} size="md" className="text-blue-600" />
-      </div>
-    </div>
-    
-    {/* Contact info */}
-    <div class="flex-1">
-      {/* Title as link or plain text */}
+<div class="bg-white rounded-2xl w-full p-6">
+  <div class="flex items-center justify-center gap-4">
+
+    <div class="flex-1 text-center">
+      <h3>{title}</h3>
       {href ? (
-        <a 
+        <a
           href={href}
-          class="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors block"
+          class="text-lg font-semibold text-slate-900 hover:text-[#5b8dff] transition-colors block"
         >
           {title}
         </a>
       ) : (
-        <p class="text-lg font-semibold text-gray-900">{title}</p>
+        <p class="text-lg font-semibold text-slate-900">{title}</p>
       )}
-      
-      {/* Optional description */}
+
       {description && (
-        <p class="text-gray-600 mt-1">{description}</p>
+        <p class="text-slate-600 mt-1">{description}</p>
       )}
     </div>
   </div>

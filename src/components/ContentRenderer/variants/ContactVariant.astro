@@ -15,6 +15,7 @@ import { query } from "@/utils/query";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import ContactForm from "@/components/Form/forms/ContactForm";
 import { Image } from "astro:assets";
+import featuredImageSrc from "@/assets/placeholder.svg";
 
 interface Props extends BaseVariantProps {
   columns?: 1 | 2 | 3;
@@ -64,7 +65,7 @@ const columnClasses = {
     {/* Contact Cards - Horizontal Layer */}
     {
       items.length > 0 && (
-        <div class={`grid ${columnClasses[columns]}  gap-6 mb-16 bg-MainLight`}>
+        <div class={`flex ${columnClasses[columns]} flex-col lg:flex-row container mx-auto px-4 max-w-7xl gap-6 mb-16 bg-MainLight`}>
           {items.map((item) => {
             const linkPrefix = item.linkPrefix ?? item.data?.linkPrefix;
             const title = item.title ?? item.data?.title;
@@ -78,13 +79,14 @@ const columnClasses = {
     }
 
     {/* Form and Image Row */}
-    <div class="grid lg:grid-cols-2 gap-12 py-15 items-start bg-gray-50">
+    <div class="w-full bg-gray-50">
+      <div class="container mx-auto px-5 py-5 lg:py-10 flex flex-col justify-between items-start lg:flex-row gap-8 lg:gap-16">
       {/* Left: Contact Form */}
-      <div class="order-2 lg:order-1">
+      <div class="w-full lg:w-1/2">
         <ContactForm client:visible />
         
         {/* Social Media Below Form */}
-        <div class="mt-8">
+        <!-- <div class="mt-8">
           <ContentRenderer
             query={query("social-media")}
             variant="SocialMediaVariant"
@@ -92,7 +94,18 @@ const columnClasses = {
             size="lg"
             alignment="left"
           />
-        </div>
+        </div> -->
+      </div>
+      <div class="w-full lg:w-1/2 lg:sticky lg:top-0">
+        {/* Right: Featured Image */}
+      <Image
+        src={featuredImageSrc}
+        alt="Contact Us"
+        class="w-full h-auto rounded-lg object-cover order-1 lg:order-2"
+        sizes="(max-width: 768px) 100vw, 50vw"
+        loading={"lazy"}
+      />
+      </div>
       </div>
     </div>
 
