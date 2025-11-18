@@ -50,7 +50,7 @@ const { ...seoProps } = Astro.props;
     {seoProps.noindex && <meta name="robots" content="noindex,nofollow" />}
   </head>
 
-  <body class="antialiased">
+  <body class="antialiased overflow-x-hidden">
     <Header />
 
     {/* Body-level scripts and elements */}

@@ -58,7 +58,7 @@ const data = entry?.data || {};
 
     <!-- Services - auto-populates from services meta -->
     <ContentRenderer
-      query={siblings("services", entry.slug)}
+      query={siblings("services", entry)}
       variant="ServicesVariant"
       columns={3}
       gap="lg"

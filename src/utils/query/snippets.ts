@@ -137,27 +137,16 @@ export const parent = (
 };
 
 /**
- * Get siblings (entries with the same parent) for a given item
+ * Get siblings (entries with the same parent) for a given item.
+ * Requires the full entry so we can read parent data synchronously.
  */
 export const siblings = (
   collection: CollectionKey,
-  item?: { data?: any; parent?: any; id?: string; slug?: string } | string
+  item?: { data?: any; parent?: any; id?: string; slug?: string }
 ) => {
-  const rawId =
-    typeof item === "string"
-      ? item
-      : item
-      ? (item as any).id || (item as any).slug || ""
-      : "";
-  const targetId = rawId ? normalizeId(rawId) : "";
+  const targetId = item ? normalizeId((item as any).id || (item as any).slug || "") : "";
 
-  // Derive parent references from the passed item when available
-  const parentField =
-    typeof item === "string"
-      ? undefined
-      : item
-      ? (item as any).data?.parent ?? (item as any).parent
-      : undefined;
+  const parentField = item ? (item as any).data?.parent ?? (item as any).parent : undefined;
 
   const parentRefs = Array.isArray(parentField)
     ? parentField

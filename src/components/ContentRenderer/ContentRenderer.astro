@@ -194,6 +194,12 @@ if (queryProp) {
   data = restProps.items ? restProps : { items: [], ...restProps };
 }
 
+// Skip rendering entirely if there are no items to show
+const items = Array.isArray(data?.items) ? data.items : [];
+if (items.length === 0) {
+  return;
+}
+
 // ============================================================================
 // ID GENERATION: Create unique section ID
 // ============================================================================
