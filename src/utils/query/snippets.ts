@@ -6,8 +6,8 @@
  * These will make it easier to reuse complex queries
  */
 
-import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, and, or } from '@/utils/query';
-import type { CollectionKey } from 'astro:content';
+import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, getChildren, and, or } from '@/utils/query';
+import type { CollectionEntry, CollectionKey } from 'astro:content';
 
 // ============================================================================
 // GENERAL PATTERNS
@@ -44,8 +44,33 @@ export const roots = (collection: CollectionKey) =>
     .where(whereNoParent())
     .orderBy(sortByOrder());
 
+/**
+ * Leaves (items with no children)
+ */
 export const leaves = async (collection: CollectionKey) => {
   const entries = await getLeaves(collection);
+  return entries.sort(sortByOrder());
+};
+
+export const children = async <T extends CollectionKey>(
+  collection: T,
+  parentId: string,
+  options: { recursive?: boolean; maxDepth?: number } = {}
+) => {
+  const { recursive = false, maxDepth = Infinity } = options;
+  const relations = await getChildren(collection, parentId, {
+    resolve: true,
+    recursive,
+    maxDepth,
+  });
+
+  const entries: CollectionEntry<T>[] = [];
+  for (const relation of relations) {
+    if (relation.entry) {
+      entries.push(relation.entry as CollectionEntry<T>);
+    }
+  }
+
   return entries.sort(sortByOrder());
 };
 
@@ -61,39 +86,6 @@ export const leaves = async (collection: CollectionKey) => {
 
 // TODO: Items with references to any entry in target collection
 // export const withReferencesTo = (collection: CollectionKey, targetCollection: CollectionKey) => {}
-
-// ============================================================================
-// BLOG SPECIFIC
-// ============================================================================
-
-// TODO: Published blog posts (not drafts)
-// export const publishedPosts = (limit?: number) => {}
-
-// TODO: Posts by author with pagination
-// export const postsByAuthor = (authorId: string, page = 1, pageSize = 10) => {}
-
-// TODO: Related posts (same tags or category)
-// export const relatedPosts = (currentPostId: string, limit = 5) => {}
-
-// ============================================================================
-// PORTFOLIO SPECIFIC
-// ============================================================================
-
-// TODO: Portfolio by category
-// export const portfolioByCategory = (category: string) => {}
-
-// TODO: Portfolio with testimonials
-// export const portfolioWithTestimonials = () => {}
-
-// ============================================================================
-// SERVICE SPECIFIC
-// ============================================================================
-
-// TODO: Services by price range
-// export const servicesByPrice = (min?: number, max?: number) => {}
-
-// TODO: Services with specific features
-// export const servicesWithFeatures = (features: string[]) => {}
 
 // ============================================================================
 // CROSS-COLLECTION

@@ -18,6 +18,7 @@ import { query, sortBy, whereNoParent } from "@/utils/query";
 import CookiePreferencesButton from "@/components/preferences/consent/CookiePreferencesButton";
 import AccessibilityButton from "@/components/preferences/accessibility/AccessibilityButton";
 import Logo from "@/components/Logo.astro";
+import { roots } from "@/utils/query/snippets";
 ---
 
 <footer class="bg-gray-50 border-t border-gray-200 mt-auto">
@@ -39,7 +40,7 @@ import Logo from "@/components/Logo.astro";
       <!-- Column 2: Quick Links (Footer Menu) - VERTICAL LIST -->
       <div>
         <ContentRenderer
-          query={query("services").where(whereNoParent())}
+          query={roots("services")}
           variant="ListVariant"
           orientation="vertical"
           className="py-0"
