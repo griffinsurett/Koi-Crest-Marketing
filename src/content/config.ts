@@ -116,6 +116,11 @@ export const collections = {
   schema: ({ image }) =>
     baseSchema({ image }),
 }),
+"mission-vision": defineCollection({
+  loader: file("src/content/mission-vision/mission-vision.json"),
+  schema: ({ image }) =>
+    baseSchema({ image }),
+}),
 "values": defineCollection({
   loader: file("src/content/values/values.json"),
   schema: ({ image }) =>

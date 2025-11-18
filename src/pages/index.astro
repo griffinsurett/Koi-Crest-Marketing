@@ -31,7 +31,38 @@ import CTASection from "@/layouts/CTASection.astro";
       }}
     />
 
-    <AboutSection />
+    <AboutSection
+      subtitle="About Us"
+      title="Elevating Your Brand and helping you soar to new heights in the Digital World"
+      description={`Our vision is to become a leading force in the marketing industry,
+    recognized for our commitment to excellence, creativity, and integrity. We aim to shape
+    the future of marketing by leveraging cutting-edge technology and data-driven insights,
+    helping businesses of all sizes thrive in a rapidly evolving world. We envision a future
+    where every brand we work with reaches its full potential through strategic, impactful
+    marketing solutions.`}
+      learnMoreUrl="/about-us"
+    >
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+      <!-- Left Column - Our Promise -->
+      <div class="space-y-6 lg:w-3/5">
+        <h3 class="h3 font-bold">Our Promise</h3>
+
+        <p class="text-main text-gray-300 leading-relaxed">
+          The promise of Koi Crest Marketing is to deliver innovative,
+          results-driven marketing solutions tailored to each client's unique
+          needs. As a veteran-owned agency, we are committed to providing
+          exceptional service, building lasting partnerships, and helping
+          businesses grow by connecting them with their audience through
+          strategic, data-driven campaigns. Our focus is on delivering
+          measurable results, ensuring that every project contributes to the
+          long-term success of our clients.
+        </p>
+      </div>
+
+      <!-- Right Column - Benefits (from content collection) -->
+      <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+    </div>
+  </AboutSection>
 
     <!-- Services - auto-populates from services meta -->
     <ContentRenderer

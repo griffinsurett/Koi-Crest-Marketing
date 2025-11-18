@@ -1,0 +1,32 @@
+---
+// src/components/ContentRenderer/variants/MissionVisionVariant.astro
+import type { BaseVariantProps } from "../ContentRenderer.types";
+
+interface Props extends BaseVariantProps {}
+
+const {
+  items = [],
+  title,
+  description,
+  className = "",
+  id,
+} = Astro.props as Props;
+---
+  <div class="relative container mx-auto px-4 max-w-7xl text-MainLight">
+
+    {items.length > 0 && (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+        {items.map((item) => (
+          <div class="space-y-4">
+            <h3 class="text-3xl md:text-4xl font-bold text-MainLight">
+              {item.title}
+            </h3>
+            {item.description && (
+              <p class="text-lg leading-8 text-MainLight/85">
+                {item.description}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+    )}

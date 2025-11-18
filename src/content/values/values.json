@@ -1,32 +1,32 @@
 [
   {
-    "id": "tailored-solutions",
-    "title": "Tailored Solutions",
-    "description": "We understand that every business is unique. That's why we provide customized strategies and solutions that align with your specific goals and industry needs, delivering real results.",
+    "id": "collaboration",
+    "title": "Collaboration",
+    "description": "We believe in working closely with our clients, fostering open communication and teamwork to achieve the best results together.",
     "order": 1
   },
   {
-    "id": "data-driven-results",
-    "title": "Data-Driven Results",
-    "description": "We rely on data-driven insights to guide our marketing efforts, helping you make informed decisions that boost your ROI and long-term success.",
+    "id": "commitment-to-excellence",
+    "title": "Commitment to Excellence",
+    "description": "We strive for the highest standards in every project, ensuring quality and attention to detail in every aspect of our work.",
     "order": 2
   },
   {
-    "id": "full-service-agency",
-    "title": "Full-Service Agency",
-    "description": "From digital marketing to web development and branding, we offer a comprehensive suite of services to meet all your business needs under one roof.",
+    "id": "customer-centered-approach",
+    "title": "Customer-Centered Approach",
+    "description": "Our clients’ success is our top priority. We are dedicated to delivering solutions that are tailored to meet their unique needs and goals.",
     "order": 3
   },
   {
-    "id": "commitment-excellence",
-    "title": "Commitment to Excellence",
-    "description": "We're dedicated to delivering exceptional quality in everything we do, from campaign strategy to execution, ensuring that your brand stands out and thrives in the digital world.",
+    "id": "innovation",
+    "title": "Innovation",
+    "description": "We embrace cutting-edge technology and forward-thinking strategies to ensure our clients stay ahead in the fast-evolving digital landscape.",
     "order": 4
   },
   {
-    "id": "veteran-led",
-    "title": "Veteran-Led Excellence",
-    "description": "As a veteran-led agency, we bring a strong commitment to discipline, reliability, and results, ensuring you receive top-tier service and expertise in every project we undertake.",
+    "id": "integrity",
+    "title": "Integrity",
+    "description": "We operate with transparency and honesty in everything we do, building trust and strong, lasting partnerships with our clients.",
     "order": 5
   }
 ]

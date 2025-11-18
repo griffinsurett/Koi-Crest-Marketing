@@ -15,7 +15,10 @@ import CTASection from "@/layouts/CTASection.astro";
 import SecondaryHero from "@/layouts/SecondaryHero.astro";
 ---
 
-<BaseLayout title={`${siteData.title} - home`} description={siteData.description}>
+<BaseLayout
+  title={`${siteData.title} - home`}
+  description={siteData.description}
+>
   <main class="flex-1">
     <!-- Hero ContentRenderer with static content -->
     <SecondaryHero
@@ -32,20 +35,17 @@ import SecondaryHero from "@/layouts/SecondaryHero.astro";
       }}
     />
 
-    <AboutSection />
+    <AboutSection
+      subtitle="About Us"
+      title="Propelling your brand to new heights in the digital realm"
+      description={`Richard Faria grew up in New Jersey with a passion for creativity and technology. After years of working in digital media, he noticed how many small businesses struggled to stand out online. Driven by a vision to help them shine, he founded Koi Crest Marketing—a company named after the koi fish, a symbol of perseverance and transformation. Richard wanted his agency to reflect those same values: helping clients navigate the digital currents and rise above their competition with bold, imaginative branding. Koi Crest Marketing quickly earned a reputation for its fresh ideas and client-centered approach. Whether it was designing eye-catching websites or crafting smart social media campaigns, Richard and his team made it their mission to elevate every brand they touched. Over time, Koi Crest became known not just for its results, but for its genuine commitment to helping businesses succeed. Richard’s story proved that with passion and persistence, even a small startup can make waves in the digital marketing world.`}
+      learnMoreUrl="/about-us"
+      showButton={false}
+    >
+      <ContentRenderer query={query("mission-vision")} variant="MissionVisionVariant" />
+  </AboutSection>
 
-    <ContentRenderer
-      query={query("reasons")}
-      variant="WhyChooseUsVariant"
-    />
-
-    <!-- Filtered query - still gets meta from authors -->
-    <!-- <ContentRenderer
-      query={query("authors").where(whereArrayContains("tags", "featured"))}
-      variant="GridVariant"
-      columns={3}
-      gap="lg"
-    /> -->
+    <ContentRenderer query={query("values")} variant="WhyChooseUsVariant" />
 
     <!-- FAQ ContentRenderer -->
     <ContentRenderer
@@ -56,13 +56,13 @@ import SecondaryHero from "@/layouts/SecondaryHero.astro";
 
     <!-- Contact ContentRenderer -->
     <CTASection>
-
-    <!-- Multi-collection query - requires manual title/description -->
-    <ContentRenderer
-      query={query(["blog", "projects"]).orderBy(sortByDate()).limit(10)}
-      variant="ListVariant"
-      title="Recent Updates"
-      description="Latest from our blog and portfolio"
-    />
+      <!-- Multi-collection query - requires manual title/description -->
+      <ContentRenderer
+        query={query(["blog", "projects"]).orderBy(sortByDate()).limit(10)}
+        variant="ListVariant"
+        title="Recent Updates"
+        description="Latest from our blog and portfolio"
+      />
+    </CTASection>
   </main>
 </BaseLayout>
