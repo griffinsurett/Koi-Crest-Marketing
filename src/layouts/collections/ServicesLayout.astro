@@ -2,19 +2,22 @@
 // src/layouts/collections/ServicesLayout.astro
 /**
  * Services Layout - Default Item Page Layout
- * 
+ *
  * The standard layout for individual services collection items.
  * Features:
  * - Uses MainHero with bannerImage (or default)
  * - Metadata display (date, author, reading time)
  * - MDX content rendering
  */
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import SecondaryHero from '@/layouts/SecondaryHero.astro';
-import type { CollectionLayoutProps } from './types';
-import MainHero from '../MainHero.astro';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import SecondaryHero from "@/layouts/SecondaryHero.astro";
+import type { CollectionLayoutProps } from "./types";
+import MainHero from "../MainHero.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query, sortByDate, sortByOrder, getChildren } from "@/utils/query";
+import { normalizeId } from "@/utils/query/helpers";
 
-const { 
+const {
   entry,
   collection,
   collectionMeta,
@@ -25,22 +28,65 @@ const {
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
+const parentRefs = data?.parent;
+const baseServiceId = normalizeId(entry?.id || entry?.slug || "");
+
+// Determine which parent to use for child lookup: explicit parent if present, otherwise the current service
+const parentId = (() => {
+  if (!parentRefs || (Array.isArray(parentRefs) && parentRefs.length === 0)) {
+    return baseServiceId;
+  }
+  const primaryParent = Array.isArray(parentRefs) ? parentRefs[0] : parentRefs;
+  const parentRefId =
+    typeof primaryParent === "string"
+      ? primaryParent
+      : primaryParent?.id || primaryParent?.slug || "";
+  return normalizeId(parentRefId);
+})();
+
+// Use query system helper to fetch child relations and then filter the services query to those IDs
+const childRelations = parentId ? await getChildren("services", parentId) : [];
+const childIds = new Set(childRelations.map((rel) => normalizeId(rel.id)));
+
+const childrenQuery = query("services")
+  .where((service) => childIds.has(normalizeId(service.id || service.slug || "")))
+  .orderBy(sortByOrder());
 ---
+
 <BaseLayout {...seoProps}>
   <main class="flex-1">
     {/* Hero section - always displayed */}
-    <MainHero
-      title={data.title}
-      description={data.description}
+    <MainHero title={data.title} description={data.description} />
+
+    <!-- Services - children of the current or parent service -->
+    <ContentRenderer
+      query={childrenQuery}
+      variant="ServicesVariant"
+      columns={3}
+      gap="lg"
+    />
+
+    <!-- Testimonials with rating filter -->
+    <ContentRenderer
+      query={query("testimonials")}
+      variant="TestimonialsVariant"
+    />
+
+    <!-- Portfolio with sorting -->
+    <ContentRenderer
+      query={query("projects").orderBy(sortByDate("publishDate", "desc"))}
+      variant="PortfolioVariant"
     />
 
     {/* MDX content */}
-    {Content && (
-      <article class="container mx-auto px-4 py-8 md:py-12">
-        <div class="prose prose-lg max-w-4xl mx-auto">
-          <Content />
-        </div>
-      </article>
-    )}
+    {
+      Content && (
+        <article class="container mx-auto px-4">
+          <div class="prose prose-lg max-w-4xl mx-auto">
+            <Content />
+          </div>
+        </article>
+      )
+    }
   </main>
 </BaseLayout>
