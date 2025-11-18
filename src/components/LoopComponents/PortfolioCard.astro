@@ -16,13 +16,14 @@
 export interface Props {
   title: string;              // Project title
   industry?: string;          // Industry/category (Gaming, Real Estate, etc.)
-  tags?: string[];           // Service tags (SEO, Social Media, etc.)
+  tags?: string[];            // Service tags (SEO, Social Media, etc.)
   description?: string;       // Project description/results
-  result?: string;           // Project results text
-  image?: {                  // Project image
+  result?: string;            // Project results text
+  image?: {                   // Project image
     src: string;
     alt: string;
   };
+  featuredImage?: any;        // Optional featured image from collection data
   url?: string;              // Link to project page
 }
 
@@ -33,17 +34,41 @@ const {
   description,
   result,
   image,
+  featuredImage,
   url
 } = Astro.props;
+
+// Resolve image source from explicit image prop or featuredImage fallback
+const rawImage = image || featuredImage;
+
+function resolveImageSrc(img: any) {
+  if (!img) return '';
+  if (typeof img === 'string') return img.startsWith('@/') ? img.replace('@/', '/src/') : img;
+  if (typeof img === 'object' && 'src' in img) {
+    const source = (img as any).src;
+    if (typeof source === 'string') return source;
+    if (typeof source === 'object' && 'src' in source) return (source as any).src;
+    return source;
+  }
+  return '';
+}
+
+const resolvedImageSrc = resolveImageSrc(rawImage);
+const resolvedImageAlt =
+  (rawImage && typeof rawImage === "object" && "alt" in rawImage && (rawImage as any).alt) ||
+  title;
+const displayImage = resolvedImageSrc
+  ? { src: resolvedImageSrc, alt: resolvedImageAlt || title }
+  : undefined;
 ---
 
 <article class="bg-gray-100 rounded-lg overflow-hidden">
   <!-- Image with Category Badge -->
   <div class="relative">
-    {image ? (
+    {displayImage ? (
       <img 
-        src={image.src} 
-        alt={image.alt}
+        src={displayImage.src} 
+        alt={displayImage.alt}
         class="w-full h-64 object-cover"
       />
     ) : (
