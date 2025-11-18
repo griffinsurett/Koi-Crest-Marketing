@@ -122,4 +122,8 @@ export const collections = {
         benefit: z.string(),
       }),
   }),
+  "legal": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }),
+  }),
 };

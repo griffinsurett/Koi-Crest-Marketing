@@ -12,6 +12,7 @@
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import SectionHeader from "@/components/SectionHeader";
 import ReasonCard from "@/components/LoopComponents/ReasonCard.astro";
+import { Image } from "astro:assets";
 
 interface Props extends BaseVariantProps {
   featuredImage?: {
@@ -49,7 +50,7 @@ const {
 
         <!-- Featured Image or Placeholder -->
         {featuredImage ? (
-          <img 
+          <Image 
             src={featuredImage.src} 
             alt={featuredImage.alt}
             class="w-full rounded-lg"

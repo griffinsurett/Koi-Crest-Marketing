@@ -8,13 +8,12 @@ addToMenu:
   - menu: "main-menu"
 ---
 
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, sortByOrder } from "@/utils/query";
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import { query, sortByOrder } from '@/utils/query';
 
-{" "}
-<ContentRenderer
-  query={query("contact-us").orderBy(sortByOrder())}
-  variant="ContactVariant"
-  columns={1}
-  gap="lg"
-/>
+  <ContentRenderer
+      query={query("contact-us").orderBy(sortByOrder())}
+      variant="ContactVariant"
+      columns={1}
+      gap="lg"
+      />

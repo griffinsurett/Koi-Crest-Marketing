@@ -22,6 +22,7 @@ export interface BaseVariantProps {
   collectionUrl?: string;      // URL to collection index page (for "View All" links)
   collectionTitle?: string;    // Display name for collection (for "View All" text)
   id?: string;                 // Manual ID override (auto-generated if not provided)
+  featuredImage?: any;         // Optional featured image passed from collection meta
 }
 
 /**

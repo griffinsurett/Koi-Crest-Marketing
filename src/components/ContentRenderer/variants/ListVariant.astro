@@ -12,6 +12,7 @@ import type { BaseVariantProps } from "../ContentRenderer.types";
 import ListCard from '@/components/LoopComponents/ListCard.astro';
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import { formatPhoneNumber } from '@/utils/string';
+import Button from "@/components/Button/Button";
 
 interface Props extends BaseVariantProps {
   orientation?: 'horizontal' | 'vertical';
@@ -63,14 +64,15 @@ const getHref = (item: any) => {
       <ul class="space-y-2 list-none">
         {items.map((item) => (
           <li>
-            <a 
+            <Button
+              variant="nounderlink" 
               href={getHref(item) || '#'} 
-              class="text-gray-600 hover:text-gray-900 transition text-sm block py-1"
+              className="text-gray-600 hover:text-gray-900 transition text-sm block py-1"
               target={item.openInNewTab ? '_blank' : undefined}
               rel={item.openInNewTab ? 'noopener noreferrer' : undefined}
             >
               {getDisplayTitle(item)}
-            </a>
+            </Button>
           </li>
         ))}
       </ul>
