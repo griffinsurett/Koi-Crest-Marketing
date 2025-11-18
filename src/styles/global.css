@@ -9,24 +9,33 @@
     --color-MainLight: var(--color-white);
 }
 
+@layer base {
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Montserrat', sans-serif;
+    }
+    h1, h2, h3 {
+        text-transform: uppercase;
+    }
+}
+
 @layer components {
     .h1 {
-        @apply text-6xl lg:text-7xl font-bold;
+        @apply text-6xl lg:text-7xl font-extrabold;
     }
     .h2 {
-        @apply text-4xl lg:text-5xl font-semibold;
+        @apply text-4xl lg:text-5xl font-extrabold;
     }
     .h3 {
-        @apply text-2xl lg:text-3xl font-semibold;
+        @apply text-2xl lg:text-3xl font-extrabold;
     }
     .h4 {
-        @apply text-xl lg:text-2xl font-semibold;
+        @apply text-xl lg:text-2xl font-bold;
     }
     .h5 {
-        @apply text-lg lg:text-xl font-semibold;
+        @apply text-lg lg:text-xl font-bold;
     }
     .h6 {
-        @apply text-base lg:text-lg font-semibold;
+        @apply text-base lg:text-lg font-bold;
     }
     .main-text {
         @apply text-lg;
