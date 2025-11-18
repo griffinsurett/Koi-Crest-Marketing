@@ -17,7 +17,7 @@ export default function SecondaryButton({
   ...props
 }: ButtonProps) {
   // Koi Crest secondary styling - white background with dark border
-  const variantClasses = 'inline-flex items-center gap-2 bg-white text-MainDark px-6 py-3 rounded-md hover:bg-gray-50 transition duration-200';
+  const variantClasses = 'hover-scale-up-center inline-flex items-center gap-2 bg-white text-MainDark px-6 py-3 rounded-md transition duration-200';
 
   return (
     <ButtonBase
