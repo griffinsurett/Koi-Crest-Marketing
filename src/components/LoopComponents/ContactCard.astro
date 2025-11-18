@@ -21,9 +21,11 @@ export interface Props {
   tags?: string[];         // Used to determine default icon
   description?: string;    // Optional label/description
   icon?: any;              // Custom icon (overrides default)
+  itemKey?: string;        // Identifier (slug/id) from collection entry
+  label?: string;          // Optional label for the contact method
 }
 
-const { title, linkPrefix, href: hrefProp, tags, description, icon } = Astro.props;
+const { title, linkPrefix, href: hrefProp, tags, description, icon, itemKey, label } = Astro.props;
 
 // Smart icon selection based on tags if no custom icon provided
 // const defaultIcon = tags?.includes('phone') 
@@ -42,7 +44,12 @@ const href = hrefProp || (linkPrefix ? `${linkPrefix}${title}` : undefined);
   <div class="flex items-center justify-center gap-4">
 
     <div class="flex-1 text-center">
-      <h3>{title}</h3>
+      {label && (
+        <p class="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 mb-2">
+          {label}
+        </p>
+      )}
+
       {href ? (
         <a
           href={href}
@@ -51,12 +58,9 @@ const href = hrefProp || (linkPrefix ? `${linkPrefix}${title}` : undefined);
           {title}
         </a>
       ) : (
-        <p class="text-lg font-semibold text-slate-900">{title}</p>
+        <p class="text-base font-semibold text-slate-900">{title}</p>
       )}
 
-      {description && (
-        <p class="text-slate-600 mt-1">{description}</p>
-      )}
     </div>
   </div>
 </div>

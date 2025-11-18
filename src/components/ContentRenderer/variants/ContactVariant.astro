@@ -16,6 +16,7 @@ import { shouldShowCollectionCTA } from "../utils/helpers";
 import ContactForm from "@/components/Form/forms/ContactForm";
 import { Image } from "astro:assets";
 import featuredImageSrc from "@/assets/placeholder.svg";
+import { formatPhoneNumber } from "@/utils/string";
 
 interface Props extends BaseVariantProps {
   columns?: 1 | 2 | 3;
@@ -42,7 +43,7 @@ const columnClasses = {
 };
 ---
 
-<section id={id} class={`py-16 w-full ${className}`}>
+<section id={id} class={`w-full ${className}`}>
   <div class="mx-auto">
     {/* Header */}
     {
@@ -65,13 +66,20 @@ const columnClasses = {
     {/* Contact Cards - Horizontal Layer */}
     {
       items.length > 0 && (
-        <div class={`flex ${columnClasses[columns]} flex-col lg:flex-row container mx-auto px-4 max-w-7xl gap-6 mb-16 bg-MainLight`}>
+        <div class={`flex ${columnClasses[columns]} flex-col lg:flex-row container mx-auto px-4 max-w-7xl py-16 gap-6 bg-MainLight`}>
           {items.map((item) => {
             const linkPrefix = item.linkPrefix ?? item.data?.linkPrefix;
-            const title = item.title ?? item.data?.title;
-            const url = item.url ?? (linkPrefix ? `${linkPrefix}${title}` : undefined);
+            const rawTitle = item.title ?? item.data?.title;
+            const url = item.url ?? (linkPrefix ? `${linkPrefix}${rawTitle}` : undefined);
+            const itemKey =
+              item.id ?? item.slug ?? item.data?.id ?? item.data?.slug;
+            const displayTitle =
+              typeof rawTitle === "string" &&
+              (itemKey === "phone" || (typeof linkPrefix === "string" && linkPrefix.startsWith("tel")))
+                ? formatPhoneNumber(rawTitle)
+                : rawTitle;
             return (
-              <ContactCard {...item} href={url} title={title} />
+              <ContactCard {...item} href={url} title={displayTitle} itemKey={itemKey} />
             );
           })}
         </div>

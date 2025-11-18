@@ -39,6 +39,7 @@ const { title: pageTitle, description: pageDescription } = seoProps;
 
 // Use featuredImage from _meta.mdx if provided, otherwise undefined (will use default)
 const heroImage = collectionMeta.featuredImage;
+const showCTA = collectionName !== "contact-us";
 ---
 
 <BaseLayout {...seoProps}>
@@ -62,6 +63,6 @@ const heroImage = collectionMeta.featuredImage;
         )
       }
 
-    <CTASection />
+    {showCTA && <CTASection />}
   </main>
 </BaseLayout>
