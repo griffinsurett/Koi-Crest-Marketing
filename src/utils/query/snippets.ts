@@ -6,8 +6,9 @@
  * These will make it easier to reuse complex queries
  */
 
-import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, getChildren, and, or } from '@/utils/query';
-import type { CollectionEntry, CollectionKey } from 'astro:content';
+import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, normalizeId, and, or } from '@/utils/query';
+import { getItemKey } from '@/utils/collections';
+import type { CollectionKey } from 'astro:content';
 
 // ============================================================================
 // GENERAL PATTERNS
@@ -26,8 +27,24 @@ import type { CollectionEntry, CollectionKey } from 'astro:content';
 //     .orderBy(sortByDate('publishDate', 'desc'))
 //     .limit(limit);
 
-// TODO: Items by tag(s)
-// export const byTag = (collection: CollectionKey, tags: string | string[], limit?: number) => {}
+export const byTag = (collection: CollectionKey, tags: string | string[], limit?: number) => {
+  const tagList = (Array.isArray(tags) ? tags : [tags]).filter(Boolean);
+  if (tagList.length === 0) {
+    // No tags to match; return empty query
+    return query(collection).where(() => false).limit(0);
+  }
+
+  const filter =
+    tagList.length === 1
+      ? whereArrayContains('tags', tagList[0])
+      : or(...tagList.map((tag) => whereArrayContains('tags', tag)));
+
+  const q = query(collection).where(filter);
+  if (typeof limit === "number") {
+    q.limit(limit);
+  }
+  return q;
+};
 
 // TODO: Items by author
 // export const byAuthor = (collection: CollectionKey, authorId: string, limit?: number) => {}
@@ -52,26 +69,135 @@ export const leaves = async (collection: CollectionKey) => {
   return entries.sort(sortByOrder());
 };
 
-export const children = async <T extends CollectionKey>(
-  collection: T,
-  parentId: string,
-  options: { recursive?: boolean; maxDepth?: number } = {}
-) => {
-  const { recursive = false, maxDepth = Infinity } = options;
-  const relations = await getChildren(collection, parentId, {
-    resolve: true,
-    recursive,
-    maxDepth,
-  });
+/**
+ * Children of a specific parent
+ */
+export const children = (collection: CollectionKey, parentId: string) => {
+  // Guard against missing/undefined parent ids so the query doesn't crash
+  const targetId = parentId ? normalizeId(parentId) : "";
+  if (!targetId) {
+    // No parent means no children to fetch
+    return query(collection).where(() => false);
+  }
+  return query(collection)
+    .where((entry) => {
+      const parent = (entry.data as any).parent;
+      if (!parent) return false;
 
-  const entries: CollectionEntry<T>[] = [];
-  for (const relation of relations) {
-    if (relation.entry) {
-      entries.push(relation.entry as CollectionEntry<T>);
-    }
+      if (Array.isArray(parent)) {
+        return parent.some((p) => {
+          const id = typeof p === "string" ? p : p?.id || p?.slug || "";
+          return normalizeId(id) === targetId;
+        });
+      }
+
+      const id = typeof parent === "string" ? parent : parent?.id || parent?.slug || "";
+      return normalizeId(id) === targetId;
+    })
+    .orderBy(sortByOrder());
+};
+
+/**
+ * Parent(s) of a specific child
+ */
+export const parent = (
+  collection: CollectionKey,
+  child?: { data?: any; parent?: any; id?: string; slug?: string } | string
+) => {
+  // Pull parent info either from explicit string or the child entry's data/parent fields
+  const parentField =
+    typeof child === "string"
+      ? child
+      : child
+      ? (child as any).data?.parent ?? (child as any).parent
+      : undefined;
+
+  const parentRefs = Array.isArray(parentField)
+    ? parentField
+    : parentField
+    ? [parentField]
+    : [];
+
+  const targetIds = parentRefs
+    .map((p) => (typeof p === "string" ? p : p?.id || p?.slug || ""))
+    .filter(Boolean)
+    .map(normalizeId);
+
+  if (targetIds.length === 0) {
+    // No parent data; return empty result
+    return query(collection).where(() => false).limit(0);
   }
 
-  return entries.sort(sortByOrder());
+  return query(collection)
+    .where((entry) => {
+      const id = normalizeId(getItemKey(entry));
+      return targetIds.includes(id);
+    })
+    .orderBy(sortByOrder());
+};
+
+/**
+ * Get siblings (entries with the same parent) for a given item
+ */
+export const siblings = (
+  collection: CollectionKey,
+  item?: { data?: any; parent?: any; id?: string; slug?: string } | string
+) => {
+  const rawId =
+    typeof item === "string"
+      ? item
+      : item
+      ? (item as any).id || (item as any).slug || ""
+      : "";
+  const targetId = rawId ? normalizeId(rawId) : "";
+
+  // Derive parent references from the passed item when available
+  const parentField =
+    typeof item === "string"
+      ? undefined
+      : item
+      ? (item as any).data?.parent ?? (item as any).parent
+      : undefined;
+
+  const parentRefs = Array.isArray(parentField)
+    ? parentField
+    : parentField
+    ? [parentField]
+    : [];
+
+  const targetParentIds = parentRefs
+    .map((p) => (typeof p === "string" ? p : p?.id || p?.slug || ""))
+    .filter(Boolean)
+    .map(normalizeId);
+
+  if (targetParentIds.length === 0) {
+    // No parent info; can't determine siblings
+    return query(collection).where(() => false).limit(0);
+  }
+
+  const parentIdSet = new Set(targetParentIds);
+
+  return query(collection)
+    .where((entry) => {
+      // Exclude the target item itself when possible
+      if (targetId && normalizeId(getItemKey(entry)) === targetId) {
+        return false;
+      }
+
+      const parent = (entry.data as any).parent;
+      if (!parent) return false;
+
+      if (Array.isArray(parent)) {
+        return parent.some((p) => {
+          const id = typeof p === "string" ? p : p?.id || p?.slug || "";
+          return id && parentIdSet.has(normalizeId(id));
+        });
+      }
+
+      const id = typeof parent === "string" ? parent : parent?.id || parent?.slug || "";
+      return Boolean(id && parentIdSet.has(normalizeId(id)));
+    })
+    .orderBy(sortByOrder());
 };
 
 // TODO: Items at specific depth
@@ -102,5 +228,5 @@ export const children = async <T extends CollectionKey>(
 // ============================================================================
 
 export const snippets = {
-  // Will be populated with the above functions
+
 };

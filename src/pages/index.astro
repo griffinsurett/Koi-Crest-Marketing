@@ -12,6 +12,7 @@ import {
 import MainHero from "@/layouts/MainHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import CTASection from "@/layouts/CTASection.astro";
+import { byTag } from "@/utils/query/snippets";
 ---
 
 <BaseLayout title={`${siteData.title} - home`} description={siteData.description}>
@@ -66,8 +67,7 @@ import CTASection from "@/layouts/CTASection.astro";
 
     <!-- Services - auto-populates from services meta -->
     <ContentRenderer
-      query={query("services")
-        .where(whereArrayContains("tags", "featured"))}
+      query={byTag("services", "featured")}
       variant="ServicesVariant"
       columns={3}
       gap="lg"

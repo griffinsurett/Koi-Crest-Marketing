@@ -14,8 +14,9 @@ import SecondaryHero from "@/layouts/SecondaryHero.astro";
 import type { CollectionLayoutProps } from "./types";
 import MainHero from "../MainHero.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, sortByDate, sortByOrder, getChildren } from "@/utils/query";
-import { normalizeId } from "@/utils/query/helpers";
+import { query, sortByDate } from "@/utils/query";
+import { children, siblings } from "@/utils/query/snippets";
+import { getItemKey } from "@/utils/collections";
 
 const {
   entry,
@@ -28,29 +29,6 @@ const {
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
-const parentRefs = data?.parent;
-const baseServiceId = normalizeId(entry?.id || entry?.slug || "");
-
-// Determine which parent to use for child lookup: explicit parent if present, otherwise the current service
-const parentId = (() => {
-  if (!parentRefs || (Array.isArray(parentRefs) && parentRefs.length === 0)) {
-    return baseServiceId;
-  }
-  const primaryParent = Array.isArray(parentRefs) ? parentRefs[0] : parentRefs;
-  const parentRefId =
-    typeof primaryParent === "string"
-      ? primaryParent
-      : primaryParent?.id || primaryParent?.slug || "";
-  return normalizeId(parentRefId);
-})();
-
-// Use query system helper to fetch child relations and then filter the services query to those IDs
-const childRelations = parentId ? await getChildren("services", parentId) : [];
-const childIds = new Set(childRelations.map((rel) => normalizeId(rel.id)));
-
-const childrenQuery = query("services")
-  .where((service) => childIds.has(normalizeId(service.id || service.slug || "")))
-  .orderBy(sortByOrder());
 ---
 
 <BaseLayout {...seoProps}>
@@ -60,7 +38,7 @@ const childrenQuery = query("services")
 
     <!-- Services - children of the current or parent service -->
     <ContentRenderer
-      query={childrenQuery}
+      query={children("services", entry.slug)}
       variant="ServicesVariant"
       columns={3}
       gap="lg"
@@ -76,6 +54,14 @@ const childrenQuery = query("services")
     <ContentRenderer
       query={query("projects").orderBy(sortByDate("publishDate", "desc"))}
       variant="PortfolioVariant"
+    />
+
+    <!-- Services - auto-populates from services meta -->
+    <ContentRenderer
+      query={siblings("services", entry.slug)}
+      variant="ServicesVariant"
+      columns={3}
+      gap="lg"
     />
 
     {/* MDX content */}
