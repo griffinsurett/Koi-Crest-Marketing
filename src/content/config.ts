@@ -116,6 +116,11 @@ export const collections = {
   schema: ({ image }) =>
     baseSchema({ image }),
 }),
+"values": defineCollection({
+  loader: file("src/content/values/values.json"),
+  schema: ({ image }) =>
+    baseSchema({ image }),
+}),
   "benefits": defineCollection({
     loader: file("src/content/benefits/benefits.json"),
     schema: ({ image }) =>

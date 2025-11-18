@@ -1,0 +1,68 @@
+---
+// src/pages/about.astro
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { siteData } from "@/content/siteData";
+import {
+  query,
+  sortByDate,
+  sortByOrder,
+  whereArrayContains,
+} from "@/utils/query";
+import MainHero from "@/layouts/MainHero.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import CTASection from "@/layouts/CTASection.astro";
+import SecondaryHero from "@/layouts/SecondaryHero.astro";
+---
+
+<BaseLayout title={`${siteData.title} - home`} description={siteData.description}>
+  <main class="flex-1">
+    <!-- Hero ContentRenderer with static content -->
+    <SecondaryHero
+      title={siteData.title}
+      description={siteData.description}
+      subtitle={siteData.tagline}
+      primaryCTA={{
+        text: "Get Started",
+        link: "/contact-us",
+      }}
+      secondaryCTA={{
+        text: "View Services",
+        link: "/services",
+      }}
+    />
+
+    <AboutSection />
+
+    <ContentRenderer
+      query={query("reasons")}
+      variant="WhyChooseUsVariant"
+    />
+
+    <!-- Filtered query - still gets meta from authors -->
+    <!-- <ContentRenderer
+      query={query("authors").where(whereArrayContains("tags", "featured"))}
+      variant="GridVariant"
+      columns={3}
+      gap="lg"
+    /> -->
+
+    <!-- FAQ ContentRenderer -->
+    <ContentRenderer
+      query={query("faq").orderBy(sortByOrder())}
+      variant="AccordionVariant"
+      allowMultiple={false}
+    />
+
+    <!-- Contact ContentRenderer -->
+    <CTASection>
+
+    <!-- Multi-collection query - requires manual title/description -->
+    <ContentRenderer
+      query={query(["blog", "projects"]).orderBy(sortByDate()).limit(10)}
+      variant="ListVariant"
+      title="Recent Updates"
+      description="Latest from our blog and portfolio"
+    />
+  </main>
+</BaseLayout>
