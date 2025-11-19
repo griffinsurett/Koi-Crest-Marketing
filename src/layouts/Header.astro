@@ -7,8 +7,8 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import { query, sortBy } from "@/utils/query";
 import { siteData } from "@/content/siteData";
 import { Image } from "astro:assets";
-import Icon from "@/components/Icon";
 import Logo from "@/components/Logo.astro";
+import PhoneLink from "@/components/Header/PhoneLink.astro";
 ---
 
 <header class="z-[40] bg-white border-b border-gray-200 shadow-sm">
@@ -35,15 +35,7 @@ import Logo from "@/components/Logo.astro";
       />
 
       <!-- Phone Number -->
-      <a
-        href="tel:732-362-6476"
-        aria-label="Call us at 732-362-6476"
-        class="flex items-center lg:space-x-2 text-gray-500 hover:text-black transition font-medium"
-      >
-        <!-- Phone Number -->
-        <Icon icon="fa:phone" size="lg" className="transform text-MainDark" />
-        <span class="text-lg hidden lg:block">732-362-6476</span>
-      </a>
+      <PhoneLink />
       </div>
     </div>
   </div>
