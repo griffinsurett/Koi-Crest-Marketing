@@ -1,14 +1,14 @@
 [
   {
     "id": "phone",
-    "title": "7329391309",
+    "title": "732-362-6476",
     "icon": "fa:phone",
     "label": "Phone Number",
     "linkPrefix": "tel:"
   },
   {
     "id": "email",
-    "title": "griffinswebservices@gmail.com",
+    "title": "koicrestofficial@gmail.com",
     "icon": "lu:mail",
     "label": "Email Address",
     "linkPrefix": "mailto:"

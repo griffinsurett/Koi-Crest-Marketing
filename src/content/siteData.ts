@@ -11,10 +11,4 @@ export const siteData = {
   domain: siteDomain,
   url: `https://${siteDomain}`,
   location: "New Jersey, USA",
-  address: "123 Main St, Springfield, NJ 07081",
 };
-
-export const ctaData = {
-  text: "Get Started with Greastro",
-  link: "/contact-us",
-}
