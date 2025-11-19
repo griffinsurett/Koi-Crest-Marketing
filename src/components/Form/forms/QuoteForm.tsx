@@ -1,55 +1,47 @@
 // src/components/Form/forms/QuoteForm.tsx
 /**
- * Quote Form - Reduced Spacing
- *
- * Quote form with tighter spacing between fields.
- * Changed containerClassName from mb-4 to mb-0 for all inputs.
+ * Quote Form - React Version
+ * Uses FormWrapper with HTML5 validation
  */
 
-import { z } from "zod";
-import Form from "@/components/Form/Form";
+import FormWrapper from "@/components/Form/FormWrapper";
 import Input from "@/components/Form/inputs/Input";
 import Checkbox from "@/components/Form/inputs/Checkbox";
-import FormMessages from "@/components/Form/FormMessages";
 import Button from "@/components/Button/Button";
 
-const contactSchema = z.object({
-  firstName: z.string().min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(10, "Please enter a valid phone number"),
-  company: z.string().optional(),
-  privacy: z.boolean().refine((val) => val === true, {
-    message: "You must agree to the Privacy Policy",
-  }),
-});
-
-export default function ContactForm() {
+export default function QuoteForm() {
   const handleSubmit = async (values: any) => {
+    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Form submitted:", values);
+    console.log("Quote form submitted:", values);
+    
+    // Here you would make your actual API call
+    // const response = await fetch('/api/quote', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(values)
+    // });
   };
 
   return (
-    <Form
+    <FormWrapper
       onSubmit={handleSubmit}
-      validationSchema={contactSchema}
-      successMessage="Thank you for contacting us! We'll get back to you soon."
+      successMessage="Thank you for your quote request! We'll get back to you soon."
+      errorMessage="There was an error submitting your form. Please try again."
       resetOnSuccess={true}
       className="w-full gap-0"
     >
-      <FormMessages />
-
       {/* Name Fields Row */}
-      <div className="flex flex-col lg:flex-row justify-between gap-2 mb-0">
+      <div className="flex flex-col lg:flex-row justify-between gap-2 mb-4">
         <Input
           name="firstName"
           label="First Name"
           type="text"
           required
+          minLength={2}
           placeholder="First Name"
           containerClassName="mb-0 flex-1"
-          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
         />
 
         <Input
@@ -57,9 +49,10 @@ export default function ContactForm() {
           label="Last Name"
           type="text"
           required
+          minLength={2}
           placeholder="Last Name"
           containerClassName="mb-0 flex-1"
-          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
         />
       </div>
 
@@ -70,8 +63,8 @@ export default function ContactForm() {
         type="email"
         required
         placeholder="me@website.com"
-        containerClassName="mb-0"
-        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+        containerClassName="mb-4"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
       />
 
       {/* Phone Field */}
@@ -80,9 +73,11 @@ export default function ContactForm() {
         label="Phone Number"
         type="tel"
         required
+        pattern="[0-9]{10,}"
+        title="Please enter at least 10 digits"
         placeholder="012-345-6789"
-        containerClassName="mb-0"
-        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+        containerClassName="mb-4"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
       />
 
       {/* Company Field (Optional) */}
@@ -91,8 +86,8 @@ export default function ContactForm() {
         label="Company Name"
         type="text"
         placeholder="LLC or whatever you trade as"
-        containerClassName="mb-0"
-        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+        containerClassName="mb-4"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
       />
 
       {/* Privacy Policy Checkbox */}
@@ -103,7 +98,7 @@ export default function ContactForm() {
             I have read and agree to the{" "}
             <a
               href="/privacy-policy"
-              className="text-pink-500 hover:text-pink-600"
+              className="text-pink-500 hover:text-pink-600 underline"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -112,13 +107,14 @@ export default function ContactForm() {
           </>
         }
         required
-        containerClassName="mb-4"
+        containerClassName="mb-6"
+        checkboxClassName="w-4 h-4 text-MainDark border-gray-300 rounded focus:ring-2 focus:ring-MainDark"
       />
 
       {/* Submit Button */}
       <Button variant="primary" type="submit" className="w-full mx-auto">
-        Submit Form
+        Get Your Quote
       </Button>
-    </Form>
+    </FormWrapper>
   );
 }

@@ -1,0 +1,216 @@
+---
+// src/components/Form/forms/QuoteForm.astro
+/**
+ * Quote Form - Astro Version
+ * Pure HTML with optional React enhancement via client:idle
+ */
+import Button from '@/components/Button/Button';
+import FormWrapper from '@/components/Form/FormWrapper';
+import Input from '@/components/Form/inputs/Input';
+import Checkbox from '@/components/Form/inputs/Checkbox';
+
+interface Props {
+  title?: string;
+  description?: string;
+  className?: string;
+  /** If true, uses React FormWrapper with client:idle. If false, uses pure HTML form. */
+  enhanced?: boolean;
+}
+
+const {
+  title,
+  description,
+  className = '',
+  enhanced = true,
+} = Astro.props;
+
+// Handler for React version (only used if enhanced=true)
+const handleSubmit = async (values: any) => {
+  console.log("Quote form submitted:", values);
+  // API call would go here
+};
+---
+
+<div class={className}>
+  {title && <h2 class="text-3xl font-bold mb-3">{title}</h2>}
+  {description && <p class="text-gray-600 mb-8">{description}</p>}
+
+  {enhanced ? (
+    <FormWrapper
+      client:idle
+      onSubmit={handleSubmit}
+      successMessage="Thank you for your quote request! We'll get back to you soon."
+      resetOnSuccess={true}
+      className="w-full gap-0"
+    >
+      <div class="flex flex-col lg:flex-row justify-between gap-2 mb-4">
+        <Input
+          name="firstName"
+          label="First Name"
+          type="text"
+          required={true}
+          minLength={2}
+          placeholder="First Name"
+          containerClassName="mb-0 flex-1"
+          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
+        />
+
+        <Input
+          name="lastName"
+          label="Last Name"
+          type="text"
+          required={true}
+          minLength={2}
+          placeholder="Last Name"
+          containerClassName="mb-0 flex-1"
+          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
+        />
+      </div>
+
+      <!-- Email Field -->
+      <Input
+        name="email"
+        label="Email"
+        type="email"
+        required={true}
+        placeholder="me@website.com"
+        containerClassName="mb-4"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
+      />
+
+      <!-- Phone Field -->
+      <Input
+        name="phone"
+        label="Phone Number"
+        type="tel"
+        required={true}
+        pattern="[0-9]{10,}"
+        placeholder="012-345-6789"
+        containerClassName="mb-4"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
+      />
+
+      <!-- Company Field -->
+      <Input
+        name="company"
+        label="Company Name"
+        type="text"
+        placeholder="LLC or whatever you trade as"
+        containerClassName="mb-4"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
+      />
+
+      <Checkbox
+        name="privacy"
+        required={true}
+        containerClassName="mb-6"
+        checkboxClassName="w-4 h-4 text-MainDark border-gray-300 rounded focus:ring-2 focus:ring-MainDark"
+      >
+        <span slot="label">
+          I have read and agree to the{" "}
+          <a
+            href="/privacy-policy"
+            class="text-pink-500 hover:text-pink-600 underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Privacy Policy
+          </a>
+        </span>
+      </Checkbox>
+
+      <!-- Submit Button -->
+      <Button variant="primary" type="submit" className="w-full">
+        Get Your Quote
+      </Button>
+    </FormWrapper>
+  ) : (
+    <!-- Pure HTML version (no JavaScript) -->
+    <form
+      action="/api/quote"
+      method="POST"
+      class="w-full gap-0"
+    >
+      <!-- Name Fields Row -->
+      <div class="flex flex-col lg:flex-row justify-between gap-2 mb-4">
+        <Input
+          name="firstName"
+          label="First Name"
+          type="text"
+          required={true}
+          minLength={2}
+          placeholder="First Name"
+          containerClassName="mb-0 flex-1"
+          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+        />
+
+        <Input
+          name="lastName"
+          label="Last Name"
+          type="text"
+          required={true}
+          minLength={2}
+          placeholder="Last Name"
+          containerClassName="mb-0 flex-1"
+          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+        />
+      </div>
+
+      <!-- Email Field -->
+      <Input
+        name="email"
+        label="Email"
+        type="email"
+        required={true}
+        placeholder="me@website.com"
+        containerClassName="mb-4"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+      />
+
+      <!-- Phone Field -->
+      <Input
+        name="phone"
+        label="Phone Number"
+        type="tel"
+        required={true}
+        pattern="[0-9]{10,}"
+        placeholder="012-345-6789"
+        containerClassName="mb-4"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+      />
+
+      <!-- Company Field -->
+      <Input
+        name="company"
+        label="Company Name"
+        type="text"
+        placeholder="LLC or whatever you trade as"
+        containerClassName="mb-4"
+        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none"
+      />
+
+      <Checkbox
+        name="privacy"
+        required={true}
+        containerClassName="mb-6"
+      >
+        <span slot="label">
+          I have read and agree to the{" "}
+          <a
+            href="/privacy-policy"
+            class="text-pink-500 hover:text-pink-600 underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Privacy Policy
+          </a>
+        </span>
+      </Checkbox>
+
+      <!-- Submit Button -->
+      <Button variant="primary" type="submit" className="w-full">
+        Get Your Quote
+      </Button>
+    </form>
+  )}
+</div>

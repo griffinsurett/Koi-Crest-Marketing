@@ -6,7 +6,7 @@
  */
 
 import type { BaseVariantProps } from "@/components/ContentRenderer/ContentRenderer.types";
-import QuoteForm from "@/components/Form/forms/QuoteForm";
+import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
 import StarRating from "@/components/StarRating.astro";
 import SectionHeader from "@/components/SectionHeader";
 import Counter from "@/components/Counter";
@@ -82,7 +82,7 @@ const displayDescription = description || heroContent.description || "";
 
     <!-- Right Column - Form -->
     <div class="lg:w-2/5 w-full">
-      <QuoteForm client:visible />
+      <QuoteForm />
     </div>
   </div>
 </section>

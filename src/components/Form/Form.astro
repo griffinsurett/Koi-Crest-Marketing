@@ -1,0 +1,82 @@
+---
+// src/components/Form/Form.astro
+/**
+ * Form.astro - Pure HTML form with zero JavaScript
+ * 
+ * Features:
+ * - Native HTML5 validation
+ * - Works without JavaScript
+ * - Instant page load
+ * - SEO friendly
+ * - Submits via POST to API endpoint
+ * 
+ * Use when: Performance is critical, simple validation is sufficient
+ */
+
+interface Props {
+  id?: string;
+  action?: string;
+  method?: string;
+  className?: string;
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
+}
+
+const {
+  id,
+  action = '/api/submit',
+  method = 'POST',
+  className = '',
+  ariaLabel,
+  ariaDescribedBy,
+} = Astro.props;
+---
+
+<form
+  id={id}
+  action={action}
+  method={method}
+  class={className}
+  aria-label={ariaLabel}
+  aria-describedby={ariaDescribedBy}
+>
+  <slot />
+</form>
+
+<style>
+  /* Basic form styling */
+  form {
+    display: block;
+  }
+  
+  /* Visual feedback for native HTML5 validation */
+  :global(input:invalid:not(:focus):not(:placeholder-shown)),
+  :global(textarea:invalid:not(:focus):not(:placeholder-shown)),
+  :global(select:invalid:not(:focus)) {
+    border-color: rgb(239, 68, 68);
+  }
+  
+  :global(input:valid:not(:focus):not(:placeholder-shown)),
+  :global(textarea:valid:not(:focus):not(:placeholder-shown)),
+  :global(select:valid:not(:focus)) {
+    border-color: rgb(34, 197, 94);
+  }
+
+  /* Focus states */
+  :global(input:focus),
+  :global(textarea:focus),
+  :global(select:focus) {
+    outline: none;
+    border-color: rgb(59, 130, 246);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  /* Disabled states */
+  :global(input:disabled),
+  :global(textarea:disabled),
+  :global(select:disabled),
+  :global(button:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
