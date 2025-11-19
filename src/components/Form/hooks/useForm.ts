@@ -1,12 +1,5 @@
-// src/components/forms/useForm.ts
-/**
- * Core Form Hook
- *
- * Manages form state, validation, and submission lifecycle.
- * Powers both single-step and multi-step forms.
- */
-
-import { useState, useCallback, useRef, useEffect } from "react";
+// src/components/Form/hooks/useForm.ts
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import type { ZodSchema } from "zod";
 import type {
   FormValues,
@@ -29,7 +22,6 @@ interface FieldValidators {
   [fieldName: string]: FieldValidator;
 }
 
-// Extended return type that includes internal methods
 interface UseFormReturn extends FormState, FormActions {
   registerFieldValidator: (name: string, validator: FieldValidator) => void;
   unregisterFieldValidator: (name: string) => void;
@@ -55,12 +47,13 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   const [message, setMessage] = useState<string | null>(null);
   const [submitCount, setSubmitCount] = useState(0);
 
-  // Refs for field validators
+  // Refs
   const fieldValidatorsRef = useRef<FieldValidators>({});
+  const validationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Derived state
   const isSubmitting = status === "submitting";
-  const isValid = Object.keys(errors).length === 0;
+  const isValid = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
   // Register field validator
   const registerFieldValidator = useCallback(
@@ -75,7 +68,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     delete fieldValidatorsRef.current[name];
   }, []);
 
-  // Validate single field with Zod schema
+  // Validate field with schema (memoized)
   const validateFieldWithSchema = useCallback(
     async (name: string, value: any): Promise<string | null> => {
       if (!validationSchema) return null;
@@ -93,30 +86,39 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     [validationSchema]
   );
 
-  // Validate single field
+  // Validate single field (debounced for performance)
   const validateField = useCallback(
     async (name: string): Promise<boolean> => {
-      const value = values[name];
-      let error: string | null = null;
-
-      // Try custom field validator first
-      const fieldValidator = fieldValidatorsRef.current[name];
-      if (fieldValidator) {
-        error = await fieldValidator(value);
+      // Clear existing timeout
+      if (validationTimeoutRef.current) {
+        clearTimeout(validationTimeoutRef.current);
       }
 
-      // Try schema validation if no custom validator or custom passed
-      if (!error && validationSchema) {
-        error = await validateFieldWithSchema(name, value);
-      }
+      return new Promise((resolve) => {
+        validationTimeoutRef.current = setTimeout(async () => {
+          const value = values[name];
+          let error: string | null = null;
 
-      // Update error state
-      setErrors((prev) => ({
-        ...prev,
-        [name]: error || undefined,
-      }));
+          // Try custom field validator first
+          const fieldValidator = fieldValidatorsRef.current[name];
+          if (fieldValidator) {
+            error = await fieldValidator(value);
+          }
 
-      return !error;
+          // Try schema validation if no custom validator
+          if (!error && validationSchema) {
+            error = await validateFieldWithSchema(name, value);
+          }
+
+          // Batch update
+          setErrors((prev) => ({
+            ...prev,
+            [name]: error || undefined,
+          }));
+
+          resolve(!error);
+        }, 100); // 100ms debounce
+      });
     },
     [values, validationSchema, validateFieldWithSchema]
   );
@@ -125,7 +127,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   const validateForm = useCallback(async (): Promise<boolean> => {
     const newErrors: FormErrors = {};
 
-    // Validate with schema first
+    // Validate with schema first (most common case)
     if (validationSchema) {
       try {
         await validationSchema.parseAsync(values);
@@ -139,30 +141,36 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       }
     }
 
-    // Validate with custom field validators
+    // Validate with custom field validators (parallel)
     const fieldNames = Object.keys(fieldValidatorsRef.current);
-    await Promise.all(
+    const validationResults = await Promise.all(
       fieldNames.map(async (name) => {
         const validator = fieldValidatorsRef.current[name];
         if (validator && !newErrors[name]) {
           const error = await validator(values[name]);
-          if (error) {
-            newErrors[name] = error;
-          }
+          return { name, error };
         }
+        return null;
       })
     );
+
+    // Apply validation results
+    validationResults.forEach((result) => {
+      if (result?.error) {
+        newErrors[result.name] = result.error;
+      }
+    });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [values, validationSchema]);
 
-  // Set field value
+  // Set field value (batched)
   const setFieldValue = useCallback(
     (name: string, value: any) => {
       setValues((prev) => ({ ...prev, [name]: value }));
 
-      // Validate on change if enabled
+      // Validate on change if enabled (debounced)
       if (validateOnChange) {
         validateField(name);
       }
@@ -178,14 +186,16 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     []
   );
 
-  // Set field touched
+  // Set field touched (debounced validation)
   const setFieldTouched = useCallback(
     (name: string, isTouched: boolean) => {
       setTouched((prev) => ({ ...prev, [name]: isTouched }));
 
-      // Validate on blur if enabled and field is touched
+      // Validate on blur if enabled
       if (isTouched && validateOnBlur) {
-        validateField(name);
+        requestAnimationFrame(() => {
+          validateField(name);
+        });
       }
     },
     [validateOnBlur, validateField]
@@ -212,7 +222,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       setStatus("submitting");
       setMessage(null);
 
-      // Mark all fields as touched
+      // Mark all fields as touched (batched)
       const allTouched = Object.keys(values).reduce(
         (acc, key) => ({ ...acc, [key]: true }),
         {}
@@ -246,12 +256,14 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     [values, validateForm, onSubmit, resetOnSuccess, resetForm]
   );
 
-  // Validate on mount if enabled
+  // Cleanup timeouts
   useEffect(() => {
-    if (validateOnMount) {
-      validateForm();
-    }
-  }, [validateOnMount, validateForm]);
+    return () => {
+      if (validationTimeoutRef.current) {
+        clearTimeout(validationTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return {
     // State
@@ -276,7 +288,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     setStatus,
     setMessage,
 
-    // Internal (exposed for Input components)
+    // Internal
     registerFieldValidator,
     unregisterFieldValidator,
     handleSubmit,
