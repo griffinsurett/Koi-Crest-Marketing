@@ -9,6 +9,7 @@ import type { BaseVariantProps } from "@/components/ContentRenderer/ContentRende
 import QuoteForm from "@/components/Form/forms/QuoteForm";
 import StarRating from "@/components/StarRating.astro";
 import SectionHeader from "@/components/SectionHeader";
+import Counter from "@/components/Counter";
 
 interface Props extends BaseVariantProps {
   subtitle?: string;
@@ -70,7 +71,9 @@ const displayDescription = description || heroContent.description || "";
             <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.85-1.26l3.03-7.08c.09-.23.12-.47.12-.66v-2z"></path>
           </svg>
           <div>
-            <div class="h2 font-bold">{stats.customers}</div>
+            <!-- <div class="h2 font-bold">{stats.customers}</div> -->
+            <Counter start={0} end={64} duration={2} className="h2 font-bold text-black" client:load>
+
             <div class="small-text text-gray-600">Happy customers</div>
           </div>
         </div>

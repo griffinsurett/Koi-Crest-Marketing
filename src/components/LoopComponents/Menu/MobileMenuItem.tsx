@@ -30,29 +30,51 @@ export default function MobileMenuItem({
   const [isExpanded, setIsExpanded] = useState(false);
   const hasChildren = children.length > 0;
   const indent = level * 16; // 16px per level
+  const indentPadding = `${indent + 16}px`;
   
   if (hasChildren) {
     return (
       <li>
-        <button 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full text-left py-3 px-4 flex justify-between items-center hover:bg-gray-50 rounded-md transition-colors"
-          aria-expanded={isExpanded}
-          aria-controls={`mobile-submenu-${slug}`}
-          style={{ paddingLeft: `${indent + 16}px` }}
-          type="button"
-        >
-          <span className="font-medium text-gray-900">{title}</span>
-          <svg 
-            className={`w-5 h-5 text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-            aria-hidden="true"
+        <div className="flex items-center gap-2">
+          {url ? (
+            <a
+              href={url}
+              onClick={onNavigate}
+              target={openInNewTab ? '_blank' : undefined}
+              rel={openInNewTab ? 'noopener noreferrer' : undefined}
+              className="flex-1 py-3 px-4 font-medium text-gray-900 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+              style={{ paddingLeft: indentPadding }}
+            >
+              {title}
+            </a>
+          ) : (
+            <span
+              className="flex-1 py-3 px-4 font-medium text-gray-900 rounded-md"
+              style={{ paddingLeft: indentPadding }}
+            >
+              {title}
+            </span>
+          )}
+
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-3 rounded-md hover:bg-gray-50 transition-colors"
+            aria-expanded={isExpanded}
+            aria-controls={`mobile-submenu-${slug}`}
+            aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${title}`}
+            type="button"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+            <svg 
+              className={`w-5 h-5 text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
         
         {isExpanded && (
           <ul 
