@@ -63,8 +63,13 @@ const {
         {
           showButton && (
             <div class="pt-4">
-              <Button href={learnMoreUrl} variant="secondary" size="lg">
-                Learn More
+              <Button
+                href={learnMoreUrl}
+                variant="secondary"
+                size="lg"
+                aria-label={`Learn more about ${title}`}
+              >
+                Learn more about {title}
               </Button>
             </div>
           )
