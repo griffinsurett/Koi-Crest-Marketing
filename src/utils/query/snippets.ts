@@ -6,9 +6,9 @@
  * These will make it easier to reuse complex queries
  */
 
-import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, normalizeId, and, or } from '@/utils/query';
+import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, normalizeId, and, or, safeGetEntry } from '@/utils/query';
 import { getItemKey } from '@/utils/collections';
-import type { CollectionKey } from 'astro:content';
+import type { CollectionKey, CollectionEntry } from 'astro:content';
 
 // ============================================================================
 // GENERAL PATTERNS
@@ -187,6 +187,18 @@ export const siblings = (
       return Boolean(id && parentIdSet.has(normalizeId(id)));
     })
     .orderBy(sortByOrder());
+};
+
+export const item = async <T extends CollectionKey>(
+  collection: T,
+  identifier?: string
+): Promise<CollectionEntry<T> | undefined> => {
+  const targetId = identifier?.trim();
+  if (!targetId) {
+    return undefined;
+  }
+  const entry = await safeGetEntry(collection, targetId);
+  return entry as CollectionEntry<T> | undefined;
 };
 
 // TODO: Items at specific depth

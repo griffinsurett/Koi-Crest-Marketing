@@ -5,57 +5,34 @@
  * Keeps markup in one place so layouts stay lean.
  */
 import Icon from "@/components/Icon";
-import { query } from "@/utils/query";
+import { item } from "@/utils/query/snippets";
 import { formatPhoneNumber } from "@/utils/string";
 
-interface Props {
-  phone?: string;
-  displayNumber?: string;
-  ariaLabel?: string;
-  class?: string;
-  iconClassName?: string;
-  textClassName?: string;
-  showNumber?: boolean;
-  icon?: string;
+const phoneEntry = await item("contact-us", "phone");
+if (!phoneEntry?.data?.title) {
+  throw new Error("contact-us entry 'phone' requires a title.");
 }
 
-const phoneEntry = await query("contact-us")
-  .where((entry) => entry.data.id === "phone")
-  .first();
+const { title, linkPrefix, icon, label } = phoneEntry.data;
 
-const defaultPhoneNumber = phoneEntry?.data.title ?? "732-362-6476";
-const defaultDisplay = formatPhoneNumber(defaultPhoneNumber);
-const linkPrefix = phoneEntry?.data.linkPrefix ?? "tel:";
-const defaultIcon = phoneEntry?.data.icon ?? "fa:phone";
+if (!linkPrefix) {
+  throw new Error("contact-us entry 'phone' requires a linkPrefix.");
+}
 
-const {
-  phone: phoneProp,
-  displayNumber: displayProp,
-  ariaLabel: ariaLabelProp,
-  class: className = "",
-  iconClassName = "transform text-MainDark",
-  textClassName = "text-lg hidden lg:block",
-  showNumber = true,
-  icon: iconProp,
-} = Astro.props as Props;
+if (!icon) {
+  throw new Error("contact-us entry 'phone' requires an icon.");
+}
 
-const phone = phoneProp ?? defaultPhoneNumber;
-const displayNumber = displayProp ?? formatPhoneNumber(phone);
-const ariaLabel =
-  ariaLabelProp ??
-  (phoneEntry?.data.label ? `Call ${phoneEntry.data.label}` : `Call us at ${displayNumber}`);
-const icon = iconProp ?? defaultIcon;
-
-const telHref = `${linkPrefix}${phone.replace(/[^\d+]/g, "")}`;
-const classes = [
-  "flex items-center lg:space-x-2 text-gray-500 hover:text-black transition font-medium",
-  className,
-]
-  .filter(Boolean)
-  .join(" ");
+const displayNumber = formatPhoneNumber(title);
+const ariaLabel = label ? `Call ${label}` : `Call us at ${displayNumber}`;
+const telHref = `${linkPrefix}${title.replace(/[^\d+]/g, "")}`;
 ---
 
-<a href={telHref} aria-label={ariaLabel} class={classes}>
-  <Icon icon={icon} size="lg" className={iconClassName} />
-  {showNumber && <span class={textClassName}>{displayNumber}</span>}
+<a
+  href={telHref}
+  aria-label={ariaLabel}
+  class="flex items-center lg:space-x-2 transition font-medium"
+>
+  <Icon icon={icon} size="lg" className="transform text-MainDark" />
+  <span class="text-lg hidden lg:block">{displayNumber}</span>
 </a>

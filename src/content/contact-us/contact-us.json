@@ -2,7 +2,7 @@
   {
     "id": "phone",
     "title": "7329391309",
-    "icon": "lu:phone",
+    "icon": "fa:phone",
     "label": "Phone Number",
     "linkPrefix": "tel:"
   },
