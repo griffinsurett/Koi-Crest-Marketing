@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+
 // src/components/LoopComponents/PortfolioCard.astro
 /**
  * Portfolio Card Component
@@ -41,36 +43,88 @@ const {
 // Resolve image source from explicit image prop or featuredImage fallback
 const rawImage = image || featuredImage;
 
-function resolveImageSrc(img: any) {
-  if (!img) return '';
-  if (typeof img === 'string') return img.startsWith('@/') ? img.replace('@/', '/src/') : img;
-  if (typeof img === 'object' && 'src' in img) {
-    const source = (img as any).src;
-    if (typeof source === 'string') return source;
-    if (typeof source === 'object' && 'src' in source) return (source as any).src;
-    return source;
-  }
-  return '';
+type AstroImage = {
+  src: string;
+  width: number;
+  height: number;
+  format?: string;
+};
+
+type NormalizedImage = {
+  type: "asset" | "url";
+  src: AstroImage | string;
+  alt: string;
+};
+
+const normalizeStringPath = (path: string) =>
+  path.startsWith("@/") ? path.replace("@/", "/src/") : path;
+
+function isAstroImage(value: any): value is AstroImage {
+  return (
+    value &&
+    typeof value === "object" &&
+    typeof value.src === "string" &&
+    typeof value.width === "number" &&
+    typeof value.height === "number"
+  );
 }
 
-const resolvedImageSrc = resolveImageSrc(rawImage);
-const resolvedImageAlt =
-  (rawImage && typeof rawImage === "object" && "alt" in rawImage && (rawImage as any).alt) ||
-  title;
-const displayImage = resolvedImageSrc
-  ? { src: resolvedImageSrc, alt: resolvedImageAlt || title }
-  : undefined;
+function normalizeImage(img: any): NormalizedImage | undefined {
+  if (!img) return undefined;
+
+  const alt =
+    (typeof img === "object" && img && "alt" in img && typeof (img as any).alt === "string"
+      ? (img as any).alt
+      : undefined) || title;
+
+  if (isAstroImage(img)) {
+    return { type: "asset", src: img, alt };
+  }
+
+  if (typeof img === "string") {
+    return { type: "url", src: normalizeStringPath(img), alt };
+  }
+
+  if (typeof img === "object" && img && "src" in img) {
+    const source = (img as any).src;
+
+    if (isAstroImage(source)) {
+      return { type: "asset", src: source, alt };
+    }
+
+    if (typeof source === "string") {
+      return { type: "url", src: normalizeStringPath(source), alt };
+    }
+  }
+
+  return undefined;
+}
+
+const displayImage = normalizeImage(rawImage);
 ---
 
 <article class="bg-gray-100 rounded-lg overflow-hidden">
   <!-- Image with Category Badge -->
   <div class="relative">
     {displayImage ? (
-      <img 
-        src={displayImage.src} 
-        alt={displayImage.alt}
-        class="w-full h-64 object-cover"
-      />
+      displayImage.type === "asset" ? (
+        <Image 
+          src={displayImage.src} 
+          alt={displayImage.alt}
+          class="w-full h-64 object-cover"
+          width={500}
+          height={300}
+          loading={"lazy"}
+          formats={["avif", "webp", "jpeg"]}
+        />
+      ) : (
+        <img 
+          src={displayImage.src}
+          alt={displayImage.alt}
+          class="w-full h-64 object-cover"
+          loading="lazy"
+        />
+      )
     ) : (
       <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
         <span class="text-4xl text-gray-400 font-bold">600 × 400</span>
