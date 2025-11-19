@@ -5,19 +5,15 @@
  * Uses native browser validation - no dependencies!
  */
 
-import { useState, type FormEvent, type ReactNode } from 'react';
+import { useState, useEffect, Children, isValidElement, type FormEvent, type ReactNode } from 'react';
 
 export interface FormWrapperProps {
-  children: ReactNode | ((formState: FormState) => ReactNode);
+  children: ReactNode;
   onSubmit: (values: Record<string, any>) => Promise<void> | void;
   successMessage?: string | ReactNode;
   errorMessage?: string | ReactNode;
   resetOnSuccess?: boolean;
   className?: string;
-  
-  // Multi-step support
-  isMultiStep?: boolean;
-  steps?: ReactNode[];
   
   // Callbacks
   onSuccess?: () => void;
@@ -39,8 +35,6 @@ export default function FormWrapper({
   errorMessage = 'An error occurred. Please try again.',
   resetOnSuccess = false,
   className = '',
-  isMultiStep = false,
-  steps = [],
   onSuccess,
   onError,
 }: FormWrapperProps) {
@@ -49,7 +43,13 @@ export default function FormWrapper({
   const [message, setMessage] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
 
-  const totalSteps = isMultiStep ? steps.length : 1;
+  // Detect if this is a multi-step form by checking for FormStep children
+  const childrenArray = Children.toArray(children);
+  const formSteps = childrenArray.filter(
+    (child) => isValidElement(child) && (child.type as any).displayName === 'FormStep'
+  );
+  const isMultiStep = formSteps.length > 0;
+  const totalSteps = isMultiStep ? formSteps.length : 1;
 
   // Handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -120,22 +120,16 @@ export default function FormWrapper({
     }
   };
 
-  const goToStep = (step: number) => {
-    if (step >= 0 && step < totalSteps) {
-      setCurrentStep(step);
+  // Render children based on mode
+  const renderContent = () => {
+    if (isMultiStep) {
+      // Multi-step: only show current step
+      return formSteps[currentStep];
+    } else {
+      // Single-step: show all children
+      return children;
     }
   };
-
-  const formState: FormState = {
-    isSubmitting,
-    status,
-    message,
-    currentStep,
-    totalSteps,
-  };
-
-  // Render children as-is (no need to inject errors since HTML5 handles it)
-  const renderChildren = typeof children === 'function' ? children(formState) : children;
 
   return (
     <form 
@@ -160,52 +154,48 @@ export default function FormWrapper({
       {/* Success message from prop */}
       {status === 'success' && typeof successMessage !== 'string' && successMessage}
 
-      {/* Render children */}
-      {isMultiStep ? (
-        <>
-          {steps[currentStep]}
+      {/* Render content */}
+      {renderContent()}
+
+      {/* Multi-step navigation */}
+      {isMultiStep && (
+        <div className="flex items-center justify-between mt-6 pt-6 border-t">
+          {currentStep > 0 ? (
+            <button
+              type="button"
+              onClick={previousStep}
+              disabled={isSubmitting}
+              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+          ) : (
+            <div /> // Spacer
+          )}
           
-          {/* Multi-step navigation */}
-          <div className="flex items-center justify-between mt-6 pt-6 border-t">
-            {currentStep > 0 && (
-              <button
-                type="button"
-                onClick={previousStep}
-                disabled={isSubmitting}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-            )}
-            
-            {currentStep === 0 && <div />} {/* Spacer */}
-            
-            <div className="text-sm text-gray-600">
-              Step {currentStep + 1} of {totalSteps}
-            </div>
-            
-            {currentStep < totalSteps - 1 ? (
-              <button
-                type="button"
-                onClick={nextStep}
-                disabled={isSubmitting}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit'}
-              </button>
-            )}
+          <div className="text-sm text-gray-600">
+            Step {currentStep + 1} of {totalSteps}
           </div>
-        </>
-      ) : (
-        renderChildren
+          
+          {currentStep < totalSteps - 1 ? (
+            <button
+              type="button"
+              onClick={nextStep}
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </button>
+          )}
+        </div>
       )}
     </form>
   );
