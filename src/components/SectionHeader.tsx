@@ -17,7 +17,7 @@ export default function SectionHeader({
     subtitleTag = 'p',
     titleTag = 'h2',
     subtitleClass = 'text-gray-400 font-semibold h6 tracking-wider',
-    titleClass = 'text-5xl lg:text-6xl font-bold leading-tight',
+    titleClass = 'h2 font-bold leading-tight',
     containerClass = 'space-y-4 m-0',
     align = 'left',
 }: SectionHeaderProps) {
