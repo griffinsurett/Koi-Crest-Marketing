@@ -29,7 +29,7 @@ export default function AccordionItem({
         aria-controls={`${id}-content`}
       >
         <div className="flex-1 pr-4">
-          <h4 className="font-medium text-gray-700 text-base">{title}</h4>
+          <span className="h4 font-medium text-gray-700 text-base">{title}</span>
         </div>
         
         <Icon
