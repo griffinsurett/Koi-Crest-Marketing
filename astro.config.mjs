@@ -20,8 +20,8 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     build: {
-      sourcemap: true, // emit source maps so Lighthouse can access them in production
-      assetsInlineLimit: 10240, // 10KB - will inline your 7.3KB CSS automatically
+      sourcemap: true, 
+      assetsInlineLimit: 10240, 
       cssCodeSplit: true,
       cssMinify: 'esbuild',
       rollupOptions: {},
