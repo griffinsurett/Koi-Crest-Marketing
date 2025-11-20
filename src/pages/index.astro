@@ -13,6 +13,7 @@ import MainHero from "@/layouts/MainHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import CTASection from "@/layouts/CTASection.astro";
 import { byTag } from "@/utils/query/snippets";
+import homeAboutImage from "@/assets/template-1.png";
 ---
 
 <BaseLayout title={`${siteData.title} - home`} description={siteData.description}>
@@ -42,6 +43,8 @@ import { byTag } from "@/utils/query/snippets";
     where every brand we work with reaches its full potential through strategic, impactful
     marketing solutions.`}
       learnMoreUrl="/about-us"
+      image={{ src: homeAboutImage, alt: "Marketing team celebrating new project success" }}
+      
     >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
       <!-- Left Column - Our Promise -->

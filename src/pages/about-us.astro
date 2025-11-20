@@ -13,6 +13,7 @@ import MainHero from "@/layouts/MainHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import CTASection from "@/layouts/CTASection.astro";
 import SecondaryHero from "@/layouts/SecondaryHero.astro";
+import aboutPageImage from "@/assets/template-2.png";
 ---
 
 <BaseLayout
@@ -41,6 +42,7 @@ import SecondaryHero from "@/layouts/SecondaryHero.astro";
       description={`Richard Faria grew up in New Jersey with a passion for creativity and technology. After years of working in digital media, he noticed how many small businesses struggled to stand out online. Driven by a vision to help them shine, he founded Koi Crest Marketing—a company named after the koi fish, a symbol of perseverance and transformation. Richard wanted his agency to reflect those same values: helping clients navigate the digital currents and rise above their competition with bold, imaginative branding. Koi Crest Marketing quickly earned a reputation for its fresh ideas and client-centered approach. Whether it was designing eye-catching websites or crafting smart social media campaigns, Richard and his team made it their mission to elevate every brand they touched. Over time, Koi Crest became known not just for its results, but for its genuine commitment to helping businesses succeed. Richard’s story proved that with passion and persistence, even a small startup can make waves in the digital marketing world.`}
       learnMoreUrl="/about-us"
       showButton={false}
+      image={{ src: aboutPageImage, alt: "Founder Richard posing at the studio" }}
     >
       <ContentRenderer query={query("mission-vision")} variant="MissionVisionVariant" />
   </AboutSection>

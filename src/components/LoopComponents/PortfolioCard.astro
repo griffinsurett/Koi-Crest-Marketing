@@ -1,5 +1,10 @@
 ---
 import { Image } from 'astro:assets';
+import {
+  normalizeCollectionImage,
+  type CollectionImage,
+  type NormalizedImage,
+} from '@/utils/images';
 
 // src/components/LoopComponents/PortfolioCard.astro
 /**
@@ -21,11 +26,8 @@ export interface Props {
   tags?: string[];            // Service tags (SEO, Social Media, etc.)
   description?: string;       // Project description/results
   result?: string;            // Project results text
-  image?: {                   // Project image
-    src: string;
-    alt: string;
-  };
-  featuredImage?: any;        // Optional featured image from collection data
+  image?: CollectionImage;    // Optional override image
+  featuredImage?: CollectionImage;        // Optional featured image from collection data
   url?: string;              // Link to project page
 }
 
@@ -41,66 +43,11 @@ const {
 } = Astro.props;
 
 // Resolve image source from explicit image prop or featuredImage fallback
-const rawImage = image || featuredImage;
-
-type AstroImage = {
-  src: string;
-  width: number;
-  height: number;
-  format?: string;
-};
-
-type NormalizedImage = {
-  type: "asset" | "url";
-  src: AstroImage | string;
-  alt: string;
-};
-
-const normalizeStringPath = (path: string) =>
-  path.startsWith("@/") ? path.replace("@/", "/src/") : path;
-
-function isAstroImage(value: any): value is AstroImage {
-  return (
-    value &&
-    typeof value === "object" &&
-    typeof value.src === "string" &&
-    typeof value.width === "number" &&
-    typeof value.height === "number"
-  );
-}
-
-function normalizeImage(img: any): NormalizedImage | undefined {
-  if (!img) return undefined;
-
-  const alt =
-    (typeof img === "object" && img && "alt" in img && typeof (img as any).alt === "string"
-      ? (img as any).alt
-      : undefined) || title;
-
-  if (isAstroImage(img)) {
-    return { type: "asset", src: img, alt };
-  }
-
-  if (typeof img === "string") {
-    return { type: "url", src: normalizeStringPath(img), alt };
-  }
-
-  if (typeof img === "object" && img && "src" in img) {
-    const source = (img as any).src;
-
-    if (isAstroImage(source)) {
-      return { type: "asset", src: source, alt };
-    }
-
-    if (typeof source === "string") {
-      return { type: "url", src: normalizeStringPath(source), alt };
-    }
-  }
-
-  return undefined;
-}
-
-const displayImage = normalizeImage(rawImage);
+const rawImage = (image || featuredImage) as CollectionImage | undefined;
+const displayImage: NormalizedImage | undefined = normalizeCollectionImage(
+  rawImage,
+  title
+);
 ---
 
 <article class="bg-gray-100 rounded-lg overflow-hidden">

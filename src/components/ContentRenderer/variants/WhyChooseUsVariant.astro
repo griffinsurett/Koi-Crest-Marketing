@@ -13,13 +13,13 @@ import type { BaseVariantProps } from "../ContentRenderer.types";
 import SectionHeader from "@/components/SectionHeader";
 import ReasonCard from "@/components/LoopComponents/ReasonCard.astro";
 import { Image } from "astro:assets";
+import {
+  normalizeCollectionImage,
+  type CollectionImage,
+  type NormalizedImage,
+} from "@/utils/images";
 
-interface Props extends BaseVariantProps {
-  featuredImage?: {
-    src: string;
-    alt: string;
-  };
-}
+const DEFAULT_ALT = "Koi Crest marketing team collaborating";
 
 const {
   items = [],
@@ -28,7 +28,13 @@ const {
   className = "",
   featuredImage,
   id,
-} = Astro.props as Props;
+} = Astro.props as BaseVariantProps;
+
+const fallbackAlt = description || title || DEFAULT_ALT;
+const displayImage: NormalizedImage | undefined = normalizeCollectionImage(
+  featuredImage as CollectionImage,
+  fallbackAlt
+);
 ---
 
 <section id={id} class={`bg-gray-50 py-20 ${className}`}>
@@ -36,7 +42,7 @@ const {
     <div class="flex flex-col lg:flex-row gap-12 lg:gap-16">
       
       <!-- Left Column: Header + Image -->
-      <div class="lg:w-1/2 lg:sticky lg:top-0">
+      <div class="relative lg:w-1/2 lg:sticky lg:top-0">
         {(title || description) && (
           <SectionHeader
             subtitle={title}
@@ -49,12 +55,22 @@ const {
         )}
 
         <!-- Featured Image or Placeholder -->
-        {featuredImage ? (
-          <Image 
-            src={featuredImage.src} 
-            alt={featuredImage.alt}
-            class="w-full rounded-lg"
-          />
+        {displayImage ? (
+          displayImage.type === "asset" ? (
+            <Image
+              src={displayImage.src}
+              alt={displayImage.alt}
+              class="w-full rounded-lg object-cover shadow-lg"
+              loading="lazy"
+            />
+          ) : (
+            <img
+              src={displayImage.src}
+              alt={displayImage.alt}
+              class="w-full rounded-lg object-cover shadow-lg"
+              loading="lazy"
+            />
+          )
         ) : (
           <div class="w-full aspect-[3/2] bg-gray-200 rounded-lg flex items-center justify-center">
             <span class="text-6xl text-gray-400 font-bold">600 × 400</span>
