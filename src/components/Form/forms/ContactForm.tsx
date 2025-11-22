@@ -42,7 +42,6 @@ export default function ContactForm() {
           minLength={2}
           placeholder="First Name"
           containerClassName="mb-0 flex-1"
-          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
         />
 
         <Input
@@ -53,7 +52,6 @@ export default function ContactForm() {
           minLength={2}
           placeholder="Last Name"
           containerClassName="mb-0 flex-1"
-          inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
         />
       </div>
 
@@ -65,7 +63,6 @@ export default function ContactForm() {
         required
         placeholder="me@website.com"
         containerClassName="mb-4"
-        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
       />
 
       {/* Phone Field */}
@@ -78,7 +75,6 @@ export default function ContactForm() {
         title="Please enter at least 10 digits"
         placeholder="012-345-6789"
         containerClassName="mb-4"
-        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
       />
 
       {/* Company Field (Optional) */}
@@ -88,7 +84,6 @@ export default function ContactForm() {
         type="text"
         placeholder="LLC or whatever you trade as"
         containerClassName="mb-4"
-        inputClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark"
       />
 
       {/* Message Field */}
@@ -100,7 +95,6 @@ export default function ContactForm() {
         placeholder="Write your message here..."
         rows={5}
         containerClassName="mb-4"
-        textareaClassName="w-full px-4 py-3 bg-gray-100 border-0 rounded-md focus:outline-none focus:ring-2 focus:ring-MainDark resize-vertical"
       />
 
       {/* Privacy Policy Checkbox */}
