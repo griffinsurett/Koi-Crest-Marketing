@@ -1,4 +1,4 @@
-// src/utils/iconLoader.ts
+// src/utils/icons/iconLoader.ts
 /**
  * Icon Loading and Rendering System
  * 
@@ -14,14 +14,8 @@
  */
 
 import { isValidElement, type ReactNode, createElement } from 'react';
-import * as LuIcons from 'react-icons/lu';
-import * as FiIcons from 'react-icons/fi';
-import * as FaIcons from 'react-icons/fa';
-import * as SiIcons from 'react-icons/si';
-import * as BiIcons from 'react-icons/bi';
-import * as AiIcons from 'react-icons/ai';
-import * as MdIcons from 'react-icons/md';
-import { toPascalCase } from '@/utils/string';
+import { iconMap, type IconKey } from './iconMap.generated';
+import { ICON_LIBRARIES } from './iconConfig.js';
 
 /**
  * Map icon size names to pixel values
@@ -46,40 +40,22 @@ export interface IconRenderOptions {
 }
 
 /**
- * Map of library name variations to standardized prefixes
+ * Build alias -> canonical prefix map from shared config
  */
-const libraryPrefixes: Record<string, string> = {
-  'lucide': 'lu',
-  'simple-icons': 'si',
-  'fa6-brands': 'fa6-brands',
-  'fa6-solid': 'fa6-solid',
-  'feather': 'fi',
-  'font-awesome': 'fa',
-  'bi': 'bi',
-  'ai': 'ai',
-  'md': 'md',
-  'lu': 'lu',
-  'si': 'si',
-  'fi': 'fi',
-  'fa': 'fa',
-};
+const libraryAliases: Record<string, string> = Object.entries(ICON_LIBRARIES).reduce(
+  (acc, [canonical, meta]) => {
+    acc[canonical] = canonical;
+    (meta.aliases || []).forEach((alias) => {
+      acc[alias] = canonical;
+    });
+    return acc;
+  },
+  {} as Record<string, string>
+);
 
-/**
- * Map of prefixes to their imported icon libraries
- */
-const iconLibraries: Record<string, any> = {
-  'lu': LuIcons,
-  'lucide': LuIcons,
-  'fi': FiIcons,
-  'feather': FiIcons,
-  'fa': FaIcons,
-  'font-awesome': FaIcons,
-  'si': SiIcons,
-  'simple-icons': SiIcons,
-  'bi': BiIcons,
-  'ai': AiIcons,
-  'md': MdIcons,
-};
+function normalizeLibrary(prefix: string): string {
+  return libraryAliases[prefix] || prefix;
+}
 
 /**
  * Parse icon string to extract library and icon name
@@ -93,7 +69,7 @@ const iconLibraries: Record<string, any> = {
 export function parseIconString(icon: string): { library: string; name: string } {
   if (icon.includes(':')) {
     const [library, name] = icon.split(':');
-    return { library, name };
+    return { library: normalizeLibrary(library), name };
   }
   // Default to Lucide icons if no library specified
   return { library: 'lu', name: icon };
@@ -133,16 +109,9 @@ export function isValidIconString(icon: string): boolean {
  * getIconComponent('lu', 'arrow-right') // LuArrowRight component
  */
 export function getIconComponent(library: string, iconName: string): any {
-  const lib = iconLibraries[library];
-  if (!lib) {
-    console.warn(`Unknown icon library: ${library}`);
-    return null;
-  }
-
-  // Build component name using toPascalCase from string.ts
-  const componentName = toPascalCase(iconName);
-  const shortPrefix = libraryPrefixes[library].charAt(0).toUpperCase() + libraryPrefixes[library].slice(1);
-  const IconComponent = lib[`${shortPrefix}${componentName}`];
+  const normalizedLibrary = normalizeLibrary(library);
+  const iconId = `${normalizedLibrary}:${iconName}` as IconKey;
+  const IconComponent = iconMap[iconId];
 
   if (!IconComponent) {
     console.warn(`Icon not found: ${library}:${iconName}`);
@@ -338,7 +307,7 @@ export function renderIcon(
  */
 export function getIconName(icon: string, library?: string): string {
   if (icon.includes(':')) return icon;
-  const prefix = library ? libraryPrefixes[library] || 'lu' : 'lu';
+  const prefix = library ? normalizeLibrary(library) || 'lu' : 'lu';
   return `${prefix}:${icon}`;
 }
 
@@ -362,5 +331,6 @@ export function getLibraryName(prefix: string): string {
     'ai': 'Ant Design Icons',
     'md': 'Material Design Icons',
   };
-  return names[prefix] || prefix;
+  const normalized = normalizeLibrary(prefix);
+  return names[normalized] || normalized;
 }
