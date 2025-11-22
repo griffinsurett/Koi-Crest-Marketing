@@ -121,7 +121,6 @@ export default function ContactForm() {
         }
         required
         containerClassName="mb-6"
-        checkboxClassName="w-4 h-4 text-MainDark border-gray-300 rounded focus:ring-2 focus:ring-MainDark"
       />
 
       {/* Submit Button */}

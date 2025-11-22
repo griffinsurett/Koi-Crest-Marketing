@@ -20,7 +20,7 @@ export default function Checkbox({
   required = false,
   containerClassName = "mb-4",
   labelClassName = "flex items-center cursor-pointer",
-  checkboxClassName = "w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500",
+  checkboxClassName = "w-4 h-4 text-heading border-heading rounded accent-heading",
   ...checkboxProps
 }: CheckboxProps) {
   return (
@@ -34,7 +34,7 @@ export default function Checkbox({
           required={required}
           {...checkboxProps}
         />
-        <span className="ml-2 text-gray-700">
+        <span className="ml-2 text-heading">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </span>
