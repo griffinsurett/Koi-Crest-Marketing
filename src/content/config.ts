@@ -158,4 +158,11 @@ export const collections = {
         }).optional(),
       }),
   }),
+  "industries": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        parent: refSchema("industries"),
+        whyGreat: z.string().optional(),
+      }),
+  }),
 };

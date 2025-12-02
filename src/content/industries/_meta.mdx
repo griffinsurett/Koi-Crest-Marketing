@@ -1,0 +1,24 @@
+---
+title: "Industries"
+heading: "Industries We Serve"
+description: "At Koi Crest Marketing, we specialize in helping businesses across a wide range of industries grow their online presence and attract more customers. Our tailored marketing solutions are designed to meet the unique needs of each sector we serve."
+hasPage: true
+itemsHasPage: true
+itemsRootPath: true
+itemsLayout: "../../layouts/collections/ServicesLayout.astro"
+itemsAddToMenu:
+  - menu: "main-menu"
+addToMenu:
+  - menu: "main-menu"
+    order: 4
+---
+
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { roots } from "@/utils/query/snippets";
+
+<ContentRenderer
+  query={roots("industries")}
+  variant="ServicesVariant"
+  columns={3}
+  gap="lg"
+/>
