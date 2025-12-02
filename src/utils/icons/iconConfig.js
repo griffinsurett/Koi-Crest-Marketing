@@ -22,7 +22,12 @@ export const ICON_LIBRARIES = {
   fa: {
     package: 'react-icons/fa',
     componentPrefix: 'Fa',
-    aliases: ['font-awesome', 'fas', 'fa6-brands', 'fa6-solid'],
+    aliases: ['font-awesome', 'fas'],
+  },
+  fa6: {
+    package: 'react-icons/fa6',
+    componentPrefix: 'Fa',
+    aliases: ['fa6-brands', 'fa6-solid'],
   },
   ai: {
     package: 'react-icons/ai',
@@ -56,6 +61,7 @@ export const SCANNABLE_PREFIXES = [
   'fi',
   'feather',
   'fa',
+  'fa6',
   'fas',
   'fa6-brands',
   'fa6-solid',
@@ -64,3 +70,16 @@ export const SCANNABLE_PREFIXES = [
   'si',
   'simple-icons',
 ];
+
+// Build and export alias map and normalizer so both generator and loader can share it
+export const ICON_ALIAS_MAP = Object.entries(ICON_LIBRARIES).reduce((acc, [canonical, meta]) => {
+  acc[canonical] = canonical;
+  (meta.aliases || []).forEach((alias) => {
+    acc[alias] = canonical;
+  });
+  return acc;
+}, {});
+
+export function normalizeLibraryPrefix(prefix) {
+  return ICON_ALIAS_MAP[prefix] || prefix;
+}

@@ -137,4 +137,25 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }),
   }),
+  "pricing": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        monthlyPrice: z.string(),
+        downPayment: z.string().optional(),
+        priceNote: z.string().optional(),
+        bestFor: z.string().optional(),
+        featured: z.boolean().default(false),
+        includes: z.string().optional(),
+        features: z.array(
+          z.object({
+            category: z.string(),
+            items: z.array(z.string()),
+          })
+        ).default([]),
+        cta: z.object({
+          text: z.string(),
+          link: z.string(),
+        }).optional(),
+      }),
+  }),
 };

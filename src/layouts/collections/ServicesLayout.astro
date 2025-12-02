@@ -14,7 +14,7 @@ import SecondaryHero from "@/layouts/SecondaryHero.astro";
 import type { CollectionLayoutProps } from "./types";
 import MainHero from "../MainHero.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, sortByDate } from "@/utils/query";
+import { query, sortByDate, sortByOrder } from "@/utils/query";
 import { children, siblings } from "@/utils/query/snippets";
 import { getItemKey } from "@/utils/collections";
 
@@ -43,6 +43,13 @@ const data = entry?.data || {};
       columns={3}
       gap="lg"
     />
+
+<ContentRenderer
+  query={query("pricing").orderBy(sortByOrder())}
+  variant="PricingVariant"
+  columns={3}
+  gap="lg"
+/>
 
     <!-- Testimonials with rating filter -->
     <ContentRenderer

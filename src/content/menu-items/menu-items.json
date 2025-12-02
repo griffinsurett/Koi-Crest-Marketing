@@ -4,7 +4,7 @@
     "title": "Home",
     "description": "Homepage link",
     "url": "/",
-    "order": 0,
+    "order": 1,
     "openInNewTab": false,
     "menu": ["main-menu", "links-menu"]
   },
@@ -12,8 +12,8 @@
     "id": "about-us",
     "title": "About Us",
     "url": "/about-us",
-    "order": 3,
+    "order": 2,
     "openInNewTab": false,
-    "menu": "main-menu"
+    "menu": ["main-menu"]
   }
 ]

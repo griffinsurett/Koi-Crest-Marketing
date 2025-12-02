@@ -1,0 +1,24 @@
+---
+title: "Pricing"
+heading: "Marketing Packages Built for Growth"
+description: "Built for businesses who want a professional online presence, more leads, and scalable systems without drowning in tech and marketing."
+hasPage: true
+itemsHasPage: true
+itemsLayout: "../../layouts/collections/PricingLayout.astro"
+addToMenu:
+  - menu: "main-menu"
+    order: 4
+itemsAddToMenu:
+  - menu: "main-menu"
+order: 5
+---
+
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query, sortByOrder } from "@/utils/query";
+
+<ContentRenderer
+  query={query("pricing").orderBy(sortByOrder())}
+  variant="PricingVariant"
+  columns={3}
+  gap="lg"
+/>

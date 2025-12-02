@@ -37,6 +37,7 @@ export const MenuItemFields = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
   url: z.string().optional(),
+  order: z.number().optional(),
   ...BaseMenuFields,
   menu: refSchema("menus"),
 });

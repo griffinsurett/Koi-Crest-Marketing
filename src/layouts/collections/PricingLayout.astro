@@ -1,0 +1,180 @@
+---
+// src/layouts/collections/PricingLayout.astro
+/**
+ * Pricing Layout - Individual Pricing Page Layout
+ *
+ * Layout for individual pricing tier pages showing:
+ * - Hero with tier name and description
+ * - Pricing details (price, down payment, best for)
+ * - Features by category
+ * - Quote form at the bottom
+ * - Related pricing tiers (siblings)
+ */
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import type { CollectionLayoutProps } from "./types";
+import Button from "@/components/Button/Button";
+import Icon from "@/components/Icon";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query, sortByOrder } from "@/utils/query";
+import { siblings } from "@/utils/query/snippets";
+import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
+
+const {
+  entry,
+  collection,
+  collectionMeta,
+  Content,
+  isIndexPage,
+  seoProps = {},
+  ...extraProps
+} = Astro.props as CollectionLayoutProps;
+
+const data = entry?.data || {};
+
+interface PricingFeature {
+  category: string;
+  items: string[];
+}
+
+const features = (data.features || []) as PricingFeature[];
+---
+
+<BaseLayout {...seoProps}>
+  <main class="flex-1">
+    {/* Hero section with all pricing info */}
+    <section class={`min-h-[70vh] flex items-center ${data.featured ? 'bg-black' : 'bg-gray-900'}`}>
+      <div class="container mx-auto px-4 py-20">
+        <div class="max-w-4xl mx-auto text-center">
+          {/* Featured Badge */}
+          {data.featured && (
+            <div class="mb-6">
+              <span class="bg-yellow-400 text-gray-900 text-sm font-bold px-4 py-2 rounded-full">
+                Most Popular Plan
+              </span>
+            </div>
+          )}
+
+          {/* Icon */}
+          {data.icon && (
+            <div class="flex justify-center mb-6">
+              <Icon
+                icon={data.icon}
+                size="xl"
+                className={data.featured ? "text-yellow-400" : "text-white"}
+              />
+            </div>
+          )}
+
+          {/* Title */}
+          <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">
+            {data.title} Marketing
+          </h1>
+
+          {/* Description/Tagline */}
+          {data.description && (
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              {data.description}
+            </p>
+          )}
+
+          {/* Price */}
+          <div class="mb-8">
+            <div class="text-6xl md:text-7xl font-bold text-white">
+              {data.monthlyPrice}<span class="text-2xl font-normal text-gray-400"> /month</span>
+            </div>
+            {data.downPayment && (
+              <p class="text-lg mt-2 text-gray-400">
+                {data.downPayment}
+              </p>
+            )}
+          </div>
+
+          {/* Best For */}
+          {data.bestFor && (
+            <div class="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
+              <span class="font-semibold text-white">Best for:</span> {data.bestFor}
+            </div>
+          )}
+
+          {/* CTA Button */}
+          <Button
+            href="#quote-form"
+            variant={"secondary"}
+            size="lg"
+          >
+            Get Started with {data.title}
+          </Button>
+        </div>
+      </div>
+    </section>
+
+    {/* Features Section */}
+    <section class="bg-white py-16">
+      <div class="container mx-auto px-4 max-w-4xl">
+
+        {/* Includes Reference */}
+        {data.includes && (
+          <div class="text-center mb-8 text-lg text-gray-600">
+            <Icon icon="lu:circle-check" className="w-5 h-5 inline mr-2" />
+            Everything in <span class="font-semibold capitalize">{data.includes}</span>, plus:
+          </div>
+        )}
+
+        {/* Features by Category */}
+        {features.length > 0 && (
+          <div class="grid md:grid-cols-2 gap-8">
+            {features.map((featureGroup) => (
+              <div class="bg-gray-50 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Icon icon="lu:folder" className="w-5 h-5 text-heading" />
+                  {featureGroup.category}
+                </h3>
+                <ul class="space-y-3">
+                  {featureGroup.items.map((feature) => (
+                    <li class="flex items-start gap-3">
+                      <Icon
+                        icon="lu:check"
+                        className="w-5 h-5 mt-0.5 flex-shrink-0 text-green-600"
+                      />
+                      <span class="text-gray-700">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+
+    {/* MDX content if present */}
+    {Content && (
+      <article class="container mx-auto px-4 py-12">
+        <div class="prose prose-lg max-w-4xl mx-auto">
+          <Content />
+        </div>
+      </article>
+    )}
+
+    {/* Quote Form Section */}
+    <section id="quote-form" class="bg-gray-100 py-20">
+      <div class="container mx-auto px-4 max-w-2xl">
+        <QuoteForm
+          title={`Get Started with ${data.title}`}
+          description="Fill out the form below and we'll get back to you within 24 hours to discuss your project."
+        />
+      </div>
+    </section>
+
+    {/* Other Pricing Tiers */}
+    <ContentRenderer
+      query={siblings("pricing", entry)}
+      variant="PricingVariant"
+      columns={3}
+      gap="lg"
+      title="Pricing"
+      heading="Explore Other Plans"
+      description="Compare all our pricing tiers to find the perfect fit for your business."
+    />
+  </main>
+</BaseLayout>

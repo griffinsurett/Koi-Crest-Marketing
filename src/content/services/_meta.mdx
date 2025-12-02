@@ -10,7 +10,7 @@ itemsAddToMenu:
   - menu: "main-menu"
 addToMenu:
   - menu: "main-menu"
-order: 3
+    order: 3
 ---
 
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -23,6 +23,13 @@ import { roots } from "@/utils/query/snippets";
       columns={3}
       gap="lg"
     />
+
+<ContentRenderer
+  query={query("pricing").orderBy(sortByOrder())}
+  variant="PricingVariant"
+  columns={3}
+  gap="lg"
+/>
 
     <ContentRenderer
       query={query("testimonials").orderBy(sortByOrder())}

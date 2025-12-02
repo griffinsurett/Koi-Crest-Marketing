@@ -33,8 +33,8 @@ const showDesktop = mode === 'responsive' || mode === 'desktop-only';
 const showMobile = mode === 'responsive' || mode === 'mobile-only';
 
 // Responsive visibility classes
-const desktopClasses = mode === 'responsive' ? 'hidden md:block' : '';
-const mobileClasses = mode === 'responsive' ? 'md:hidden' : '';
+const desktopClasses = mode === 'responsive' ? 'hidden xl:block' : '';
+const mobileClasses = mode === 'responsive' ? 'xl:hidden' : '';
 ---
 <div id={id} class={`menu-variant ${className}`}>
   {showDesktop && (

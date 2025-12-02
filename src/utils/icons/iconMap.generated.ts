@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/utils/icons/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowRight, LuBot, LuBrain, LuCalendarClock, LuCamera, LuChevronRight, LuCloud, LuCode, LuGithub, LuGlobe, LuGraduationCap, LuLayoutDashboard, LuLightbulb, LuLinkedin, LuMail, LuMegaphone, LuMessageSquare, LuMonitorPlay, LuMousePointer, LuNewspaper, LuPackage, LuPalette, LuRepeat, LuSearch, LuServer, LuShare2, LuShield, LuShoppingBag, LuSparkles, LuTable, LuTarget, LuThumbsUp, LuTrendingUp, LuTwitter, LuType, LuUsers, LuWorkflow } from 'react-icons/lu';
+import { LuArrowRight, LuBot, LuBrain, LuCamera, LuCheck, LuChevronRight, LuCircleCheck, LuCloud, LuCode, LuFolder, LuGem, LuGithub, LuGlobe, LuGraduationCap, LuLayoutDashboard, LuLightbulb, LuLinkedin, LuMail, LuMedal, LuMegaphone, LuMessageSquare, LuMonitorPlay, LuMousePointer, LuNewspaper, LuPackage, LuPalette, LuRepeat, LuRocket, LuSearch, LuServer, LuShare2, LuShield, LuShoppingBag, LuSparkles, LuTable, LuTarget, LuThumbsUp, LuTrendingUp, LuTwitter, LuType, LuUsers, LuWorkflow } from 'react-icons/lu';
 import { FaCaretRight, FaChartBar, FaPhone } from 'react-icons/fa';
 import { SiFacebook } from 'react-icons/si';
 
@@ -13,11 +13,14 @@ export const iconMap = {
   'lu:arrow-right': LuArrowRight,
   'lu:bot': LuBot,
   'lu:brain': LuBrain,
-  'lu:calendar-clock': LuCalendarClock,
   'lu:camera': LuCamera,
+  'lu:check': LuCheck,
   'lu:chevron-right': LuChevronRight,
+  'lu:circle-check': LuCircleCheck,
   'lu:cloud': LuCloud,
   'lu:code': LuCode,
+  'lu:folder': LuFolder,
+  'lu:gem': LuGem,
   'lu:github': LuGithub,
   'lu:globe': LuGlobe,
   'lu:graduation-cap': LuGraduationCap,
@@ -25,6 +28,7 @@ export const iconMap = {
   'lu:lightbulb': LuLightbulb,
   'lu:linkedin': LuLinkedin,
   'lu:mail': LuMail,
+  'lu:medal': LuMedal,
   'lu:megaphone': LuMegaphone,
   'lu:message-square': LuMessageSquare,
   'lu:monitor-play': LuMonitorPlay,
@@ -33,6 +37,7 @@ export const iconMap = {
   'lu:package': LuPackage,
   'lu:palette': LuPalette,
   'lu:repeat': LuRepeat,
+  'lu:rocket': LuRocket,
   'lu:search': LuSearch,
   'lu:server': LuServer,
   'lu:share-2': LuShare2,

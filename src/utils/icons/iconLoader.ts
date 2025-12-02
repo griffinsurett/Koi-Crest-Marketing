@@ -15,7 +15,7 @@
 
 import { isValidElement, type ReactNode, createElement } from 'react';
 import { iconMap, type IconKey } from './iconMap.generated';
-import { ICON_LIBRARIES } from './iconConfig.js';
+import { ICON_LIBRARIES, normalizeLibraryPrefix } from './iconConfig.js';
 
 /**
  * Map icon size names to pixel values
@@ -40,24 +40,6 @@ export interface IconRenderOptions {
 }
 
 /**
- * Build alias -> canonical prefix map from shared config
- */
-const libraryAliases: Record<string, string> = Object.entries(ICON_LIBRARIES).reduce(
-  (acc, [canonical, meta]) => {
-    acc[canonical] = canonical;
-    (meta.aliases || []).forEach((alias) => {
-      acc[alias] = canonical;
-    });
-    return acc;
-  },
-  {} as Record<string, string>
-);
-
-function normalizeLibrary(prefix: string): string {
-  return libraryAliases[prefix] || prefix;
-}
-
-/**
  * Parse icon string to extract library and icon name
  * 
  * @param icon - Icon string like "lu:search" or just "search"
@@ -69,7 +51,7 @@ function normalizeLibrary(prefix: string): string {
 export function parseIconString(icon: string): { library: string; name: string } {
   if (icon.includes(':')) {
     const [library, name] = icon.split(':');
-    return { library: normalizeLibrary(library), name };
+    return { library: normalizeLibraryPrefix(library), name };
   }
   // Default to Lucide icons if no library specified
   return { library: 'lu', name: icon };
@@ -109,7 +91,7 @@ export function isValidIconString(icon: string): boolean {
  * getIconComponent('lu', 'arrow-right') // LuArrowRight component
  */
 export function getIconComponent(library: string, iconName: string): any {
-  const normalizedLibrary = normalizeLibrary(library);
+  const normalizedLibrary = normalizeLibraryPrefix(library);
   const iconId = `${normalizedLibrary}:${iconName}` as IconKey;
   const IconComponent = iconMap[iconId];
 
@@ -307,7 +289,7 @@ export function renderIcon(
  */
 export function getIconName(icon: string, library?: string): string {
   if (icon.includes(':')) return icon;
-  const prefix = library ? normalizeLibrary(library) || 'lu' : 'lu';
+  const prefix = library ? normalizeLibraryPrefix(library) || 'lu' : 'lu';
   return `${prefix}:${icon}`;
 }
 
@@ -331,6 +313,6 @@ export function getLibraryName(prefix: string): string {
     'ai': 'Ant Design Icons',
     'md': 'Material Design Icons',
   };
-  const normalized = normalizeLibrary(prefix);
+  const normalized = normalizeLibraryPrefix(prefix);
   return names[normalized] || normalized;
 }
