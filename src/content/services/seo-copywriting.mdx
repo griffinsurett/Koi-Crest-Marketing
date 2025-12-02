@@ -1,7 +1,77 @@
 ---
-title: "Search Engine Optimization"
+title: "SEO Copywriting"
+heading: "Content That Ranks and Converts"
 description: "Transform your message with our expert Copywriting service. We craft compelling content that resonates with your audience, drives engagement, and strengthens your brand voice that can also be optimized for SEO."
 icon: "lu:search"
 order: 5
 parent: ["digital-marketing"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="seo-copywriting" collection="services">
+## The False Choice
+
+You've been told you have to choose: write for search engines or write for humans. Keyword-stuffed content that ranks but reads terribly. Or beautiful prose that no one ever finds.
+
+It's a false choice. The best content does both—ranking in search while engaging readers and driving action. Search engines have evolved. They reward content that genuinely serves users. The gap between "SEO content" and "good content" has closed.
+
+But bridging that gap requires skill. Understanding what search engines want. Understanding what readers need. And crafting content that satisfies both.
+
+## Why Most SEO Content Fails
+
+SEO content has a reputation for being terrible. Keyword-stuffed. Artificially lengthened. Written for algorithms, not humans. That reputation was earned.
+
+**Keyword obsession kills readability.** When writers focus on keyword density rather than communication, content becomes awkward. Readers leave. Ironically, engagement drops—hurting rankings.
+
+**Thin content doesn't earn rankings.** Short, shallow content might have worked a decade ago. Modern search engines evaluate comprehensiveness, expertise, and genuine value.
+
+**Ignoring search intent wastes effort.** Creating content without understanding what searchers actually want produces content that doesn't rank or convert—regardless of keyword optimization.
+
+**Generic content gets generic results.** The same surface-level takes, repeated across thousands of sites. Nothing distinctive. Nothing memorable. Nothing that earns links or engagement.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="SEO copywriting strategy" class="w-full h-auto" />
+</div>
+
+## Content That Ranks and Converts
+
+We create SEO content that earns rankings through genuine quality—comprehensive, engaging, and optimized for both search engines and human readers.
+
+**Search intent research.** Understanding what people actually want when they search. Creating content that answers real questions, not just targets keywords.
+
+**Comprehensive coverage.** Content that thoroughly addresses topics—demonstrating expertise and satisfying the depth that modern search engines reward.
+
+**Strategic optimization.** Natural keyword integration, proper structure, internal linking, and technical elements that help search engines understand and rank content.
+
+**Conversion-focused writing.** Content that doesn't just attract traffic but moves readers toward action. Ranking is worthless if visitors don't convert.
+
+## The Compound Effect
+
+SEO content is an investment that pays dividends for years. A single piece that ranks continues generating traffic long after publication—compounding returns that paid advertising can never match.
+
+The businesses dominating search didn't get there with tricks. They invested in genuinely valuable content, optimized properly, and let compound interest do its work.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="SEO Copywriting That Works"
+  description="We've created SEO content across industries—generating sustainable organic traffic through content that genuinely serves readers. Our approach rejects the false choice between ranking and quality."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Content That Earns Rankings</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't game search engines—we satisfy them by satisfying users. Every piece of content is created to genuinely help readers while incorporating the optimization that helps search engines understand and rank it. You'll have content that attracts traffic and converts visitors, built to perform for years.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

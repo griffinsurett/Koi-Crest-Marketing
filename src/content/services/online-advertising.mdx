@@ -1,7 +1,77 @@
 ---
 title: "Online Advertising"
+heading: "Reach Buyers, Not Browsers"
 description: "Maximize your reach with our Online Advertising service. We create targeted ads across digital platforms, ensuring you reach the right audience, drive traffic, and increase conversions."
 icon: "lu:mouse-pointer"
 order: 3
 parent: ["digital-marketing"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="online-advertising" collection="services">
+## Money In, Customers Out
+
+Online advertising promises something remarkable: put money in, get customers out. Target exactly who you want, when you want, with messages designed to convert. The precision is unprecedented.
+
+The reality is messier. Ad costs rise constantly. Competition intensifies. Platforms change rules. What worked last quarter doesn't work today. Most businesses run ads that barely break even—or lose money they'll never get back.
+
+The gap between advertising's promise and most businesses' results isn't the platform. It's the approach.
+
+## Why Most Ad Campaigns Fail
+
+Every day, businesses waste millions on advertising that doesn't work. Understanding why separates profitable campaigns from expensive lessons.
+
+**Targeting without strategy.** Platforms offer incredible targeting options. Most advertisers use them poorly—either too broad (wasting budget) or too narrow (limiting scale). Strategic targeting finds the balance.
+
+**Creative that doesn't convert.** The ad itself matters enormously. Most ads blend into the scroll—forgettable, skippable, ineffective. Stopping thumbs requires understanding what makes people pay attention.
+
+**Landing pages that leak.** Getting clicks is half the battle. Where those clicks land determines whether they convert. Sending paid traffic to generic pages wastes the investment.
+
+**Optimization without patience.** Algorithms need data to learn. Changing too quickly never lets campaigns optimize. Waiting too long wastes budget. Knowing when to intervene separates success from failure.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Online advertising strategy" class="w-full h-auto" />
+</div>
+
+## Building Profitable Ad Campaigns
+
+We approach advertising as an investment that should generate returns—not a cost center that drains budget. Every campaign is designed around profitability, not vanity metrics.
+
+**Platform strategy.** Google, Meta, LinkedIn, TikTok—each platform has strengths, costs, and audiences. We identify where your customers are and which platforms will generate profitable acquisition.
+
+**Creative development.** Ads designed to stop scrollers and drive action. Not templates or stock photos, but creative that stands out and converts.
+
+**Landing page optimization.** Where ads send traffic matters as much as the ads themselves. We ensure every click lands somewhere designed to convert.
+
+**Continuous optimization.** Testing, learning, adjusting. Scaling what works, cutting what doesn't. Turning data into better performance over time.
+
+## Advertising That Pays for Itself
+
+Done right, advertising is an investment with measurable returns. You spend a dollar, you get more than a dollar back. That's the goal—not reach, not impressions, not clicks. Revenue.
+
+The businesses winning at advertising aren't necessarily spending more. They're spending smarter—with better targeting, better creative, and better optimization.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Advertising That Generates ROI"
+  description="We've managed ad spend across platforms and industries, generating profitable returns for businesses of all sizes. Our focus is always the same: make advertising an investment that pays for itself."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Profitable Advertising</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We treat your ad budget as an investment, not an expense. Every campaign is measured against return on ad spend, with clear visibility into what's working and what's not. You'll know exactly what advertising generates for your business—and we'll continuously optimize to improve those returns.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

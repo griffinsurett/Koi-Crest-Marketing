@@ -118,18 +118,21 @@ if (queryProp) {
     // Build data object with automatic metadata
     data = {
       items: preparedItems,
-      
+
+      // Collection name for variant-specific logic
+      collection: queryCollection,
+
       // Use manual override if provided, otherwise use meta title
       // (but not on the collection page itself to avoid redundancy)
       title: titleOverride ?? (isOnCollectionPage ? undefined : meta.title),
       heading: headingOverride ?? meta.heading,
-      
+
       // Same logic for description
       description:
         descriptionOverride ??
         (isOnCollectionPage ? undefined : meta.description),
       featuredImage: meta.featuredImage,
-      
+
       // Only show "View All" link if:
       // 1. Collection has a page (hasPage: true in _meta.mdx)
       // 2. We're not already on the collection page
@@ -137,12 +140,12 @@ if (queryProp) {
         shouldCollectionHavePage(meta) && !isOnCollectionPage
           ? collectionIndexPath
           : undefined,
-      
+
       // Collection title for "View All" button text
       collectionTitle:
         meta.title ||
         queryCollection.charAt(0).toUpperCase() + queryCollection.slice(1),
-      
+
       // Spread any additional props (columns, gap, etc.)
       ...restProps,
     };

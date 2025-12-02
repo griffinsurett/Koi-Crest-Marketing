@@ -1,6 +1,78 @@
 ---
 title: "Online Course Creation"
+heading: "Monetize Your Expertise"
 description: "Turn your expertise into an engaging online learning experience with our Online Course Creation service. We create interactive, user-friendly platforms that keep learners engaged."
 icon: "lu:graduation-cap"
 parent: ["product-development"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="online-course-creation" collection="services">
+## Knowledge That Doesn't Scale
+
+You know things that others need to learn. Expertise developed over years. Processes refined through experience. Insights that would save others the mistakes you made.
+
+You share it one-on-one. Client sessions. Employee training. Consulting calls. Each time, you explain the same concepts, answer the same questions, walk through the same processes.
+
+Your expertise is valuable. But your time is limited. The gap between what you know and how many people can access it—that's the opportunity.
+
+Online courses transform knowledge into scalable assets. Teach once, reach thousands. Your expertise working while you sleep.
+
+## Why Most Courses Disappoint
+
+Online courses are everywhere—which means bad online courses are everywhere. Understanding what separates effective courses from abandoned ones helps avoid the common failures.
+
+**Information dumps.** Lectures recorded without instructional design. Content that's technically accurate but pedagogically ineffective. Students who watch but don't learn.
+
+**No engagement.** Passive video consumption without interaction. No exercises, no feedback, no application. Courses that people buy but don't complete.
+
+**Poor production.** Bad audio, dim lighting, chaotic slides. Technical quality that undermines expertise perception.
+
+**Missing the business model.** Great content without clear positioning, pricing, or marketing. Courses that exist but don't sell.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Online course creation" class="w-full h-auto" />
+</div>
+
+## Courses That Teach and Sell
+
+We create online courses designed for learning outcomes and business success—engaging content that students complete and recommend.
+
+**Instructional design.** Curriculum structured for actual learning. Clear objectives. Logical progression. Assessment that reinforces retention.
+
+**Engaging content.** Video production, interactive elements, exercises, and resources that maintain engagement. Courses designed for completion, not just purchase.
+
+**Platform selection and setup.** Choosing and configuring the right delivery platform for your audience and business model. Technical implementation handled.
+
+**Launch strategy.** Pricing, positioning, and marketing that turn expertise into revenue. Courses that sell, not just exist.
+
+## Expertise as Asset
+
+An online course is an asset that generates value indefinitely. The expertise you package today continues teaching—and generating revenue—for years.
+
+The businesses and individuals with online courses don't just have additional revenue streams. They have leveraged expertise, extended reach, and established authority.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Course Creation That Works"
+  description="We've created online courses across topics and formats—from technical training to business education to creative skills. Our approach combines instructional design with business strategy for courses that educate and generate revenue."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">From Expert to Educator</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We guide you from expertise to course—handling instructional design, content production, platform setup, and launch strategy. You'll have an online course that effectively teaches what you know while generating sustainable revenue from your expertise.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

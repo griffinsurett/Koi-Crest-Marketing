@@ -1,6 +1,76 @@
 ---
 title: "Website Hosting and Management"
+heading: "Always On, Always Secure"
 description: "Enjoy peace of mind with our Website Hosting and Management service. We provide secure, reliable hosting and ongoing maintenance to keep your site running smoothly."
 icon: "lu:cloud"
 parent: ["website-creation"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="website-hosting-and-management" collection="services">
+## The Site That Went Down
+
+It happened on a Tuesday. The busiest day of the week. Traffic was spiking—until it wasn't. The site was down. Customers couldn't buy. Leads couldn't submit. Every minute of downtime was revenue lost.
+
+Nobody noticed the warning signs. The security updates that got postponed. The backup that hadn't run in months. The hosting that couldn't handle the load. Problems that were invisible—until they weren't.
+
+Your website runs 24/7. The question is whether anyone's watching it.
+
+## Why Websites Fail
+
+Websites don't suddenly break—they slowly decay. Security vulnerabilities accumulate. Performance degrades. Backups get neglected. Then one day, everything fails at once.
+
+**Unpatched vulnerabilities.** WordPress plugins need updates. Security patches need application. Threats evolve constantly. Unmanaged sites become targets waiting to be exploited.
+
+**Performance erosion.** Databases bloat. Cache fills. Speed degrades gradually enough that no one notices—until customers start bouncing.
+
+**Backup assumptions.** Everyone assumes backups happen. Few verify they work. Fewer test restoration. When disaster strikes, many discover their safety net has holes.
+
+**Hosting limitations.** Cheap hosting handles normal traffic. Spike events—marketing campaigns, media mentions, seasonal peaks—overwhelm inadequate infrastructure. Opportunity becomes outage.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Website hosting and management" class="w-full h-auto" />
+</div>
+
+## Managed Website Care
+
+We handle the ongoing work that keeps websites running—security, performance, backups, updates—so you can focus on your business instead of your infrastructure.
+
+**Proactive security.** Regular updates, security monitoring, vulnerability scanning. Staying ahead of threats rather than reacting to breaches.
+
+**Performance monitoring.** Speed tracking, uptime monitoring, proactive optimization. Problems identified and resolved before they affect visitors.
+
+**Reliable backups.** Automated, verified, restorable. Regular testing ensures that when you need recovery, recovery actually works.
+
+**Scalable hosting.** Infrastructure that handles traffic spikes without breaking. Whether it's 100 visitors or 100,000, your site stays up.
+
+## Peace of Mind
+
+Your website should work without requiring your attention. Updates happen automatically. Security is maintained continuously. Problems are caught before you know they exist.
+
+That's what managed hosting and website care provides: the confidence that your digital foundation is solid while you build your business on top of it.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Website Care That Works"
+  description="We've managed websites for years—maintaining security, performance, and reliability while our clients focus on their businesses. Our approach is proactive: fixing problems before they become emergencies."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Worry-Free Websites</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We take website maintenance off your plate completely. Security updates, performance optimization, backup verification, uptime monitoring—all handled proactively. You'll have the peace of mind that your website is secure, fast, and reliable without having to think about it.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

@@ -1,6 +1,76 @@
 ---
 title: "Software Consulting"
+heading: "The Right Tools, Right Implementation"
 description: "Optimize your business operations with our Software Consulting service. We provide expert guidance on selecting, implementing, and managing software solutions."
 icon: "lu:code"
 parent: ["product-development", "analytic-tracking"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="software-consulting" collection="services">
+## The Expensive Mistake
+
+You needed project management software. You researched options, read reviews, picked one that seemed right. Six months later, nobody uses it. Thousands of dollars wasted. You're back to spreadsheets and email.
+
+Or worse: you're locked into the wrong system. Switching costs are prohibitive. Every workaround creates more workarounds. The tool that was supposed to solve problems creates them.
+
+Software decisions have long-term consequences. The right choice compounds value for years. The wrong choice compounds frustration.
+
+## Why Software Decisions Go Wrong
+
+With thousands of software options for every business need, making good choices requires more than reading feature lists. Understanding common mistakes helps avoid them.
+
+**Features over fit.** Choosing software with the most capabilities instead of the right capabilities. Complex tools for simple needs. Enterprise solutions for small teams.
+
+**Ignoring integration.** Software that doesn't connect to existing systems. Data silos that create extra work. Islands of information that should flow together.
+
+**Underestimating implementation.** Buying software without planning adoption. Tools that require configuration, training, and process change—treated as plug-and-play.
+
+**Vendor lock-in blindness.** Choosing proprietary platforms without understanding long-term implications. Data formats that trap you. Pricing that increases after you're dependent.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Software consulting" class="w-full h-auto" />
+</div>
+
+## Strategic Software Guidance
+
+We help businesses make software decisions that serve long-term interests—selecting the right tools and implementing them properly.
+
+**Needs assessment.** Understanding what you actually need before looking at solutions. Requirements that drive selection, not vendor marketing.
+
+**Solution evaluation.** Systematic comparison of options against your specific criteria. Demo facilitation. Reference checks. Due diligence that prevents expensive mistakes.
+
+**Implementation planning.** Roadmaps that account for data migration, integration, training, and adoption. Realistic timelines and resource requirements.
+
+**Vendor management.** Contract review. Negotiation support. Ongoing relationship management that protects your interests.
+
+## Decisions That Compound
+
+The right software, properly implemented, multiplies productivity for years. The wrong software, poorly implemented, drains resources for years. The difference often comes down to decisions made before purchase.
+
+Expert guidance on software decisions isn't expense—it's insurance against expensive mistakes.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Software Consulting That Works"
+  description="We've guided software decisions across categories—CRM, project management, marketing automation, operations. Our focus is always your long-term interest: solutions that fit your needs and implementation that ensures adoption."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Objective Guidance</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We're not affiliated with software vendors—we're affiliated with you. Our recommendations serve your interests, not commission structures. You'll get objective guidance on software selection and implementation that protects your investment and ensures successful adoption.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

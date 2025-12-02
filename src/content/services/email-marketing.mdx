@@ -1,6 +1,74 @@
 ---
 title: "Email Marketing"
+heading: "Your Direct Line to Revenue"
 description: "Build lasting relationships with our Email Marketing service. We create personalized, compelling email campaigns that resonate with your audience and drive results."
 icon: "lu:mail"
 parent: ["digital-marketing"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="email-marketing" collection="services">
+## The Channel Everyone Ignores
+
+Social media algorithms change. Ad costs rise. SEO takes years. Meanwhile, email—the oldest digital marketing channel—quietly generates $36 for every $1 spent. The highest ROI in marketing, and most businesses barely use it.
+
+Your email list is the only audience you truly own. No algorithm decides who sees your message. No platform can take it away. When you send an email, it arrives.
+
+Yet most businesses treat email as an afterthought. The occasional newsletter. The abandoned cart reminder. Random promotions when sales are slow. It's not a strategy—it's noise.
+
+## Why Most Email Marketing Fails
+
+Having an email list isn't enough. Most business emails go unopened, unread, and unsubscribed. Understanding why separates effective email from spam.
+
+**Inconsistency kills momentum.** Sending sporadically trains subscribers to forget you exist. When you finally email, you're a stranger. Consistent cadence builds habit and expectation.
+
+**Selling without value destroys trust.** Every email that asks without giving trains subscribers to ignore you. Value-first communication earns the right to promote.
+
+**Generic messages get generic results.** Treating your entire list the same ignores that subscribers have different needs, interests, and stages. Segmentation and personalization multiply engagement.
+
+**Poor deliverability wastes everything.** If emails land in spam or promotions tabs, nothing else matters. Technical setup and sender reputation determine whether your message arrives.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Email marketing strategy" class="w-full h-auto" />
+</div>
+
+## Building Email That Drives Revenue
+
+We develop email programs that build relationships and generate sales—not just open rates, but actual revenue attributed to email.
+
+**List building and segmentation.** Growing your list with qualified subscribers and organizing them by behavior, interests, and stage. The foundation for relevant communication.
+
+**Automated sequences.** Welcome series, nurture campaigns, post-purchase flows—emails that send themselves based on subscriber actions. Revenue generation on autopilot.
+
+**Campaign strategy.** Regular broadcasts that maintain engagement and drive action. Not random promotions, but strategic communication calendars that balance value and offers.
+
+**Performance optimization.** Continuous testing of subject lines, content, timing, and offers. Incremental improvements that compound into significant revenue gains.
+
+## The Asset That Compounds
+
+Unlike ads that stop when you stop paying, email builds an asset. Every subscriber added, every sequence refined, every relationship deepened—it all compounds. The email program you build today generates revenue for years.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Email Marketing That Converts"
+  description="We've built email programs across industries—from e-commerce to professional services—generating millions in attributable revenue. Our approach focuses on relationships that drive sales, not vanity metrics."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Revenue-Focused Email</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We measure success by revenue generated, not open rates. Every email we send has a purpose—whether building relationship, driving engagement, or generating sales. You'll see exactly how email contributes to your bottom line, with clear attribution and continuous optimization.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

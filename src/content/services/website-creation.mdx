@@ -1,9 +1,78 @@
 ---
 title: "Website Creation"
+heading: "Your Digital Foundation"
 description: "Bring your vision to life with our Website Creation service. We design and develop custom websites that are not only visually stunning but also optimized for performance and user experience, helping your business stand out online."
 icon: "lu:code"
 order: 4
 hasPage: true
 tags: featured
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
+<EditorialSection slug="website-creation" collection="services">
+## Your Website Is Costing You Customers
+
+Every day, potential customers visit your website. They land on your homepage, look around for a few seconds, and leave. They never fill out the form. Never make the call. Never come back.
+
+Your website isn't just underperforming. It's actively repelling the customers you're paying to attract.
+
+The businesses that invested in cheap templates, DIY builders, or the "nephew who knows computers" are now paying the real cost—in lost leads, damaged credibility, and competitors who understood that websites are business infrastructure, not expenses.
+
+## What Separates Websites That Work
+
+Most websites fail because they're built backwards. They start with aesthetics—colors, fonts, layouts—when they should start with strategy. A beautiful website that doesn't convert is just expensive decoration.
+
+**Speed determines survival.** Every second of load time costs you conversions. Users expect pages to load in under three seconds. Anything slower and they're gone—to a competitor whose site actually works.
+
+**Mobile isn't optional.** Over 60% of web traffic comes from mobile devices. Yet most sites are still designed desktop-first, then awkwardly adapted. Users on phones get frustrating experiences, and they leave.
+
+**Structure guides behavior.** How information is organized, where buttons are placed, what users see first—these aren't design preferences. They're psychological triggers that determine whether visitors take action or bounce.
+
+**Trust is communicated instantly.** Within seconds, visitors decide whether your business is credible. That judgment is based on visual professionalism, clear messaging, and evidence of competence. Amateur websites trigger amateur assumptions.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Website creation and development" class="w-full h-auto" />
+</div>
+
+## Building Websites That Generate Business
+
+We build websites as business tools, not digital brochures. Every element serves a purpose—attracting visitors, building trust, and converting browsers into buyers.
+
+**Strategy before design.** We understand your customers, your value proposition, and your business goals before touching design tools. This foundation ensures every page element serves conversion, not just aesthetics.
+
+**Performance engineering.** Our sites load fast because we build them that way—optimized images, efficient code, proper hosting. Speed isn't an afterthought; it's a requirement.
+
+**Conversion-focused architecture.** Page layouts, navigation structures, and call-to-action placements are designed around how users actually behave. We guide visitors toward the actions that matter for your business.
+
+**Growth-ready infrastructure.** Websites shouldn't need rebuilding every two years. We build on modern foundations that scale with your business—easy to update, simple to expand, built for the long term.
+
+## The Foundation Everything Else Depends On
+
+Your website is the center of your digital presence. Marketing campaigns drive traffic there. Sales processes often start there. Customer research happens there. When the foundation is weak, everything built on it underperforms.
+
+The question isn't whether you can afford a proper website. It's whether you can afford to keep losing customers to one that doesn't work.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Process"
+  title="Websites Built for Business Results"
+  description="We've built hundreds of websites across industries, from local service businesses to national brands. Our process prioritizes performance, conversion, and long-term value—not just launching something that looks nice."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Built Right From the Start</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Every website we build follows a strategic process: understanding your business, researching your customers, designing for conversion, building for performance, and launching with proper analytics. You'll own a website that works as hard as you do—generating leads, building credibility, and supporting growth for years to come.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

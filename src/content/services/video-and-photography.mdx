@@ -1,6 +1,76 @@
 ---
 title: "Video and Photography"
+heading: "Show, Don't Tell"
 description: "Bring your brand to life with our Video and Photography service. We produce high-quality visual content that captures your brand's essence and engages your audience."
 icon: "lu:camera"
 parent: ["branding"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="video-and-photography" collection="services">
+## A Picture Is Worth a Thousand Words
+
+A video is worth millions. In a world of infinite scrolling and shrinking attention spans, visual content stops thumbs. It captures attention that text can't. It creates emotional connection that words struggle to achieve.
+
+Stock photos feel stock. Generic video looks generic. When your visual content could belong to any business, it's not building your brand—it's diluting it.
+
+Custom photography and video don't just look better. They feel authentic. They show your actual team, your real space, your genuine work. They tell your story in a way stock never can.
+
+## Why Visual Content Often Fails
+
+Creating video and photography is easier than ever. Creating visual content that actually works requires more than equipment.
+
+**Production without purpose.** Beautiful footage that doesn't serve strategy. Content created because it's expected, not because it's planned.
+
+**Inconsistent visual style.** Videos that don't match the brand. Photos that clash with existing materials. Visual content that fragments rather than reinforces identity.
+
+**Missing the moments that matter.** Focus on the wrong subjects. Missing the authentic moments that connect. Staged shots that feel staged.
+
+**Wrong format for the platform.** Horizontal video for vertical platforms. Long content for short attention spans. Ignoring how and where content will actually be consumed.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Video and photography production" class="w-full h-auto" />
+</div>
+
+## Visual Content That Connects
+
+We create video and photography designed for impact—content that captures attention, builds connection, and supports business objectives.
+
+**Brand photography.** Team photos, workspace imagery, product shots—authentic visual content that shows who you are and what you do.
+
+**Video production.** From concept to final edit—testimonials, explainers, brand stories, social content. Video that engages and converts.
+
+**Platform-optimized content.** Formats, lengths, and styles that match where content lives. Video for Instagram isn't video for YouTube isn't video for LinkedIn.
+
+**Asset libraries.** Comprehensive visual libraries that provide ongoing content. Not one photoshoot, but visual resources that support marketing for years.
+
+## Visual Investment
+
+Quality visual content isn't expense—it's asset creation. The photos from one shoot support marketing for years. The video that tells your story keeps telling it.
+
+In a visual-first world, businesses with strong visual content have an unfair advantage. They stop scrollers. They earn attention. They show rather than tell.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Visual Content That Works"
+  description="We've produced video and photography across industries—from professional services to products to events. Our focus is always strategic: visual content that serves business objectives, not just looks impressive."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Authentic Visual Content</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't create visual content for its own sake. Every photo and video serves a purpose—telling your story, building your brand, supporting your marketing. You'll have visual assets that feel authentically yours and perform across every platform and application.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

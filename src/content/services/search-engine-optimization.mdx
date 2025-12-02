@@ -1,6 +1,76 @@
 ---
 title: "Search Engine Optimization"
+heading: "Get Found When It Matters"
 description: "Transform your message with our expert Search Engine Optimization service. We boost your visibility with targeted optimizations that attract and convert the right audiences."
 icon: "lu:search"
 parent: ["digital-marketing"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="search-engine-optimization" collection="services">
+## Page Two Is Where Businesses Go to Die
+
+Someone just searched for exactly what you offer. They typed the words, hit enter, and started scrolling through results. Your competitors appeared. You didn't.
+
+That customer is now someone else's customer.
+
+This happens dozens of times daily. Every search where you don't appear is a customer you'll never know you lost. Meanwhile, the businesses ranking on page one capture 90% of all clicks—leaving everyone else fighting over scraps.
+
+## The Reality of Modern SEO
+
+SEO has evolved far beyond keyword stuffing and link schemes. Google's algorithms now evaluate hundreds of factors, prioritizing sites that genuinely serve user intent. Gaming the system no longer works. Building genuine authority does.
+
+**Search intent drives rankings.** Google doesn't just match keywords—it understands what users actually want. Content that answers real questions outranks content that merely contains keywords.
+
+**Technical foundation matters.** Site speed, mobile experience, crawlability, security—these technical factors determine whether Google can even evaluate your content. Poor technical SEO sabotages everything else.
+
+**Authority is earned over time.** Quality backlinks, consistent content, strong engagement signals—search authority compounds. The sites winning today started building years ago.
+
+**Local SEO is its own game.** For service businesses, appearing in the map pack can matter more than organic rankings. Local SEO requires specific tactics: Google Business Profile optimization, review management, local citations.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Search engine optimization strategy" class="w-full h-auto" />
+</div>
+
+## Building Sustainable Search Visibility
+
+We approach SEO as a long-term investment in visibility—building the technical foundation, content authority, and reputation that generates traffic for years.
+
+**Technical SEO audit and optimization.** We identify and fix the technical issues limiting your visibility—site speed, mobile experience, crawl errors, structured data. The foundation everything else builds on.
+
+**Content strategy aligned with search intent.** Content that ranks answers real questions your customers ask. We identify those questions and create content that genuinely helps—earning rankings through value.
+
+**Authority building.** Strategic link acquisition from relevant, authoritative sources. Not spam tactics, but genuine relationships that build your site's credibility.
+
+**Local search dominance.** For businesses serving geographic areas, we optimize your presence in maps and local results—where customers are actively searching for services nearby.
+
+## The Long Game That Pays Off
+
+SEO isn't quick. Results take months, not weeks. But unlike paid advertising that stops the moment you stop paying, SEO compounds. The authority you build today generates traffic for years.
+
+The businesses dominating search didn't get there overnight. They invested consistently, built genuine authority, and now enjoy a competitive advantage that's nearly impossible to overcome.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Methodology"
+  title="SEO That Actually Works"
+  description="We've helped businesses across industries achieve sustainable search visibility—not through tricks or shortcuts, but through the strategic work that builds genuine authority over time."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Sustainable Search Results</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't promise overnight rankings—anyone who does is either lying or using tactics that will eventually backfire. What we deliver is sustainable visibility built on technical excellence, valuable content, and earned authority. Rankings that stick because they're built on genuine value, not manipulation.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

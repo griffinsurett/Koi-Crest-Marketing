@@ -1,6 +1,77 @@
 ---
 title: "AI"
+heading: "Work Smarter, Not Harder"
 description: "Leverage the power of artificial intelligence with our AI services. We help you integrate AI solutions into your business processes to automate tasks, gain insights, and enhance decision-making."
 icon: "lu:brain"
+order: 5
 tags: featured
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="ai" collection="services">
+## Your Competitors Are Already Using AI
+
+While you're wondering whether AI is relevant to your business, your competitors are already deploying it. They're automating customer service. Generating content at scale. Analyzing data that would take humans weeks. Making faster decisions with better information.
+
+The productivity gap is widening every month. Businesses that embrace AI are operating at speeds and scales that manual operations simply can't match.
+
+This isn't about replacing humans. It's about augmenting what humans can do—freeing your team from repetitive tasks so they can focus on work that actually requires human judgment.
+
+## What AI Actually Does for Businesses
+
+AI isn't magic, and it isn't the answer to everything. But for the right applications, it's transformative. Understanding where AI adds value is the first step to implementing it effectively.
+
+**Automation of repetitive tasks.** The work that drains your team—data entry, report generation, email responses, document processing—AI handles without fatigue, at any scale, 24/7.
+
+**Pattern recognition at scale.** Humans can't review thousands of customer interactions or analyze millions of data points. AI can—surfacing insights that would otherwise remain hidden.
+
+**Personalization that actually works.** Generic experiences convert poorly. AI enables personalization at scale—tailoring content, recommendations, and communications to individual users.
+
+**Speed of decision-making.** Information that took days to compile is available instantly. Decisions that required extensive analysis happen in real-time. The businesses moving fastest are the ones leveraging AI effectively.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="AI integration and automation" class="w-full h-auto" />
+</div>
+
+## Practical AI Implementation
+
+We help businesses implement AI in ways that generate measurable value—not science projects, but practical applications that improve operations, reduce costs, and enhance customer experience.
+
+**AI-powered chatbots.** Customer service that never sleeps. We build intelligent chatbots that handle common inquiries, qualify leads, and escalate appropriately—freeing your team for complex issues.
+
+**Content generation systems.** From product descriptions to email campaigns, AI can generate first drafts at scale. Human refinement ensures quality. The combination produces more content, faster.
+
+**Process automation.** We identify repetitive workflows and implement AI-powered automation—reducing manual effort, eliminating errors, and accelerating operations.
+
+**Custom AI solutions.** When off-the-shelf tools don't fit, we build custom solutions tailored to your specific needs—from data analysis to decision support systems.
+
+## The Competitive Advantage of AI
+
+AI adoption isn't optional—it's a competitive necessity. The question isn't whether your industry will be transformed by AI, but whether you'll be among the leaders or the laggards.
+
+Early adopters are already seeing the benefits: lower costs, faster operations, better customer experiences. The advantages compound over time as they refine and expand their AI capabilities.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Expertise"
+  title="AI That Actually Works"
+  description="We've implemented AI solutions across industries—from customer service automation to content generation systems. Our approach focuses on practical applications that deliver measurable business value, not technology for its own sake."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Practical AI for Real Businesses</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't deploy AI solutions that require PhD-level expertise to maintain. We implement practical, sustainable AI that your team can understand and manage. You'll see clear ROI—time saved, costs reduced, capabilities expanded. Our goal is making AI an everyday tool that makes your business more competitive.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

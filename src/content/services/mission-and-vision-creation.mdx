@@ -1,6 +1,76 @@
 ---
 title: "Mission and Vision Creation"
+heading: "Define Your Purpose"
 description: "Define your business's core purpose with our Mission and Vision Creation service. We help you articulate clear, inspiring statements that align with your brand."
 icon: "lu:target"
 parent: ["branding"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="mission-and-vision-creation" collection="services">
+## Beyond Corporate Wallpaper
+
+Most mission statements are meaningless. Generic collections of buzzwords that could apply to any company. Framed and forgotten. Recited but not believed.
+
+"We strive to be the industry leader through customer-focused innovation and excellence." That could be anyone. It means nothing. It inspires no one.
+
+Real mission and vision statements are different. They define genuine purpose. They guide actual decisions. They attract aligned customers and employees. They separate you from competitors who all claim the same empty aspirations.
+
+## Why Mission Statements Fail
+
+The corporate graveyard is full of mission statements that never mattered. Understanding why helps avoid the same fate.
+
+**Committee wordsmithing.** Too many people, too many compromises, too many qualifiers. What emerges pleases everyone and inspires no one.
+
+**Describing activities, not purpose.** Statements about what you do rather than why it matters. "We sell insurance" isn't a mission—it's a business description.
+
+**Aspirational dishonesty.** Claiming values that aren't actually practiced. Employees know. Customers eventually figure it out. Inauthentic mission corrodes trust.
+
+**Created and forgotten.** Mission statements developed for websites or investors, never used for decisions or direction. Artifacts instead of compasses.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Mission and vision creation" class="w-full h-auto" />
+</div>
+
+## Mission That Matters
+
+We help businesses articulate purpose that's genuine, distinctive, and useful—mission and vision that guide decisions and inspire action.
+
+**Purpose discovery.** Understanding why your business exists beyond making money. What problem you solve. What difference you make. Why it matters.
+
+**Vision articulation.** Defining where you're going. What success looks like. The future you're building toward. North star for long-term direction.
+
+**Mission development.** Articulating how you pursue that vision. The principles that guide decisions. The commitments that define how you operate.
+
+**Values clarification.** Identifying the beliefs that shape behavior. Not aspirational ideals, but genuine priorities that actually influence choices.
+
+## Compass for Decisions
+
+Clear mission isn't decoration—it's decision-making infrastructure. When choices are hard, mission provides guidance. When opportunities appear, vision determines fit. When culture needs reinforcement, values show the way.
+
+The businesses with clearest purpose don't just look more aligned. They are more aligned—making better decisions, attracting better fits, building stronger culture.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Mission That Guides"
+  description="We've helped businesses of all sizes articulate purpose—from startups defining identity to established companies rediscovering why they exist. Our process uncovers genuine purpose rather than manufacturing generic statements."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Authentic Purpose</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't write mission statements that sound good—we help you discover and articulate purpose that's genuinely yours. Through strategic questioning and facilitation, we uncover the real reasons your business exists and help you express them in ways that guide decisions and inspire action.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

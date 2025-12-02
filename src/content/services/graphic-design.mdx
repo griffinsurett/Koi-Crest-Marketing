@@ -1,6 +1,76 @@
 ---
 title: "Graphic Design"
-description: "Elevate your brand’s visual identity with our Graphic Design service. From logos to marketing materials, we create stunning designs that reflect your brand."
+heading: "Visual Communication That Works"
+description: "Elevate your brand's visual identity with our Graphic Design service. From logos to marketing materials, we create stunning designs that reflect your brand."
 icon: "lu:palette"
 parent: ["branding"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="graphic-design" collection="services">
+## Design Speaks Before Words Do
+
+Before anyone reads your message, they see your design. The logo on your card. The layout of your website. The graphics in your ads. Design creates the first impression—and often the last.
+
+Great design doesn't just look good. It communicates. It builds trust. It guides attention. It makes the complex simple and the ordinary memorable.
+
+Poor design does the opposite. It signals unprofessionalism. It confuses rather than clarifies. It makes good businesses look bad and good ideas look amateur.
+
+## Why Most Graphic Design Falls Flat
+
+Design is everywhere—which means bad design is everywhere too. Understanding what separates effective design from decoration is the first step toward visual communication that works.
+
+**Pretty without purpose.** Design that looks attractive but doesn't communicate. Aesthetics without strategy. Art that doesn't serve business goals.
+
+**Inconsistent visual language.** Different styles, different colors, different feels across materials. Fragmented visual identity that confuses rather than reinforces brand.
+
+**Trend-chasing over timelessness.** Design that feels dated within a year. Following fashion instead of building lasting visual equity.
+
+**Ignoring context and audience.** Design created without understanding where it will be seen or who will see it. Billboards that work on screens. Business cards that ignore hands.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Graphic design process" class="w-full h-auto" />
+</div>
+
+## Design That Communicates
+
+We create graphic design that serves business objectives—visual communication that looks excellent and works even better.
+
+**Brand identity systems.** Logos, color palettes, typography, visual guidelines—cohesive visual language that works across every application.
+
+**Marketing materials.** Brochures, flyers, ads, social graphics—design that supports campaigns and drives action.
+
+**Digital assets.** Website graphics, email templates, presentation designs—visual elements optimized for screens and interaction.
+
+**Print production.** Design expertise that understands print production—bleeds, color profiles, paper stocks—ensuring what's designed is what's produced.
+
+## Visual Equity
+
+Every piece of design either builds or erodes your visual brand. Consistent, excellent design compounds into recognition. Inconsistent, amateur design compounds into distrust.
+
+The businesses with the strongest brands don't have the biggest budgets. They have disciplined design that reinforces identity with every visual touchpoint.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Graphic Design That Delivers"
+  description="We've created design across industries and applications—from startups building first impressions to established businesses refreshing visual identity. Our focus is always communication: design that works as hard as it looks."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Strategic Visual Design</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't create design for design's sake. Every piece serves a purpose—communicating your message, reinforcing your brand, driving your objectives. You'll have visual assets that look exceptional and perform even better, with consistency that builds recognition over time.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

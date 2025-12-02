@@ -1,6 +1,78 @@
 ---
 title: "AI Chatbot Integration"
+heading: "24/7 Customer Support"
 description: "Enhance customer engagement with our AI Chatbot Integration service. We design and implement intelligent chatbots that provide personalized, real-time support."
 icon: "lu:bot"
 parent: ["ai"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="ai-chatbot-integration" collection="services">
+## The Question at 3 AM
+
+Your customer has a question. It's 3 AM. They're about to make a purchase—or walk away forever. Nobody's answering the phone. Email will take hours. Live chat shows "offline."
+
+They leave. You'll never know they were there.
+
+This happens constantly. Customers have questions at inconvenient times. Visitors need help when you're busy with other customers. Leads require immediate response while you're asleep, at dinner, on vacation.
+
+AI chatbots change this equation. Intelligent, always-available assistance that handles common questions, qualifies leads, and provides support—even when you can't.
+
+## Why Most Chatbots Fail
+
+The chatbot graveyard is full of frustrated customers and wasted investments. Understanding why helps avoid the same mistakes.
+
+**Scripted rigidity.** Decision-tree chatbots that break when users ask anything unexpected. "I didn't understand that" loops that frustrate rather than help.
+
+**Misaligned expectations.** Chatbots pretending to be human, failing the test, and destroying trust. Transparency about AI builds more confidence than deception.
+
+**Wrong use cases.** Chatbots handling complex issues they can't resolve, making problems worse before humans intervene. AI should augment human support, not replace it entirely.
+
+**No escalation path.** Conversations that dead-end without resolution. No handoff to human support. Customers trapped in AI purgatory.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="AI chatbot integration" class="w-full h-auto" />
+</div>
+
+## Intelligent Chatbot Implementation
+
+We implement AI chatbots that actually help—understanding natural language, handling common scenarios, and knowing when to escalate.
+
+**Natural language understanding.** Modern AI that handles conversation naturally, not just keywords. Understanding intent even when questions aren't phrased perfectly.
+
+**Knowledge base integration.** Chatbots trained on your specific information—products, policies, processes. Answers that are accurate and relevant.
+
+**Lead qualification.** Intelligent conversation that identifies qualified prospects and captures information for sales follow-up.
+
+**Seamless escalation.** Clear paths to human support when AI can't help. Conversation context transferred so customers don't repeat themselves.
+
+## Always-On Assistance
+
+AI chatbots extend your availability without extending your hours. Common questions answered instantly. Leads captured around the clock. Support provided when human staff isn't available.
+
+The businesses providing instant response capture opportunities that others miss. AI makes instant response sustainable.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Chatbots That Actually Help"
+  description="We've implemented AI chatbots across industries—from customer support to lead generation to appointment booking. Our focus is always practical: chatbots that solve real problems and improve real metrics."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Intelligent Assistance</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't implement chatbots that frustrate customers. Every chatbot is designed for specific use cases, trained on your information, and integrated with escalation paths. You'll have AI assistance that actually helps—improving response times and customer satisfaction while reducing support burden.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

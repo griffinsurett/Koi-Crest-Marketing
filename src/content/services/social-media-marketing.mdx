@@ -1,9 +1,79 @@
 ---
 title: "Social Media Marketing"
+heading: "Own Your Audience's Attention"
 description: "Boost your brand's online presence with our Social Media Marketing service. We create and execute tailored strategies to grow your following, increase engagement, and connect with your audience across multiple platforms."
 icon: "lu:thumbs-up"
 order: 1
 hasPage: true
 parent: ["digital-marketing"]
 tags: featured
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="social-media-marketing" collection="services">
+## Posting Isn't Strategy
+
+You've been posting. Maybe even consistently. The occasional photo, the promotional announcement, the holiday greeting. Engagement is mediocre. Growth is flat. The effort feels wasted.
+
+This isn't a content problem. It's a strategy problem.
+
+Showing up on social media without a strategy is like opening a store without knowing who your customers are. Activity without purpose generates noise, not results.
+
+## What Actually Works on Social
+
+Social media marketing has become increasingly sophisticated. The platforms have evolved, audiences have become savvier, and organic reach has plummeted. What worked five years ago doesn't work today.
+
+**Platform algorithms reward engagement.** Posts that generate genuine interaction get shown to more people. Posts that don't get buried. Every piece of content is auditioning for the algorithm's favor.
+
+**Audiences follow value, not businesses.** People don't want to be marketed to—they want to be entertained, educated, or inspired. Content that serves the audience outperforms content that sells to them.
+
+**Consistency compounds visibility.** Sporadic posting destroys reach. Algorithms favor accounts that show up regularly with quality content. Presence must be sustained to be effective.
+
+**Each platform is its own game.** What works on Instagram fails on LinkedIn. TikTok requires different content than Facebook. Platform-native strategy outperforms cross-posted content.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Social media marketing strategy" class="w-full h-auto" />
+</div>
+
+## Building Social Presence That Drives Business
+
+We develop social media strategies that build genuine audiences and drive measurable business outcomes—not just followers and likes, but leads and customers.
+
+**Platform strategy.** We identify where your audience actually spends time and develop platform-specific approaches that work with each algorithm's preferences.
+
+**Content that earns attention.** Content designed to stop scrollers, generate engagement, and build audience. Not promotional noise, but genuine value that makes following worthwhile.
+
+**Community management.** Social media is social. We engage with your audience, respond to comments, and build the relationships that transform followers into advocates.
+
+**Performance optimization.** Continuous analysis of what's working and what isn't. Strategic iteration based on data, not assumptions.
+
+## From Followers to Revenue
+
+Social media can be a powerful business tool—or an expensive time sink. The difference is strategy: clear objectives, appropriate platforms, valuable content, and disciplined execution.
+
+Vanity metrics feel good but don't pay bills. The goal isn't followers—it's customers. We build social presence that actually drives business results.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Social Media That Actually Converts"
+  description="We've managed social presence for businesses across industries—building audiences, driving engagement, and generating leads. Our approach focuses on business outcomes, not vanity metrics."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Results-Driven Social</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We measure success by business outcomes—leads generated, customers acquired, revenue influenced. Every strategy starts with your business objectives and works backward to the social tactics that achieve them. You'll see exactly how social media connects to your bottom line.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

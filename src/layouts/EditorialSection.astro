@@ -4,15 +4,18 @@ import { children } from "@/utils/query/snippets";
 
 interface Props {
   slug: string;
-  collection?: string;
+  collection?: "industries" | "services";
   heading?: string;
 }
 
 const {
   slug,
   collection = "industries",
-  heading = "Specialized Services"
+  heading
 } = Astro.props;
+
+// Default heading based on collection type
+const sidebarHeading = heading || (collection === "services" ? "Related Services" : "Specialized Services");
 ---
 
 <section class="py-16 bg-white">
@@ -23,13 +26,13 @@ const {
         <slot />
       </article>
 
-      {/* Sidebar - Child industries list */}
+      {/* Sidebar - Child items list */}
       <aside class="lg:w-1/3">
         <div class="lg:sticky lg:top-8">
           <ContentRenderer
             query={children(collection, slug)}
             variant="EditorialVariant"
-            heading={heading}
+            heading={sidebarHeading}
           />
         </div>
       </aside>

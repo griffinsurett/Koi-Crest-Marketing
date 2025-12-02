@@ -1,8 +1,78 @@
 ---
 title: "Content Creation"
+heading: "Words That Work"
 description: "Engage your audience with our professional Content Creation service. We craft high-quality, compelling content that aligns with your brand's message, driving engagement and enhancing your digital presence."
 icon: "lu:megaphone"
 order: 2
 parent: ["digital-marketing"]
 tags: featured
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="content-creation" collection="services">
+## The Content Treadmill
+
+You know you need to create content. Blog posts, social updates, videos, emails—the modern business requires constant communication. So you try. You post when you can. Write when inspiration strikes. Create when there's time.
+
+The results are predictable: inconsistent output, mediocre engagement, and that nagging feeling that your content isn't really working. You're producing, but not progressing.
+
+Content without strategy is just noise. And most businesses are making a lot of noise.
+
+## Why Most Content Fails
+
+The internet is drowning in content. Most of it goes unread, unshared, and unfound. The businesses cutting through aren't creating more—they're creating better.
+
+**Content without purpose wastes resources.** Every piece should serve a specific goal—attract, educate, convert, or retain. Content that doesn't know its job can't do its job.
+
+**Generic content gets ignored.** The same tired takes, the same obvious advice, the same forgettable writing. Audiences scroll past anything that doesn't offer genuine value or perspective.
+
+**Inconsistency destroys momentum.** Sporadic content signals sporadic commitment. Audiences follow sources they can rely on. Algorithms favor accounts that show up regularly.
+
+**Wrong format for the platform.** Long-form on TikTok. Casual tone on LinkedIn. Cross-posted without adaptation. Platform-native content dramatically outperforms repurposed afterthoughts.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Content creation strategy" class="w-full h-auto" />
+</div>
+
+## Creating Content That Performs
+
+We develop content that achieves specific business objectives—attracting attention, building authority, and driving action. Not content for content's sake, but content that works.
+
+**Content strategy.** Defining what to create, for whom, on which platforms, and toward what goals. Strategy first, then execution.
+
+**Original content development.** Blog posts, articles, social content, video scripts—created specifically for your audience and objectives. Not templates or AI filler, but genuine communication.
+
+**Platform optimization.** Content adapted for where it lives. Format, length, tone, and style that match platform expectations and algorithm preferences.
+
+**Content calendars and systems.** Sustainable production processes that maintain consistency without constant crisis. Systems that make content manageable.
+
+## Content as Competitive Advantage
+
+The businesses dominating their markets share a trait: they've invested in content. They've built libraries of valuable material that attract, educate, and convert. They show up consistently with genuine value.
+
+Content compounds. What you create today continues working for years—generating traffic, building authority, attracting customers long after publication.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Content That Delivers Results"
+  description="We've created content across industries and formats—building audiences, establishing authority, and driving measurable business outcomes. Our focus is content that performs, not content that fills a calendar."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Strategic Content Creation</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't create content to check a box. Every piece serves a specific purpose in your marketing strategy—whether attracting new audiences, nurturing prospects, or converting customers. You'll have content that works as hard as you do, with clear connections between creation and results.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

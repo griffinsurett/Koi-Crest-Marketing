@@ -1,6 +1,76 @@
 ---
 title: "Existing Website Takeover"
-description: "Enjoy peace of mind with our Website Hosting and Management services. We provide secure, reliable hosting and ongoing maintenance to ensure your website runs smoothly."
+heading: "Rescue Your Investment"
+description: "Inherit and improve your existing website with our Website Takeover service. We take over management of your current site, fixing issues and implementing improvements without starting from scratch."
 icon: "lu:server"
 parent: ["website-creation"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="existing-website-takeover" collection="services">
+## The Orphaned Website
+
+The developer disappeared. The agency dissolved. The contractor ghosted. Your website exists—but you can't access it, can't update it, can't fix the problems accumulating daily.
+
+You're locked out of your own digital property. Updates can't happen. Security vulnerabilities go unpatched. Changes require finding someone willing to untangle someone else's code. Every day, the situation gets worse.
+
+Starting over seems wasteful. Continuing seems impossible. You're stuck with an asset that's becoming a liability.
+
+## Why Website Transitions Fail
+
+Taking over an existing website is harder than building new. Previous decisions—good and bad—are baked in. Documentation rarely exists. Knowledge walked out the door with whoever built it.
+
+**Missing access credentials.** Hosting logins, domain registrars, email configurations—scattered across accounts and people who've moved on. Recovering access becomes archaeology.
+
+**Undocumented customizations.** Code modifications nobody documented. Settings nobody remembers changing. Functionality that works for reasons nobody understands.
+
+**Accumulated technical debt.** Years of quick fixes, workarounds, and temporary solutions that became permanent. Every change risks breaking something unexpected.
+
+**Platform obsolescence.** Outdated systems that can't be updated without breaking. Security patches that aren't available. Technology that's aged out of support.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Website takeover process" class="w-full h-auto" />
+</div>
+
+## Seamless Website Transition
+
+We specialize in inheriting websites from previous developers—untangling problems, recovering access, and establishing proper management without starting from scratch.
+
+**Access recovery.** Tracking down credentials, recovering accounts, establishing proper ownership. Getting you back in control of your digital property.
+
+**Comprehensive audit.** Understanding what exists, what works, what doesn't. Documenting the current state so changes can be made safely.
+
+**Stabilization and cleanup.** Fixing urgent issues, applying overdue updates, eliminating immediate risks. Getting the site to a stable baseline.
+
+**Ongoing management.** Taking over continuous maintenance, updates, and improvements. Providing the support your site has been missing.
+
+## Save the Investment
+
+Rebuilding from scratch wastes everything invested in your current site—the SEO value, the content, the customizations, the time. Takeover preserves that investment while establishing proper management going forward.
+
+Your website has value. It just needs someone to care for it properly.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Website Takeover That Works"
+  description="We've taken over websites of all types and conditions—from well-maintained to severely neglected. Our process establishes control, stabilizes issues, and provides the ongoing management that was missing."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">From Chaos to Clarity</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We bring order to website chaos. Through systematic discovery, documentation, and stabilization, we establish proper control and management of your existing site. You'll have a website that works reliably, with documentation that ensures you're never locked out again.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

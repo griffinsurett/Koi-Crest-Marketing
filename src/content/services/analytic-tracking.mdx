@@ -1,7 +1,77 @@
 ---
 title: "Analytic Tracking"
+heading: "Know What's Working"
 description: "Maximize your online impact with our Analytic Tracking service. We provide comprehensive tracking for your website and marketing campaigns, delivering actionable insights to optimize performance. Our data-driven approach helps you make informed decisions to boost user engagement and increase ROI."
 icon: "fa:chart-bar"
 order: 6
 tags: featured
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="analytic-tracking" collection="services">
+## Flying Blind
+
+You're spending money on marketing. Running a website. Investing in ads. But when someone asks what's working, you're not sure. The data exists somewhere—scattered across platforms, buried in dashboards you rarely check.
+
+Most business decisions are still made on gut feeling, not evidence. And gut feeling, however experienced, is often wrong.
+
+The companies outperforming their competition share a common trait: they know their numbers. They understand what drives results and what wastes resources. They make decisions based on data, not assumptions.
+
+## Why Most Analytics Fail
+
+Having data isn't the problem. Most businesses are drowning in data. The problem is turning that data into decisions.
+
+**Tracking without strategy is noise.** Google Analytics installed by default captures data. But without intentional setup—goals, events, conversions—you're measuring activity, not outcomes.
+
+**Dashboards don't drive decisions.** Beautiful reports that nobody acts on are worthless. Effective analytics connects to specific questions and triggers specific actions.
+
+**Attribution is often wrong.** The last click before purchase rarely tells the whole story. Understanding the full customer journey requires proper tracking across touchpoints.
+
+**What you don't measure, you can't improve.** If you're not tracking the metrics that matter—lead sources, conversion rates, customer acquisition costs—you're optimizing blind.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Analytics and tracking dashboard" class="w-full h-auto" />
+</div>
+
+## Building Measurement That Matters
+
+We implement analytics infrastructure that answers the questions driving your business—not vanity metrics, but the numbers that inform real decisions.
+
+**Conversion tracking.** Know exactly where leads come from and what they do before converting. Track the full funnel from first visit through sale, with attribution that reflects reality.
+
+**Marketing performance.** See which campaigns, channels, and content actually generate revenue. Stop guessing which marketing works and start knowing.
+
+**User behavior insights.** Understand how visitors use your site—where they engage, where they drop off, what paths lead to conversion. Data that drives UX improvements.
+
+**Custom reporting.** Reports designed around your specific business questions, delivered when you need them. Not more dashboards to ignore, but actionable insights you'll actually use.
+
+## Decisions Based on Evidence
+
+The companies making the best decisions aren't smarter—they're better informed. They've invested in the measurement infrastructure that turns data into insights and insights into action.
+
+Every dollar spent on analytics returns multiples in efficiency—eliminating waste, doubling down on what works, and building sustainable competitive advantage through better decisions.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Analytics That Drive Decisions"
+  description="We've implemented tracking systems for businesses of all sizes—from simple conversion tracking to complex multi-touch attribution. Our focus is always practical: building the measurement infrastructure that answers your specific business questions."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Measurement That Matters</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't implement tracking for its own sake. We start with your business questions—What's driving leads? Which marketing works? Where do customers drop off?—and build the measurement infrastructure that answers them. You'll have clarity on what's working, what isn't, and where to focus resources for maximum impact.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

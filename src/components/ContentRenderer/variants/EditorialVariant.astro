@@ -4,6 +4,7 @@
  * Editorial Variant - Sidebar list for landing page layouts
  * Features: Compact list with icons on the right side of content
  * Perfect for showing child categories alongside MDX content
+ * Items are clickable links unless collection is "industries"
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
@@ -12,6 +13,7 @@ import Icon from "@/components/Icon";
 
 interface Props extends BaseVariantProps {
   showIcons?: boolean;
+  collection?: string;
 }
 
 const {
@@ -24,7 +26,11 @@ const {
   collectionTitle,
   id,
   showIcons = true,
+  collection,
 } = Astro.props as Props;
+
+// Items are clickable unless the collection is "industries"
+const isClickable = collection !== "industries";
 ---
 
 {items.length > 0 && (
@@ -47,27 +53,36 @@ const {
 
     {/* List of items */}
     <ul class="space-y-3">
-      {items.map((item) => (
-        <li>
-          <div class="flex items-center gap-3 p-3 bg-white rounded-md">
-            {showIcons && item.icon && (
-              <div class="w-10 h-10 bg-black rounded-md flex items-center justify-center flex-shrink-0">
-                <Icon icon={item.icon} className="w-5 h-5 text-white" />
-              </div>
-            )}
-            <div class="flex-1 min-w-0">
-              <span class="font-semibold text-black block">
-                {item.title}
-              </span>
-              {item.description && (
-                <span class="text-sm text-gray-500 truncate block">
-                  {item.description}
-                </span>
+      {items.map((item) => {
+        const hasLink = isClickable && item.url;
+        const ItemWrapper = hasLink ? "a" : "div";
+        const wrapperProps = hasLink ? { href: item.url } : {};
+
+        return (
+          <li>
+            <ItemWrapper
+              {...wrapperProps}
+              class={`flex items-center gap-3 p-3 bg-white rounded-md ${hasLink ? "hover:bg-gray-100 transition-colors cursor-pointer" : ""}`}
+            >
+              {showIcons && item.icon && (
+                <div class="w-10 h-10 bg-black rounded-md flex items-center justify-center flex-shrink-0">
+                  <Icon icon={item.icon} className="w-5 h-5 text-white" />
+                </div>
               )}
-            </div>
-          </div>
-        </li>
-      ))}
+              <div class="flex-1 min-w-0">
+                <span class="font-semibold text-black block">
+                  {item.title}
+                </span>
+                {item.description && (
+                  <span class="text-sm text-gray-500 truncate block">
+                    {item.description}
+                  </span>
+                )}
+              </div>
+            </ItemWrapper>
+          </li>
+        );
+      })}
     </ul>
   </aside>
 )}

@@ -1,6 +1,76 @@
 ---
 title: "SMS Marketing"
+heading: "98% Open Rates"
 description: "Engage your audience instantly with our SMS Marketing service. We craft targeted, timely messages that drive customer interaction and boost conversions."
 icon: "lu:message-square"
 parent: ["digital-marketing"]
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="sms-marketing" collection="services">
+## The Channel That Gets Read
+
+Emails sit unopened. Social posts get buried. Ads get skipped. But text messages? They're read within minutes—often seconds. 98% open rates. 45% response rates. No other marketing channel comes close.
+
+SMS marketing isn't new, but most businesses haven't discovered its power. While competitors fight for attention in crowded inboxes and algorithm-throttled feeds, text messages land directly in your customer's pocket.
+
+The immediacy is unmatched. The engagement is extraordinary. And when done right, SMS doesn't feel like marketing—it feels like communication.
+
+## Why SMS Marketing Requires Precision
+
+The same power that makes SMS effective makes it dangerous. One wrong move and you're blocked, reported, or simply ignored. SMS marketing demands respect for the channel and the relationship.
+
+**Permission is non-negotiable.** Unlike email where you can push boundaries, SMS requires explicit consent. Texting someone who didn't opt in isn't just ineffective—it's illegal.
+
+**Frequency matters enormously.** Too many texts and you're blocked. Too few and you're forgotten. Finding the right cadence is critical.
+
+**Value must be immediate.** You have seconds and limited characters. Every message needs a clear reason for existing and a clear action to take.
+
+**Timing affects everything.** A message at 9 PM feels intrusive. A flash sale alert while someone's at work gets ignored. Strategic timing multiplies response.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="SMS marketing campaigns" class="w-full h-auto" />
+</div>
+
+## Building SMS Programs That Convert
+
+We develop SMS marketing programs that leverage the channel's power while respecting its constraints—generating revenue without burning out your list.
+
+**Compliant list building.** Growing your SMS list through proper opt-in methods that ensure compliance and subscriber quality.
+
+**Strategic segmentation.** Not every message belongs to every subscriber. We segment by behavior, preferences, and purchase history for relevant communication.
+
+**Automated flows.** Abandoned cart recovery, shipping notifications, appointment reminders—SMS automation that drives action at critical moments.
+
+**Campaign execution.** Flash sales, limited offers, exclusive access—broadcast messages that generate immediate response without overloading subscribers.
+
+## Direct Access to Customers
+
+Your SMS list represents something rare: direct access to customers who want to hear from you. No algorithm gatekeeping. No inbox filtering. Just your message, their phone, and immediate attention.
+
+Used strategically, SMS becomes your highest-converting channel. Used poorly, you lose access forever. The difference is approach.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="SMS Marketing Done Right"
+  description="We've built SMS programs that generate significant revenue while maintaining subscriber engagement. Our approach balances the channel's power with the discipline required to sustain it."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">High-Impact Text Marketing</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We treat SMS as the premium channel it is—high engagement requires high respect. Every message is strategic, every send is purposeful, every campaign is measured. You'll see exactly what SMS generates for your business while building a sustainable program that keeps subscribers engaged.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>
