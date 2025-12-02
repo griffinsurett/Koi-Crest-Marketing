@@ -35,8 +35,8 @@ export function manualChunks(id) {
     return 'icons';
   }
   
-  // Other node_modules
-  if (id.includes('node_modules')) {
+  // Other node_modules (exclude astro internals to avoid initialization issues)
+  if (id.includes('node_modules') && !id.includes('node_modules/astro')) {
     return 'vendor';
   }
 }
