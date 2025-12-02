@@ -31,7 +31,7 @@
 
 @layer components {
     .h1 {
-        @apply text-6xl lg:text-7xl font-extrabold;
+        @apply text-5xl md:text-6xl lg:text-7xl font-extrabold;
     }
     .h2 {
         @apply text-4xl lg:text-5xl font-extrabold;
