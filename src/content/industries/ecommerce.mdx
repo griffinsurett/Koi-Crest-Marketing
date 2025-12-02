@@ -1,7 +1,81 @@
 ---
 title: "Small eCommerce Brands"
+heading: "Scale Your Online Store Profitably"
 description: "Independent product-based businesses selling online. Need ads, email, content, and branding — lots of ongoing marketing work."
 order: 9
 icon: "lu:shopping-bag"
 whyGreat: "Need ads, email, content, and branding — lots of ongoing marketing work."
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="ecommerce">
+## You Built an Amazing Product. Now What?
+
+You've poured your heart into creating something special. Your product is beautiful. Your quality is unmatched. Your customers love you. But there's one problem:
+
+**Not enough people know you exist.**
+
+The big brands with massive ad budgets are drowning out your message. Amazon is eating your market share. And every day, potential customers buy inferior products simply because they found them first.
+
+**Great products deserve to be discovered.**
+
+## Why eCommerce Marketing Is a Multi-Channel War
+
+Selling online isn't as simple as "build it and they will come." You're competing with millions of stores for attention, and attention is expensive. Success requires orchestrating multiple channels into a cohesive system:
+
+- **Ad costs keep rising** — Facebook, Instagram, and Google ads get more expensive every year
+- **Email is your owned asset** — social platforms can change algorithms; your email list is yours forever
+- **Content builds trust** — customers research before buying; your content should answer their questions
+- **Retention beats acquisition** — it costs 5x more to acquire a new customer than to keep an existing one
+- **Brand matters** — in a sea of options, strong branding is what makes customers choose (and pay more for) you
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="eCommerce marketing" class="w-full h-auto" />
+</div>
+
+## The Koi Crest eCommerce Marketing System
+
+We help independent eCommerce brands — clothing labels, beauty brands, handmade products, subscription boxes — build marketing systems that scale profitably.
+
+### Our eCommerce Marketing Services:
+
+- **Paid advertising** — Facebook, Instagram, and Google campaigns that generate profitable ROAS
+- **Email marketing** — automated sequences that turn browsers into buyers and buyers into repeat customers
+- **Content strategy** — blog posts, social content, and videos that build brand awareness and trust
+- **Conversion optimization** — landing pages and website tweaks that turn more visitors into customers
+- **Brand development** — positioning and messaging that differentiates you from Amazon and competitors
+
+## Your Customers Are Shopping Right Now
+
+Someone just searched for exactly what you sell. They're scrolling Instagram, reading product reviews, comparing options. They're ready to buy — but from whom?
+
+**Will they find your brand, or settle for a competitor?**
+
+**Our eCommerce clients typically see a 3x return on ad spend within 90 days.**
+
+Stop losing sales to brands with better marketing. Check out our pricing below and let's scale your store.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Why Choose Us"
+  title="eCommerce Marketing That Scales Profitably"
+  description="We understand that eCommerce success isn't about vanity metrics — it's about profitable growth. Our multi-channel approach combines paid ads, email marketing, and content strategy to build brands that compete with the giants while maintaining healthy margins."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Our Promise to eCommerce Brands</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We promise to treat your ad spend like our own money. Every dollar is tracked, optimized, and measured against real revenue — not impressions or clicks. We'll help you build a brand that customers remember, an email list that generates predictable revenue, and ad campaigns that scale without sacrificing profitability. Your products deserve to be discovered.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

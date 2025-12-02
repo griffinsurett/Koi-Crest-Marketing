@@ -1,7 +1,79 @@
 ---
 title: "Gyms & Fitness Studios"
+heading: "Fill Your Classes. Grow Your Membership."
 description: "Membership-based fitness spaces with strong branding needs. Lead-generation friendly and rely on digital funnels to grow."
 order: 7
 icon: "lu:target"
 whyGreat: "Lead-generation friendly and rely on digital funnels to grow."
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="gyms-fitness">
+## January's Over. Where Did All the Members Go?
+
+You know the pattern. New Year's rush fills your gym with motivated members. By March, half have ghosted. By summer, you're back to the same core group wondering how to grow.
+
+Meanwhile, the big box gyms and franchise studios keep expanding. They're not better — they just have marketing machines that generate leads year-round while you're relying on seasonal motivation and word-of-mouth.
+
+**Building a fitness business on hope isn't sustainable.**
+
+## Why Gym Marketing Is a Lead Generation Game
+
+The fitness industry runs on membership. Every empty spot in class, every unused locker, every piece of equipment sitting idle — that's revenue you're leaving on the table. Effective marketing turns strangers into members:
+
+- **High churn reality** — even great gyms lose 30-50% of members annually; you need constant new leads
+- **Lifestyle purchases** — people join gyms based on aspiration and emotion, not logic
+- **Local competition** — in most areas, members have 10+ options within a few miles
+- **Trial conversions** — getting someone in the door is just step one; converting trials to memberships is the real game
+- **Community building** — the gyms that create community retain members; marketing should reflect that
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Fitness marketing" class="w-full h-auto" />
+</div>
+
+## The Koi Crest Fitness Marketing System
+
+We help gyms, yoga studios, CrossFit boxes, Pilates studios, and personal trainers build lead generation systems that fill classes and grow membership year-round.
+
+### Our Fitness Marketing Services:
+
+- **Lead generation funnels** — Facebook and Instagram ads that drive trial sign-ups consistently
+- **Local SEO** — own "gym near me" and "[fitness type] classes [city]" searches
+- **Trial-to-member conversion** — email and SMS sequences that turn trials into paying members
+- **Community content** — social media that showcases your culture and attracts the right people
+- **Retention campaigns** — re-engage inactive members before they cancel
+
+## Someone Just Decided to Get in Shape
+
+Right now, someone in your area is fed up with how they feel. They're Googling "best gym near me" or "yoga classes for beginners." They're scrolling Instagram looking for motivation.
+
+**Will they find your gym, or the competition down the street?**
+
+**Our fitness clients typically see a 40% increase in trial sign-ups within 60 days.**
+
+Stop waiting for New Year's resolutions. Check out our pricing below and let's build your membership pipeline.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Why Choose Us"
+  title="Fitness Marketing That Fills Your Classes"
+  description="We understand that gym success is a numbers game — you need consistent new leads to offset natural churn. Our lead generation funnels are designed specifically for fitness businesses, turning Facebook scrollers into trial members and trial members into loyal advocates."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Our Promise to Fitness Business Owners</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We promise to build you a membership pipeline that works year-round — not just during resolution season. From targeted ads that reach people ready to commit to their fitness goals, to retention campaigns that keep existing members engaged, we'll help you build a sustainable business that grows month after month. Your community deserves to grow.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

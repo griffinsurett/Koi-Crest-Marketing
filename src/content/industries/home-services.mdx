@@ -1,7 +1,77 @@
 ---
 title: "Home Services"
+heading: "Dominate Your Local Market"
 description: "Trades and service-based businesses doing onsite work for homeowners. High-ticket jobs, depend heavily on local visibility, and usually have weak marketing."
 order: 1
 icon: "lu:workflow"
 whyGreat: "High-ticket jobs, depend heavily on local visibility, and usually have weak marketing."
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="home-services">
+## Your Competitors Are Stealing Your Customers
+
+Every day, homeowners in your area are searching for services you provide. They're typing "plumber near me," "best electrician in [your city]," and "emergency HVAC repair" into Google. **The question is: are they finding you or your competition?**
+
+Most home service businesses rely on word-of-mouth and hope. Hope that past customers will remember them. Hope that the phone will ring. Hope that somehow, someway, new customers will appear.
+
+**Hope isn't a marketing strategy.**
+
+## Why Home Services Businesses Struggle Online
+
+The home services industry faces unique challenges that generic marketing agencies don't understand:
+
+- **High-ticket services** require trust before purchase — homeowners won't hire someone off a random ad
+- **Local competition** is fierce, with established players dominating search results
+- **Seasonal demand** creates feast-or-famine cash flow cycles
+- **Review dependency** means one bad review can tank your business
+- **Emergency services** need to appear instantly when customers are desperate
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Home services marketing" class="w-full h-auto" />
+</div>
+
+## The Koi Crest Difference
+
+We don't just "do marketing" — we build **customer acquisition systems** specifically designed for home service businesses. Our strategies are battle-tested across plumbers, electricians, HVAC companies, roofers, and every trade in between.
+
+### What We Deliver:
+
+- **Local SEO dominance** — own the map pack and organic results in your service area
+- **Review generation systems** — turn happy customers into 5-star advocates automatically
+- **Lead qualification** — stop wasting time on tire-kickers and price shoppers
+- **Seasonal campaign strategies** — smooth out the feast-or-famine cycle
+- **Emergency response marketing** — be the first call when disaster strikes
+
+## Ready to Stop Hoping and Start Growing?
+
+Your competitors are investing in their online presence. Every day you wait is another day they capture customers that should be yours.
+
+**The average home service business we work with sees a 3x increase in qualified leads within 90 days.**
+
+Check out our pricing below and let's talk about dominating your local market.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Why Choose Us"
+  title="The Home Services Marketing Experts"
+  description="We understand that home service businesses need more than just pretty ads — you need qualified leads that turn into paying customers. Our team specializes in local SEO, reputation management, and lead generation strategies built specifically for trades and service professionals."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Our Promise to Home Service Professionals</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We promise to treat your marketing budget like it's our own money. Every dollar you spend with us is tracked, measured, and optimized for maximum ROI. No vanity metrics, no fluff — just qualified leads that turn into booked jobs. We've helped hundreds of plumbers, electricians, HVAC technicians, and contractors build sustainable customer acquisition systems that work while they sleep.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

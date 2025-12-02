@@ -1,7 +1,79 @@
 ---
 title: "Nonprofits & Community Organizations"
+heading: "Amplify Your Mission. Multiply Your Impact."
 description: "Mission-driven groups serving local communities. Often have grant budgets, need brand awareness, high referral networks."
 order: 10
 icon: "lu:users"
 whyGreat: "Often have grant budgets, need brand awareness, high referral networks."
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="nonprofits">
+## Your Mission Matters. But Is Anyone Hearing It?
+
+You're doing incredible work in your community. You're changing lives, supporting families, advocating for causes that matter. But every day, you watch organizations with flashier marketing raise more money and attract more volunteers — even though your impact is just as meaningful.
+
+**The most important work often goes unnoticed because it's not marketed well.**
+
+Meanwhile, you're stretched thin trying to do everything: run programs, manage volunteers, write grants, AND somehow find time for marketing. Something has to give.
+
+## Why Nonprofit Marketing Is Different
+
+Marketing for nonprofits isn't about selling products — it's about inspiring action. You need to tell stories that move people to donate, volunteer, and spread the word. But you also need to do it on a budget:
+
+- **Limited resources** — every dollar spent on marketing is a dollar not spent on mission
+- **Multiple audiences** — donors, volunteers, beneficiaries, and community partners all need different messages
+- **Trust is paramount** — people need to know their donations and time are making real impact
+- **Grant requirements** — many funders want to see professional branding and clear communication
+- **Volunteer engagement** — attracting and retaining volunteers requires consistent outreach
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Nonprofit marketing" class="w-full h-auto" />
+</div>
+
+## The Koi Crest Nonprofit Marketing Approach
+
+We help charities, community organizations, youth programs, and advocacy groups build marketing systems that amplify impact without breaking the budget.
+
+### Our Nonprofit Marketing Services:
+
+- **Brand development** — professional positioning that builds credibility with donors and grant makers
+- **Storytelling strategy** — compelling narratives that showcase your impact and inspire action
+- **Social media management** — consistent presence that keeps your community engaged
+- **Email campaigns** — donor communications, volunteer outreach, and community updates
+- **Event promotion** — fill your fundraisers, awareness campaigns, and community gatherings
+
+## Every Day You Wait, Impact Goes Unrealized
+
+Someone in your community wants to help. They're looking for ways to volunteer, causes to support, organizations to donate to. **Will they find you?**
+
+People can't support a mission they don't know about.
+
+**Our nonprofit clients typically see a 50% increase in donations and volunteer sign-ups within 6 months.**
+
+Your mission deserves to be heard. Check out our pricing below and let's amplify your impact together.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Why Choose Us"
+  title="Nonprofit Marketing That Amplifies Your Mission"
+  description="We believe the most important work shouldn't go unnoticed. Our nonprofit marketing approach respects your budget constraints while maximizing your reach — helping you attract donors, engage volunteers, and tell the stories that inspire action."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Our Promise to Mission-Driven Organizations</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We promise to stretch every marketing dollar as far as it can go. We understand that resources are limited and every dollar matters. Our goal is to build sustainable marketing systems that grow your donor base, engage your community, and tell your story in ways that inspire lasting support. Your mission deserves to be heard by everyone who can help.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

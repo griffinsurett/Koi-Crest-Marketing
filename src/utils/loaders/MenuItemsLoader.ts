@@ -384,11 +384,13 @@ async function processCollectionMenus(
 
       for (const menuConfig of configs) {
         const menus = normalizeMenuReference(menuConfig.menu);
-        
+
         const attachTo = menuConfig.attachTo === undefined || menuConfig.attachTo === true
           ? collection
           : menuConfig.attachTo;
-        
+
+        const hierarchyMode = menuConfig.hierarchyMode ?? 'auto';
+
         for (const [itemPath, itemMod] of Object.entries(modules)) {
           if (!itemPath.includes(`content/${collection}/`)) continue;
           if (isMetaFile(itemPath)) continue;
@@ -397,6 +399,9 @@ async function processCollectionMenus(
           const { slug } = parseContentPath(itemPath);
 
           if (!shouldItemHavePage(itemData, meta)) continue;
+
+          // If hierarchyMode is "roots-only", skip items that have a parent
+          if (hierarchyMode === 'roots-only' && itemData.parent) continue;
 
           const useRootPath = shouldItemUseRootPath(itemData, meta);
           const itemUrl = useRootPath ? `/${slug}` : `/${collection}/${slug}`;

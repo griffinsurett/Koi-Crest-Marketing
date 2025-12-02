@@ -1,7 +1,77 @@
 ---
 title: "Legal Services"
+heading: "Win More Cases. Sign More Clients."
 description: "Small law firms focused on specific legal specialties. High-value cases mean big ROI for ads and SEO — they invest strongly."
 order: 3
 icon: "lu:newspaper"
 whyGreat: "High-value cases mean big ROI for ads and SEO — they invest strongly."
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="legal-services">
+## The Big Firms Are Outspending You 10 to 1
+
+Every time someone in your area needs a lawyer, they pull out their phone and search. Personal injury. Family law. Estate planning. Criminal defense. **Who shows up first?**
+
+The mega-firms with massive marketing budgets are dominating search results, running TV ads, and plastering billboards across town. They're signing clients that should be yours — clients in YOUR community who would be better served by a local attorney who actually cares.
+
+**You went to law school to help people, not to lose clients to marketing machines.**
+
+## Why Law Firm Marketing Requires Expertise
+
+Legal marketing isn't like marketing a restaurant or retail store. The stakes are higher, the rules are stricter, and the competition is fierce:
+
+- **Bar association compliance** — advertising rules vary by state and violation means discipline
+- **High-intent searches** — people searching for lawyers have urgent, immediate needs
+- **Trust barriers** — potential clients are skeptical and scared; they need reassurance
+- **Case value variance** — a single case can be worth $5,000 or $5,000,000
+- **Referral networks** — professional relationships drive significant business
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Legal services marketing" class="w-full h-auto" />
+</div>
+
+## The Koi Crest Legal Marketing Advantage
+
+We understand that every practice area has different client acquisition needs. A personal injury firm markets differently than an estate planning attorney.
+
+### Our Legal Marketing Services Include:
+
+- **High-intent SEO** — dominate searches like "personal injury lawyer [city]" and "divorce attorney near me"
+- **Compliant PPC campaigns** — Google Ads that follow bar rules while maximizing case intake
+- **Reputation building** — generate reviews and testimonials that build trust
+- **Content authority** — educational content that positions you as the expert in your practice area
+- **Lead qualification** — filter out tire-kickers and focus on cases worth your time
+
+## Every Day You Wait, Cases Go to Your Competition
+
+Right now, someone in your area is searching for exactly the legal help you provide. They're scared, confused, and need guidance. **Are they finding you?**
+
+**Our law firm clients typically see a 50% increase in qualified consultations within 60 days.**
+
+Stop watching the big firms steal your market share. Check out our pricing below and let's build your case pipeline.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Why Choose Us"
+  title="Legal Marketing That Understands Your Practice"
+  description="We know that legal marketing requires a different approach. Bar compliance, high-stakes client decisions, and practice-area expertise aren't optional — they're essential. Our team has helped personal injury firms, family law practices, and criminal defense attorneys build case pipelines that deliver consistent, qualified consultations."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Our Promise to Legal Professionals</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We promise to never put your bar license at risk. Every campaign, every ad, every piece of content is reviewed for compliance with your state's advertising rules. Beyond compliance, we focus on what matters: signed retainers from qualified clients. We track cost-per-case, not vanity metrics, because we know a single good case can be worth more than a thousand clicks.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

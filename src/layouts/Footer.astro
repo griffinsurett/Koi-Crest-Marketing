@@ -24,7 +24,7 @@ import { roots } from "@/utils/query/snippets";
 <footer class="bg-gray-50 border-t border-gray-200 mt-auto">
   <div class="container mx-auto px-4 max-w-7xl">
     <!-- Main Footer Content -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8 py-12">
       <!-- Column 1: Logo & Company Info -->
       <div class="space-y-4">
         <Logo
@@ -37,7 +37,7 @@ import { roots } from "@/utils/query/snippets";
         </p>
       </div>
 
-      <!-- Column 2: Quick Links (Footer Menu) - VERTICAL LIST -->
+      <!-- Column 2: Services - VERTICAL LIST -->
       <div>
         <ContentRenderer
           query={roots("services")}
@@ -45,6 +45,17 @@ import { roots } from "@/utils/query/snippets";
           orientation="vertical"
           className="py-0"
           title="Our Services"
+        />
+      </div>
+
+      <!-- Column 3: Industries - VERTICAL LIST -->
+      <div>
+        <ContentRenderer
+          query={roots("industries")}
+          variant="ListVariant"
+          orientation="vertical"
+          className="py-0"
+          title="Industries"
         />
       </div>
 

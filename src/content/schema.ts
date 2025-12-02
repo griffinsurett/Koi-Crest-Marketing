@@ -273,6 +273,7 @@ export type SEOData = z.infer<ReturnType<typeof seoSchema>>;
 export const baseSchema = ({ image }: { image: Function }) =>
   z.object({
     title: z.string(),
+    heading: z.string().optional(),
     description: z.string().optional(),
     featuredImage: imageInputSchema({ image }).optional(),
     bannerImage: imageInputSchema({ image }).optional(),

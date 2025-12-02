@@ -1,7 +1,77 @@
 ---
 title: "Events & Event-Based Businesses"
+heading: "Book Your Calendar Solid"
 description: "Companies involved in planning, hosting, or supporting events. Visual industry, very marketing-dependent, lots of referral potential."
 order: 4
 icon: "lu:sparkles"
 whyGreat: "Visual industry, very marketing-dependent, lots of referral potential."
+featuredImage: "@/assets/placeholder.svg"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/placeholder.svg";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<EditorialSection slug="events">
+## Your Best Work Is Hidden From the People Who Need It
+
+You've planned stunning weddings. Coordinated flawless corporate events. Created moments people will remember forever. But here's the problem: **the people planning their next event have no idea you exist.**
+
+They're scrolling Instagram, searching Google, and asking friends for recommendations. And while you're waiting for word-of-mouth to kick in, your competitors with better online presence are booking the clients that should be yours.
+
+**In the events industry, being good isn't enough. You need to be visible.**
+
+## Why Event Marketing Is a Visual Game
+
+The events industry lives and dies by visuals. Couples planning weddings want to see your past work. Corporate clients need proof you can handle their brand. Your marketing needs to showcase your portfolio in ways that inspire and convert:
+
+- **Visual-first decisions** — clients choose based on what they see before they ever talk to you
+- **Seasonal demand** — wedding season, holiday parties, and corporate event cycles create feast-or-famine cash flow
+- **High-touch sales** — events require consultations and relationship-building before booking
+- **Referral dependency** — one great event can lead to dozens of referrals, if you ask correctly
+- **Portfolio showcasing** — your past work is your best sales tool, but only if people see it
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Event marketing" class="w-full h-auto" />
+</div>
+
+## The Koi Crest Events Marketing System
+
+We help event professionals build brands that book. From wedding planners to corporate coordinators, venues to vendors — we know how to turn your portfolio into a client-generating machine.
+
+### Our Event Marketing Services:
+
+- **Portfolio-driven websites** — stunning galleries that showcase your best work and convert visitors to inquiries
+- **Social media strategy** — Instagram and Pinterest content that reaches engaged couples and event planners
+- **SEO for event searches** — dominate "wedding planner [city]" and "event venue near me" searches
+- **Vendor network building** — strategic partnerships that create consistent referral streams
+- **Review generation** — turn happy clients into glowing testimonials that build trust
+
+## Your Next Dream Client Is Planning Right Now
+
+Somewhere in your area, someone is Googling "best wedding venues" or "corporate event planner." They're saving Pinterest boards and scrolling Instagram for inspiration. **Will they find you?**
+
+**Our event industry clients typically see a 60% increase in qualified inquiries within 90 days.**
+
+Stop letting beautiful events go undiscovered. Check out our pricing below and let's fill your calendar.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Why Choose Us"
+  title="Event Marketing That Showcases Your Magic"
+  description="We understand that event professionals sell experiences, not products. Your marketing needs to capture the emotion, the atmosphere, and the unforgettable moments you create. Our team specializes in visual-first marketing strategies that turn your stunning portfolio into a steady stream of inquiries."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Our Promise to Event Professionals</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We promise to make your work shine. Every wedding you've planned, every corporate event you've executed, every venue you've transformed — they all deserve to be seen by your next dream client. We'll help you build a marketing system that works year-round, smoothing out the seasonal peaks and valleys while building a referral network that keeps your calendar full.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

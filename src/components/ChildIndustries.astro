@@ -1,0 +1,59 @@
+---
+// src/components/ChildIndustries.astro
+/**
+ * MDX Component - Renders child industries for a parent industry
+ * Used in industry MDX files to display specialized services sidebar
+ */
+
+import Icon from "@/components/Icon";
+import { children } from "@/utils/query/snippets";
+
+interface Props {
+  slug: string;
+  heading?: string;
+  showIcons?: boolean;
+}
+
+const {
+  slug,
+  heading = "Specialized Services",
+  showIcons = true
+} = Astro.props;
+
+// Get child industries for this parent
+const childItems = await children("industries", slug).execute();
+---
+
+{childItems.length > 0 && (
+  <aside class="bg-gray-50 rounded-lg p-6">
+    {heading && (
+      <div class="mb-6">
+        <h3 class="text-xl font-bold text-black">{heading}</h3>
+      </div>
+    )}
+
+    <ul class="space-y-3">
+      {childItems.map((item) => (
+        <li>
+          <div class="flex items-center gap-3 p-3 bg-white rounded-md">
+            {showIcons && item.icon && (
+              <div class="w-10 h-10 bg-black rounded-md flex items-center justify-center flex-shrink-0">
+                <Icon icon={item.icon} className="w-5 h-5 text-white" />
+              </div>
+            )}
+            <div class="flex-1 min-w-0">
+              <span class="font-semibold text-black block">
+                {item.title}
+              </span>
+              {item.description && (
+                <span class="text-sm text-gray-500 truncate block">
+                  {item.description}
+                </span>
+              )}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}

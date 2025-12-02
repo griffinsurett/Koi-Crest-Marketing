@@ -1,0 +1,73 @@
+---
+// src/components/ContentRenderer/variants/EditorialVariant.astro
+/**
+ * Editorial Variant - Sidebar list for landing page layouts
+ * Features: Compact list with icons on the right side of content
+ * Perfect for showing child categories alongside MDX content
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import Button from "@/components/Button/Button";
+import Icon from "@/components/Icon";
+
+interface Props extends BaseVariantProps {
+  showIcons?: boolean;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "",
+  collectionUrl,
+  collectionTitle,
+  id,
+  showIcons = true,
+} = Astro.props as Props;
+---
+
+{items.length > 0 && (
+  <aside id={id} class={`bg-gray-50 rounded-lg p-6 ${className}`}>
+    {/* Header */}
+    {(title || heading) && (
+      <div class="mb-6">
+        {title && (
+          <span class="text-primary font-semibold text-sm uppercase tracking-wider block mb-1">
+            {title}
+          </span>
+        )}
+        {heading && (
+          <h3 class="text-xl font-bold text-black">
+            {heading}
+          </h3>
+        )}
+      </div>
+    )}
+
+    {/* List of items */}
+    <ul class="space-y-3">
+      {items.map((item) => (
+        <li>
+          <div class="flex items-center gap-3 p-3 bg-white rounded-md">
+            {showIcons && item.icon && (
+              <div class="w-10 h-10 bg-black rounded-md flex items-center justify-center flex-shrink-0">
+                <Icon icon={item.icon} className="w-5 h-5 text-white" />
+              </div>
+            )}
+            <div class="flex-1 min-w-0">
+              <span class="font-semibold text-black block">
+                {item.title}
+              </span>
+              {item.description && (
+                <span class="text-sm text-gray-500 truncate block">
+                  {item.description}
+                </span>
+              )}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}
