@@ -4,10 +4,11 @@ heading: "Strategy Before Tactics"
 description: "Navigate the complexities of digital marketing with our expert Marketing Consulting service. We provide strategic advice and actionable plans tailored to your goals."
 icon: "lu:lightbulb"
 parent: ["digital-marketing"]
-featuredImage: "@/assets/placeholder.svg"
+featuredImage: "@/assets/mark-cons/consulting-1.jpg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import editorialImage from "@/assets/mark-cons/consulting-1.jpg";
+import whyChooseUsImage from "@/assets/people.jpg";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -35,7 +36,7 @@ Jumping straight to tactics is tempting. Running ads feels productive. Posting c
 **No measurement means no learning.** Without systematic tracking, you can't know what works. Every campaign exists in isolation, teaching nothing for the next.
 
 <div class="my-12 rounded-lg overflow-hidden shadow-lg">
-  <Image src={placeholderImage} alt="Marketing strategy consulting" class="w-full h-auto" />
+  <Image src={editorialImage} alt="Marketing strategy consulting" class="w-full h-auto" />
 </div>
 
 ## Strategic Marketing Consulting
@@ -63,6 +64,8 @@ The most sophisticated marketers didn't start sophisticated. They started strate
   description="We've consulted with businesses across industries and stages—from startups figuring out initial approach to established companies needing strategic refresh. Our focus is practical: clear advice that generates measurable improvement."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={whyChooseUsImage}
+  imageAlt="Marketing consulting experts"
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">

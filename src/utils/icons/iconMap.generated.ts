@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/utils/icons/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowRight, LuBot, LuBrain, LuCamera, LuCheck, LuChevronRight, LuCircleCheck, LuCloud, LuCode, LuFolder, LuGem, LuGithub, LuGlobe, LuGraduationCap, LuLayoutDashboard, LuLightbulb, LuLinkedin, LuMail, LuMedal, LuMegaphone, LuMessageSquare, LuMonitorPlay, LuMousePointer, LuNewspaper, LuPackage, LuPalette, LuRepeat, LuRocket, LuSearch, LuServer, LuShare2, LuShield, LuShoppingBag, LuSparkles, LuTable, LuTarget, LuThumbsUp, LuTrendingUp, LuTwitter, LuType, LuUsers, LuWorkflow } from 'react-icons/lu';
+import { LuArrowRight, LuBot, LuBrain, LuCamera, LuCheck, LuChevronRight, LuCircleCheck, LuCloud, LuCode, LuFolder, LuGem, LuGithub, LuGlobe, LuGraduationCap, LuLayoutDashboard, LuLightbulb, LuLinkedin, LuMail, LuMedal, LuMegaphone, LuMessageSquare, LuMonitorPlay, LuMousePointer, LuNewspaper, LuPackage, LuPalette, LuRepeat, LuRocket, LuSearch, LuServer, LuShield, LuShoppingBag, LuSparkles, LuTable, LuTarget, LuThumbsUp, LuTrendingUp, LuTwitter, LuType, LuUsers, LuWorkflow } from 'react-icons/lu';
 import { FaCaretRight, FaChartBar, FaPhone } from 'react-icons/fa';
 import { SiFacebook } from 'react-icons/si';
 
@@ -40,7 +40,6 @@ export const iconMap = {
   'lu:rocket': LuRocket,
   'lu:search': LuSearch,
   'lu:server': LuServer,
-  'lu:share-2': LuShare2,
   'lu:shield': LuShield,
   'lu:shopping-bag': LuShoppingBag,
   'lu:sparkles': LuSparkles,

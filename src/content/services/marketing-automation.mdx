@@ -7,7 +7,8 @@ parent: ["digital-marketing"]
 featuredImage: "@/assets/placeholder.svg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import placeholderImage from "@/assets/mark-auto/marketing-automation.png";
+import teamPhoto from "@/assets/template-3.png"
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -22,7 +23,7 @@ Manual marketing can't keep up. Every lead needs nurturing. Every customer deser
 
 Marketing automation changes the equation. The right message reaches the right person at the right time—automatically. While you sleep, while you vacation, while you focus on what only you can do.
 
-## The Problem with Manual Marketing
+## The Problem with Manual Processes
 
 Human marketing has limits. The busier you get, the worse your marketing becomes—exactly when you need it most.
 
@@ -31,6 +32,8 @@ Human marketing has limits. The busier you get, the worse your marketing becomes
 **Personalization is impossible at scale.** You know different customers need different messages. But writing individual emails for hundreds of leads isn't realistic.
 
 **Consistency depends on capacity.** When you're busy serving customers, marketing stops. When marketing stops, the pipeline dries. When the pipeline dries, you're desperate. The feast-famine cycle continues.
+
+**Repetitive tasks eat your day.** Copy data from form to spreadsheet. Send confirmation email. Update CRM. Notify team member. Every day, your team performs hundreds of these small tasks. Individually trivial. Collectively exhausting.
 
 **Insights get lost.** Without systematic tracking, you don't know what's working. Every interaction exists in isolation, disconnected from the bigger picture.
 
@@ -50,25 +53,38 @@ We design and implement automation systems that scale your marketing without sca
 
 **CRM integration.** Automation connected to your sales process. Leads scored, routed, and tracked from first touch to closed deal.
 
+## Workflow Automation
+
+Beyond marketing, we automate the operational workflows that drain your team's time—creating systems that handle repetitive tasks reliably and efficiently.
+
+**Process integration.** Connecting your existing tools so data flows automatically. CRM to email to spreadsheet to task management—without manual transfer.
+
+**Trigger-based automation.** Actions that launch automatically based on events. Form submission triggers email triggers task triggers notification—hands-free.
+
+**Exception handling.** Automation that handles normal cases automatically while routing exceptions to human attention. The best of both worlds.
+
+**Time returned.** Every automated workflow returns time to your team. Time that was spent copying data, sending routine emails, updating spreadsheets—returned for work that requires judgment, creativity, and human connection.
+
 ## The Compounding Effect
 
-Every automation you build works forever. While competitors manually chase leads, your systems nurture, qualify, and convert—24/7, 365 days a year.
+Every automation you build works forever. While competitors manually chase leads and drown in repetitive tasks, your systems nurture, qualify, and convert—24/7, 365 days a year.
 
 The businesses scaling efficiently aren't working harder. They're building machines that work for them.
 </EditorialSection>
 
 <AboutSection
   subtitle="Our Approach"
-  title="Automation That Drives Results"
-  description="We've implemented marketing automation for businesses of all sizes—from simple email sequences to complex multi-channel systems. Our focus is always practical: automation that generates measurable returns."
+  title="Marketing & Workflow Automation"
+  description="We've implemented automation for businesses of all sizes—from simple email sequences to complex multi-system workflows. Our focus is always practical: automation that saves real time and generates measurable returns."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={teamPhoto}
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">
-      <h3 class="h3 font-bold">Smart Automation</h3>
+      <h3 class="h3 font-bold">Smart Automation That Works</h3>
       <p class="text-main text-gray-300 leading-relaxed">
-        We build automation that feels personal, not robotic. Every sequence is designed around actual customer journeys, with triggers and timing that match real behavior. You'll have marketing that scales without losing the human touch—systems that work as hard as you do.
+        We build automation that feels personal, not robotic. Every sequence is designed around actual customer journeys and real business processes, with triggers and timing that match real behavior. You'll have marketing that scales and workflows that run themselves—systems that work as hard as you do, freeing your team for work that actually requires human judgment.
       </p>
     </div>
     <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />

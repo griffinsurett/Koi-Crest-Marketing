@@ -8,7 +8,8 @@ parent: ["digital-marketing"]
 featuredImage: "@/assets/placeholder.svg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import Image1 from "@/assets/onlineads/onads1.jpg";
+import Image2 from "@/assets/google-facebook.png"
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -36,7 +37,7 @@ Every day, businesses waste millions on advertising that doesn't work. Understan
 **Optimization without patience.** Algorithms need data to learn. Changing too quickly never lets campaigns optimize. Waiting too long wastes budget. Knowing when to intervene separates success from failure.
 
 <div class="my-12 rounded-lg overflow-hidden shadow-lg">
-  <Image src={placeholderImage} alt="Online advertising strategy" class="w-full h-auto" />
+  <Image src={Image2} alt="Online advertising strategy" class="w-full h-auto" />
 </div>
 
 ## Building Profitable Ad Campaigns
@@ -64,6 +65,7 @@ The businesses winning at advertising aren't necessarily spending more. They're 
   description="We've managed ad spend across platforms and industries, generating profitable returns for businesses of all sizes. Our focus is always the same: make advertising an investment that pays for itself."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={Image1}
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">

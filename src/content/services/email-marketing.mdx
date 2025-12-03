@@ -7,7 +7,8 @@ parent: ["digital-marketing"]
 featuredImage: "@/assets/placeholder.svg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import emailMarketing from "@/assets/onthecomputer.jpg";
+import emailMarketing2 from "@/assets/onlineads/onads1.jpg"
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -35,7 +36,7 @@ Having an email list isn't enough. Most business emails go unopened, unread, and
 **Poor deliverability wastes everything.** If emails land in spam or promotions tabs, nothing else matters. Technical setup and sender reputation determine whether your message arrives.
 
 <div class="my-12 rounded-lg overflow-hidden shadow-lg">
-  <Image src={placeholderImage} alt="Email marketing strategy" class="w-full h-auto" />
+  <Image src={emailMarketing} alt="Email marketing strategy" class="w-full h-auto" />
 </div>
 
 ## Building Email That Drives Revenue
@@ -61,6 +62,7 @@ Unlike ads that stop when you stop paying, email builds an asset. Every subscrib
   description="We've built email programs across industries—from e-commerce to professional services—generating millions in attributable revenue. Our approach focuses on relationships that drive sales, not vanity metrics."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={emailMarketing2}
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">
