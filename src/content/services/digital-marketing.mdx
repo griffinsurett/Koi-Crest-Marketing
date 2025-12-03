@@ -4,8 +4,7 @@ heading: "Turn Clicks Into Customers"
 description: "Our Digital Marketing services drive growth and engagement across all channels. From targeted campaigns to strategic consulting, we help you connect with your audience, increase conversions, and achieve your business goals."
 order: 1
 icon: "lu:megaphone"
-bannerImage: "@/assets/background.svg"
-featuredImage: "@/assets/astro.svg"
+featuredImage: "@/assets/digital-marketing/digital-marketing.jpg"
 features:
   - "Social Media Management"
   - "Content Creation"
@@ -13,10 +12,11 @@ features:
   - "Email Marketing"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import Image1 from "@/assets/digital-marketing/digital-marketing.jpg" 
+
 import { query } from "@/utils/query";
 
 <EditorialSection slug="digital-marketing" collection="services">
@@ -41,7 +41,7 @@ Digital marketing has become commoditized. Anyone can run ads, post content, sen
 **Consistency compounds.** Sporadic marketing efforts produce sporadic results. The businesses winning online have built systems that generate leads predictably—not campaigns that spike and fade.
 
 <div class="my-12 rounded-lg overflow-hidden shadow-lg">
-  <Image src={placeholderImage} alt="Digital marketing strategy" class="w-full h-auto" />
+  <Image src={Image1} alt="Digital marketing strategy" class="w-full h-auto" />
 </div>
 
 ## Building Revenue-Generating Systems
@@ -69,6 +69,7 @@ The question isn't whether you should invest in digital marketing. It's whether 
   description="We've built marketing systems for businesses across industries—from local service providers to national brands. Our approach prioritizes outcomes over activities, focusing on the channels, messaging, and optimization that actually move your bottom line."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={Image1}
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">

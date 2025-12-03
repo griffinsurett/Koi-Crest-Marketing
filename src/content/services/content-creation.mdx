@@ -6,10 +6,13 @@ icon: "lu:megaphone"
 order: 2
 parent: ["digital-marketing"]
 tags: featured
-featuredImage: "@/assets/placeholder.svg"
+featuredImage: 
+  - src: "@/assets/content-creation/content-c-1.png"
+    alt: "Content Creation"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import editorialImage from "@/assets/content-creation/content-c-1.png";
+import whyChooseUsImage from "@/assets/content-creation/content-c-2.png";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -37,7 +40,7 @@ The internet is drowning in content. Most of it goes unread, unshared, and unfou
 **Wrong format for the platform.** Long-form on TikTok. Casual tone on LinkedIn. Cross-posted without adaptation. Platform-native content dramatically outperforms repurposed afterthoughts.
 
 <div class="my-12 rounded-lg overflow-hidden shadow-lg">
-  <Image src={placeholderImage} alt="Content creation strategy" class="w-full h-auto" />
+  <Image src={editorialImage} alt="Content creation strategy" class="w-full h-auto" />
 </div>
 
 ## Creating Content That Performs
@@ -65,6 +68,8 @@ Content compounds. What you create today continues working for years—generatin
   description="We've created content across industries and formats—building audiences, establishing authority, and driving measurable business outcomes. Our focus is content that performs, not content that fills a calendar."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={whyChooseUsImage}
+  imageAlt="Content creation experts"
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">

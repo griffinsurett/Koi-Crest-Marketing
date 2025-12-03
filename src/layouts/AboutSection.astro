@@ -66,6 +66,8 @@ const sectionImage =
                 src={sectionImage.src}
                 alt={imageAlt ?? sectionImage.alt}
                 class="w-full h-auto object-cover rounded-lg"
+                loading={"lazy"}
+                fetchpriority={"low"}
               />
             ) : (
               <img
