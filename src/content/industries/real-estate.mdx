@@ -5,10 +5,11 @@ description: "Professionals selling or renting homes locally. High competition m
 order: 8
 icon: "lu:layout-dashboard"
 whyGreat: "High competition means big need for differentiation; strong reliance on branding."
-featuredImage: "@/assets/placeholder.svg"
+featuredImage: "@/assets/real-estate/real-estate-1.jpg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import placeholderImage from "@/assets/real-estate/real-estate-2.png";
+import whyChooseUsImage from "@/assets/real-estate/real-estate-3.jpg";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -64,6 +65,8 @@ The question isn't whether marketing matters in real estate. It's whether you'll
   description="We know that in real estate, people hire agents — not agencies. Your personal brand is your most valuable asset. Our marketing strategies are designed to position you as the obvious choice in your market, building the visibility and trust that turn strangers into clients."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={whyChooseUsImage}
+  imageAlt="Real estate marketing experts"
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">

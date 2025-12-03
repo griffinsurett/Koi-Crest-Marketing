@@ -5,10 +5,11 @@ description: "Small law firms focused on specific legal specialties. High-value 
 order: 3
 icon: "lu:newspaper"
 whyGreat: "High-value cases mean big ROI for ads and SEO — they invest strongly."
-featuredImage: "@/assets/placeholder.svg"
+featuredImage: "@/assets/legal/legal-2.png"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import placeholderImage from "@/assets/legal/legal-1.jpg";
+import whyChooseUsImage from "@/assets/legal/legal-3.png";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -70,6 +71,8 @@ The question isn't whether you can afford to invest in your practice's growth. I
   description="We know that legal marketing requires a different approach. Bar compliance, high-stakes client decisions, and practice-area expertise aren't optional — they're essential. Our team has helped personal injury firms, family law practices, and criminal defense attorneys build case pipelines that deliver consistent, qualified consultations."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={whyChooseUsImage}
+  imageAlt="Legal services marketing experts"
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">

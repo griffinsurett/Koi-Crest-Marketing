@@ -7,9 +7,8 @@
 
 import type { BaseVariantProps } from "@/components/ContentRenderer/ContentRenderer.types";
 import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
-import StarRating from "@/components/StarRating.astro";
 import SectionHeader from "@/components/SectionHeader";
-import Counter from "@/components/Counter";
+import HeroStats from "@/components/HeroStats.astro";
 
 interface Props extends BaseVariantProps {
   subtitle?: string;
@@ -55,29 +54,7 @@ const displayDescription = description || heroContent.description || "";
       </p>
 
       <!-- Stats Section -->
-      <div class="flex items-center space-x-12 pt-4">
-        <!-- Rating -->
-        <div class="flex flex-col gap-2 items-start space-x-3">
-          <div class="flex items-end gap-2">
-            <div class="text-4xl font-bold">{stats.rating}</div>
-            <div class="text-sm text-gray-600">rated</div>
-          </div>
-          <StarRating />
-        </div>
-        <!-- Happy Customers -->
-        <div class="flex items-center space-x-3">
-          <!-- Thumbs Up Icon -->
-          <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.85-1.26l3.03-7.08c.09-.23.12-.47.12-.66v-2z"></path>
-          </svg>
-          <div>
-            <!-- <div class="h2 font-bold">{stats.customers}</div> -->
-            <Counter start={0} end={64} duration={2} className="h2 font-bold text-black" client:load />
-
-            <div class="small-text text-gray-600">Happy customers</div>
-          </div>
-        </div>
-      </div>
+      <HeroStats stats={stats} />
     </div>
 
     <!-- Right Column - Form -->

@@ -1,88 +1,51 @@
 // src/utils/images.ts
 /**
- * Image utilities shared across layouts and variants.
+ * Image Utilities
  *
- * The helpers below are intentionally light-weight so they can be used
- * both in collection items (which go through schema validation) and in
- * `_meta.mdx` frontmatter (which ships raw strings).
+ * Helper functions for working with Astro-processed images.
+ * Handles both formats: direct ImageMetadata and { src: ImageMetadata, alt: string }
  */
 
-import type { ImageInput } from "@/content/schema";
 import type { ImageMetadata } from "astro";
+import type { ImageInput } from "@/content/schema";
 
-const assetModules = import.meta.glob<ImageMetadata>("../assets/**/*", {
-  eager: true,
-  import: "default",
-});
+/**
+ * Type guard to check if a value is Astro ImageMetadata
+ */
+export function isImageMetadata(img: unknown): img is ImageMetadata {
+  return Boolean(
+    img &&
+      typeof img === "object" &&
+      "width" in img &&
+      "height" in img &&
+      "src" in img
+  );
+}
 
-const assetLookup = new Map<string, ImageMetadata>();
+/**
+ * Extract ImageMetadata from various image input formats.
+ * Handles: direct ImageMetadata, { src: ImageMetadata, alt? }, or undefined
+ */
+export function resolveImageMetadata(
+  img?: ImageInput | null
+): ImageMetadata | undefined {
+  if (!img) return undefined;
 
-const normalizeSegment = (value: string) =>
-  value
-    .trim()
-    .replace(/\\/g, "/")
-    .replace(/^\.\//, "");
+  // Direct ImageMetadata (from direct image() usage)
+  if (isImageMetadata(img)) return img;
 
-const addLookupKeys = (key: string, metadata: ImageMetadata) => {
-  const cleaned = normalizeSegment(key);
-  const variants = new Set<string>();
-
-  const withoutTraversal = cleaned.replace(/^(\.\.\/)+/, "");
-  const withoutSrcPrefix = withoutTraversal.replace(/^src\//, "");
-  const assetPath = withoutSrcPrefix.startsWith("assets/")
-    ? withoutSrcPrefix
-    : `assets/${withoutSrcPrefix}`;
-  const bare = assetPath.replace(/^assets\//, "");
-
-  [
-    cleaned,
-    withoutTraversal,
-    withoutSrcPrefix,
-    assetPath,
-    `@/${assetPath}`,
-    `/src/${withoutSrcPrefix}`,
-    `/assets/${bare}`,
-    bare,
-  ].forEach((variant) => {
-    if (variant) {
-      variants.add(variant);
-    }
-  });
-
-  const filename = bare.split("/").pop();
-  if (filename) {
-    variants.add(filename);
-  }
-
-  variants.forEach((variant) => assetLookup.set(variant, metadata));
-};
-
-Object.entries(assetModules).forEach(([key, metadata]) => {
-  addLookupKeys(key, metadata);
-});
-
-const findAssetByPath = (value: string): ImageMetadata | undefined => {
-  const normalized = normalizeSegment(value);
-  const candidates = [
-    normalized,
-    normalized.replace(/^(\.\.\/)+/, ""),
-    normalized.replace(/^src\//, ""),
-    normalized.startsWith("@/") ? normalized : `@/${normalized}`,
-    normalized.startsWith("/") ? normalized : `/${normalized}`,
-  ];
-
-  const filename = normalized.split("/").pop();
-  if (filename) {
-    candidates.push(filename);
-  }
-
-  for (const candidate of candidates) {
-    const asset = assetLookup.get(candidate);
-    if (asset) return asset;
+  // Wrapped format { src: ImageMetadata, alt?: string }
+  if (
+    typeof img === "object" &&
+    "src" in img &&
+    img.src &&
+    isImageMetadata(img.src)
+  ) {
+    return img.src;
   }
 
   return undefined;
-};
+}
 
 /**
  * Extract image URL from Astro-processed image
@@ -158,68 +121,55 @@ export function hasAltText(img: any): img is { src: any; alt: string } {
 }
 
 /**
- * Broader image type for collection metadata (strings or image() output)
+ * Types for collection images
  */
-export type CollectionImage =
-  | ImageInput
-  | ImageMetadata
-  | string
-  | { src?: ImageInput | ImageMetadata | string; alt?: string }
-  | CollectionImage[];
+export type CollectionImage = ImageInput | undefined | null;
 
 export type NormalizedImage =
   | { type: "asset"; src: ImageMetadata; alt: string }
   | { type: "url"; src: string; alt: string };
 
-const isImageMetadata = (value: unknown): value is ImageMetadata =>
-  Boolean(
-    value &&
-      typeof value === "object" &&
-      typeof (value as Record<string, unknown>).src === "string" &&
-      typeof (value as Record<string, unknown>).width === "number" &&
-      typeof (value as Record<string, unknown>).height === "number"
-  );
-
 /**
- * Normalize any collection image input (schema-based or raw string)
- * into a structure the UI can render. Returns undefined when no image is set.
+ * Normalize a collection image to a consistent format for rendering
+ * Returns undefined if no valid image is provided
  */
 export function normalizeCollectionImage(
-  image: CollectionImage | undefined,
+  img: CollectionImage,
   fallbackAlt: string
 ): NormalizedImage | undefined {
-  const raw = Array.isArray(image) ? image[0] : image;
-  if (!raw) return undefined;
+  if (!img) return undefined;
 
-  if (isImageMetadata(raw)) {
-    return { type: "asset", src: raw, alt: fallbackAlt };
+  // Check if it's ImageMetadata (Astro asset)
+  if (isImageMetadata(img)) {
+    return {
+      type: "asset",
+      src: img,
+      alt: fallbackAlt,
+    };
   }
 
-  if (typeof raw === "string") {
-    const asset = findAssetByPath(raw);
-    if (asset) {
-      return { type: "asset", src: asset, alt: fallbackAlt };
-    }
-    return { type: "url", src: raw, alt: fallbackAlt };
-  }
-
-  if (typeof raw === "object" && "src" in raw) {
-    const srcValue = (raw as any).src;
+  // Check if it's wrapped format { src: ImageMetadata, alt?: string }
+  if (typeof img === "object" && "src" in img) {
+    const src = img.src;
     const alt =
-      typeof (raw as any).alt === "string" && (raw as any).alt.trim().length > 0
-        ? (raw as any).alt
-        : fallbackAlt;
+      "alt" in img && typeof img.alt === "string" ? img.alt : fallbackAlt;
 
-    if (isImageMetadata(srcValue)) {
-      return { type: "asset", src: srcValue, alt };
+    // src is ImageMetadata
+    if (isImageMetadata(src)) {
+      return {
+        type: "asset",
+        src: src,
+        alt: alt,
+      };
     }
 
-    if (typeof srcValue === "string") {
-      const asset = findAssetByPath(srcValue);
-      if (asset) {
-        return { type: "asset", src: asset, alt };
-      }
-      return { type: "url", src: srcValue, alt };
+    // src is a string URL
+    if (typeof src === "string") {
+      return {
+        type: "url",
+        src: src,
+        alt: alt,
+      };
     }
   }
 

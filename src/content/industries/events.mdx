@@ -5,10 +5,11 @@ description: "Companies involved in planning, hosting, or supporting events. Vis
 order: 4
 icon: "lu:sparkles"
 whyGreat: "Visual industry, very marketing-dependent, lots of referral potential."
-featuredImage: "@/assets/placeholder.svg"
+featuredImage: "@/assets/events/events-2.jpg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import placeholderImage from "@/assets/events/events-1.jpg";
+import whyChooseUsImage from "@/assets/events/events-3.jpg";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -64,6 +65,8 @@ But proof locked in folders or buried in feeds doesn't book calendars. The event
   description="We understand that event professionals sell experiences, not products. Your marketing needs to capture the emotion, the atmosphere, and the unforgettable moments you create. Our team specializes in visual-first marketing strategies that turn your stunning portfolio into a steady stream of inquiries."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={whyChooseUsImage}
+  imageAlt="Event marketing experts"
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">

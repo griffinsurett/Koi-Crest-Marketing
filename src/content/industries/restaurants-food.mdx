@@ -5,10 +5,11 @@ description: "Local food establishments needing consistent customer traffic. Qui
 order: 5
 icon: "lu:thumbs-up"
 whyGreat: "Quick wins with social content and local ads; high community engagement."
-featuredImage: "@/assets/placeholder.svg"
+featuredImage: "@/assets/resturant/resturant-1.jpg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import placeholderImage from "@/assets/resturant/resturant-2.jpg";
+import whyChooseUsImage from "@/assets/resturant/resturant-3.png";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -64,6 +65,8 @@ The restaurants thriving in your market aren't necessarily better. They're just 
   description="We know restaurant margins are razor-thin and every empty seat costs you money. That's why we focus on marketing strategies that deliver quick wins — getting hungry customers through your doors today while building long-term brand recognition for tomorrow."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={whyChooseUsImage}
+  imageAlt="Restaurant marketing experts"
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">

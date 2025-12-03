@@ -5,10 +5,11 @@ description: "Service-based personal appearance businesses. Depend on visuals an
 order: 6
 icon: "lu:sparkles"
 whyGreat: "Depend on visuals and social media presence; easy for content marketing."
-featuredImage: "@/assets/placeholder.svg"
+featuredImage: "@/assets/beauty/beauty-1.jpg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import placeholderImage from "@/assets/beauty/beauty-3.jpg";
+import whyChooseUsImage from "@/assets/beauty/beauty-2.jpg";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -66,6 +67,8 @@ Your work speaks for itself—but only when people see it.
   description="We know that in the beauty industry, your work speaks for itself — but only if people see it. Our team specializes in visual-first marketing strategies that showcase your transformations, grow your social following, and turn scrollers into booked clients."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={whyChooseUsImage}
+  imageAlt="Beauty marketing experts"
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">
