@@ -7,7 +7,8 @@ order: 2
 featuredImage: "@/assets/placeholder.svg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import placeholderImage from "@/assets/branding/branding-2.jpg";
+import Image1 from "@/assets/branding/branding.jpg";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -63,6 +64,7 @@ Weak branding does the opposite. Inconsistency confuses. Forgettable visuals get
   description="We've developed brand identities for startups finding their voice and established businesses ready for evolution. Our process combines strategic thinking with creative execution—building brands that work as hard as the businesses they represent."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={Image1}
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">

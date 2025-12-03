@@ -17,6 +17,7 @@ import ContactForm from "@/components/Form/forms/ContactForm";
 import { Image } from "astro:assets";
 import featuredImageSrc from "@/assets/placeholder.svg";
 import { formatPhoneNumber } from "@/utils/string";
+import Team1 from "@/assets/template-3.png"
 
 interface Props extends BaseVariantProps {
   columns?: 1 | 2 | 3;
@@ -107,7 +108,7 @@ const columnClasses = {
       <div class="w-full lg:w-1/2 lg:sticky lg:top-0">
         {/* Right: Featured Image */}
       <Image
-        src={featuredImageSrc}
+        src={Team1}
         alt="Contact Us"
         class="w-full h-auto rounded-lg object-cover order-1 lg:order-2"
         sizes="(max-width: 768px) 100vw, 50vw"

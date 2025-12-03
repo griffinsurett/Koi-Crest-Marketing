@@ -7,7 +7,8 @@ parent: ["digital-marketing"]
 featuredImage: "@/assets/placeholder.svg"
 ---
 import { Image } from "astro:assets";
-import placeholderImage from "@/assets/placeholder.svg";
+import placeholderImage from "@/assets/sms/message-text.jpg";
+import Image2 from "@/assets/sms/text.jpg";
 import EditorialSection from "@/layouts/EditorialSection.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
@@ -63,6 +64,7 @@ Used strategically, SMS becomes your highest-converting channel. Used poorly, yo
   description="We've built SMS programs that generate significant revenue while maintaining subscriber engagement. Our approach balances the channel's power with the discipline required to sustain it."
   learnMoreUrl="#pricing"
   showButton={true}
+  image={Image2}
 >
   <div class="flex flex-col lg:flex-row gap-16 items-start">
     <div class="space-y-6 lg:w-3/5">
