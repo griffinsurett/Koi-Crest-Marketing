@@ -4,9 +4,10 @@
  * Industry Hero - Split hero for industry pages
  * Features: Title (small) above heading (large), left-aligned text, image on right
  * Directs users to view pricing options
+ * Optimized for LCP with responsive WebP images
  */
 
-import { Image } from "astro:assets";
+import { getImage } from "astro:assets";
 import SectionHeader from "@/components/SectionHeader";
 import Button from "@/components/Button/Button";
 import HeroStats from "@/components/HeroStats.astro";
@@ -62,6 +63,40 @@ const heroImage =
     src: placeholderImage,
     alt: fallbackAlt,
   } as NormalizedImage);
+
+// Generate optimized responsive images for LCP optimization
+// Above-the-fold quality settings (lower for faster load)
+const qualitySettings = { mobile: 50, tablet: 55, desktop: 60 };
+
+let responsiveImages = null;
+
+if (heroImage.type === "asset") {
+  try {
+    const [mobile, tablet, desktop] = await Promise.all([
+      getImage({
+        src: heroImage.src,
+        format: "webp",
+        quality: qualitySettings.mobile,
+        width: 640,
+      }),
+      getImage({
+        src: heroImage.src,
+        format: "webp",
+        quality: qualitySettings.tablet,
+        width: 1024,
+      }),
+      getImage({
+        src: heroImage.src,
+        format: "webp",
+        quality: qualitySettings.desktop,
+        width: 800,
+      }),
+    ]);
+    responsiveImages = { mobile, tablet, desktop };
+  } catch (error) {
+    console.error('Failed to optimize hero image:', error);
+  }
+}
 ---
 
 <section
@@ -101,22 +136,43 @@ const heroImage =
         <HeroStats stats={stats} />
       </div>
 
-      <!-- Right Column - Image -->
+      <!-- Right Column - Image (Optimized for LCP) -->
       <div class="lg:w-1/2">
         <div class="relative overflow-hidden rounded-lg shadow-xl">
           {
-            heroImage.type === "asset" ? (
-              <Image
-                src={heroImage.src}
-                alt={heroImage.alt}
-                class="w-full h-auto object-cover"
-              />
+            responsiveImages ? (
+              <picture>
+                <source
+                  media="(max-width: 640px)"
+                  srcset={responsiveImages.mobile.src}
+                  type="image/webp"
+                />
+                <source
+                  media="(min-width: 641px) and (max-width: 1024px)"
+                  srcset={responsiveImages.tablet.src}
+                  type="image/webp"
+                />
+                <source
+                  media="(min-width: 1025px)"
+                  srcset={responsiveImages.desktop.src}
+                  type="image/webp"
+                />
+                <img
+                  src={responsiveImages.desktop.src}
+                  alt={heroImage.alt}
+                  class="w-full h-auto object-cover"
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="sync"
+                />
+              </picture>
             ) : (
               <img
-                src={heroImage.src}
+                src={heroImage.type === "url" ? heroImage.src : ""}
                 alt={heroImage.alt}
                 class="w-full h-auto object-cover"
                 loading="eager"
+                fetchpriority="high"
               />
             )
           }
