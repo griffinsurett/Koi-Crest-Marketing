@@ -1,116 +1,31 @@
 ---
 // src/components/Form/forms/QuoteForm.astro
 /**
- * Quote Form - Astro Version
- * Pure HTML with optional React enhancement via client:idle
+ * Quote Form - Astro Wrapper
+ * Uses the React QuoteForm component with Formspree integration
+ * Passes the current route for source tracking
  */
-import Button from '@/components/Button/Button';
-import FormWrapper from '@/components/Form/FormWrapper';
-import Input from '@/components/Form/inputs/Input';
-import Checkbox from '@/components/Form/inputs/Checkbox';
+import QuoteFormReact from './QuoteForm.tsx';
 
 interface Props {
   title?: string;
   description?: string;
   className?: string;
-  enhanced?: boolean;
 }
 
 const {
   title,
   description,
   className = '',
-  enhanced = true,
 } = Astro.props;
 
-// Handler for React version (only used if enhanced=true)
-const handleSubmit = async (values: any) => {
-  console.log("Quote form submitted:", values);
-  // API call would go here
-};
+// Get the current page path for source tracking
+const sourcePage = Astro.url.pathname;
 ---
 
 <div class={className}>
   {title && <h2 class="text-3xl font-bold mb-3">{title}</h2>}
   {description && <p class="text-gray-600 mb-8">{description}</p>}
 
-    <FormWrapper
-      client:idle
-      onSubmit={handleSubmit}
-      successMessage="Thank you for your quote request! We'll get back to you soon."
-      resetOnSuccess={true}
-      className="w-full gap-0"
-    >
-      <div class="flex flex-col lg:flex-row justify-between gap-2 mb-4">
-        <Input
-          name="firstName"
-          label="First Name"
-          type="text"
-          required={true}
-          minLength={2}
-          placeholder="First Name"
-          containerClassName="mb-0 flex-1"
-        />
-
-        <Input
-          name="lastName"
-          label="Last Name"
-          type="text"
-          required={true}
-          minLength={2}
-          placeholder="Last Name"
-          containerClassName="mb-0 flex-1"
-        />
-      </div>
-
-      <Input
-        name="email"
-        label="Email"
-        type="email"
-        required={true}
-        placeholder="me@website.com"
-        containerClassName="mb-4"
-      />
-
-      <Input
-        name="phone"
-        label="Phone Number"
-        type="tel"
-        required={true}
-        pattern="[0-9]{10,}"
-        placeholder="012-345-6789"
-        containerClassName="mb-4"
-      />
-
-      <Input
-        name="company"
-        label="Company Name"
-        type="text"
-        placeholder="LLC or whatever you trade as"
-        containerClassName="mb-4"
-      />
-
-      <Checkbox
-        name="privacy"
-        required={true}
-        containerClassName="mb-6"
-        checkboxClassName="accent-heading"
-      >
-        <span slot="label">
-          I have read and agree to the{" "}
-          <a
-            href="/privacy-policy"
-            class="text-pink-500 hover:text-pink-600 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Privacy Policy
-          </a>
-        </span>
-      </Checkbox>
-
-      <Button variant="primary" type="submit" className="w-full">
-        Get Your Quote
-      </Button>
-    </FormWrapper>
+  <QuoteFormReact client:idle sourcePage={sourcePage} />
 </div>

@@ -2,6 +2,7 @@
 /**
  * Quote Form - React Version
  * Uses FormWrapper with HTML5 validation
+ * Submits to Formspree with source page tracking
  */
 
 import FormWrapper from "@/components/Form/FormWrapper";
@@ -9,18 +10,32 @@ import Input from "@/components/Form/inputs/Input";
 import Checkbox from "@/components/Form/inputs/Checkbox";
 import Button from "@/components/Button/Button";
 
-export default function QuoteForm() {
+const FORMSPREE_QUOTE_ID = "meoylorn";
+
+interface QuoteFormProps {
+  sourcePage?: string;
+}
+
+export default function QuoteForm({ sourcePage }: QuoteFormProps) {
   const handleSubmit = async (values: any) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Quote form submitted:", values);
-    
-    // Here you would make your actual API call
-    // const response = await fetch('/api/quote', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(values)
-    // });
+    // Add source page to submission
+    const submissionData = {
+      ...values,
+      _source: sourcePage || window.location.pathname,
+    };
+
+    const response = await fetch(`https://formspree.io/f/${FORMSPREE_QUOTE_ID}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify(submissionData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit form");
+    }
   };
 
   return (

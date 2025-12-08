@@ -2,6 +2,7 @@
 /**
  * Multi-Step Quote Form
  * Uses FormStep components as children
+ * Submits to Formspree with source page tracking
  */
 
 import FormWrapper from "@/components/Form/FormWrapper";
@@ -11,10 +12,33 @@ import Select from "@/components/Form/inputs/Select";
 import Textarea from "@/components/Form/inputs/Textarea";
 import Checkbox from "@/components/Form/inputs/Checkbox";
 
-export default function MultiStepQuoteForm() {
+const FORMSPREE_QUOTE_ID = "meoylorn";
+
+interface MultiStepQuoteFormProps {
+  sourcePage?: string;
+}
+
+export default function MultiStepQuoteForm({ sourcePage }: MultiStepQuoteFormProps) {
   const handleSubmit = async (values: any) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Multi-step form submitted:", values);
+    // Add source page and form type to submission
+    const submissionData = {
+      ...values,
+      _source: sourcePage || window.location.pathname,
+      _formType: "multi-step-quote",
+    };
+
+    const response = await fetch(`https://formspree.io/f/${FORMSPREE_QUOTE_ID}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify(submissionData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit form");
+    }
   };
 
   return (

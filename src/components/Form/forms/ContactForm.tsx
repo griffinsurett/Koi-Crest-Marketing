@@ -2,6 +2,7 @@
 /**
  * Contact Form - React Version
  * Uses FormWrapper with HTML5 validation
+ * Submits to Formspree
  */
 
 import FormWrapper from "@/components/Form/FormWrapper";
@@ -10,18 +11,22 @@ import Checkbox from "@/components/Form/inputs/Checkbox";
 import Textarea from "@/components/Form/inputs/Textarea";
 import Button from "@/components/Button/Button";
 
+const FORMSPREE_CONTACT_ID = "mzznazjy";
+
 export default function ContactForm() {
   const handleSubmit = async (values: any) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Form submitted:", values);
-    
-    // Here you would make your actual API call
-    // const response = await fetch('/api/contact', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(values)
-    // });
+    const response = await fetch(`https://formspree.io/f/${FORMSPREE_CONTACT_ID}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit form");
+    }
   };
 
   return (
