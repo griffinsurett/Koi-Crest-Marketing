@@ -1,32 +1,32 @@
 [
   {
-    "id": "collaboration",
-    "title": "Collaboration",
-    "description": "We believe in working closely with our clients, fostering open communication and teamwork to achieve the best results together.",
+    "id": "skin-in-the-game",
+    "title": "Skin in the Game",
+    "description": "We run Koi Roofing and Solar. Every strategy we recommend is one we use ourselves. We don't give advice we wouldn't take.",
     "order": 1
   },
   {
-    "id": "commitment-to-excellence",
-    "title": "Commitment to Excellence",
-    "description": "We strive for the highest standards in every project, ensuring quality and attention to detail in every aspect of our work.",
+    "id": "results-over-reports",
+    "title": "Results Over Reports",
+    "description": "We don't hide behind dashboards and metrics. We care about one thing: did your phone ring with qualified leads? Everything else is noise.",
     "order": 2
   },
   {
-    "id": "customer-centered-approach",
-    "title": "Customer-Centered Approach",
-    "description": "Our clients’ success is our top priority. We are dedicated to delivering solutions that are tailored to meet their unique needs and goals.",
+    "id": "straight-talk",
+    "title": "Straight Talk",
+    "description": "No jargon, no runaround. We tell you what's working, what's not, and what we're doing about it. Contractor to contractor.",
     "order": 3
   },
   {
-    "id": "innovation",
-    "title": "Innovation",
-    "description": "We embrace cutting-edge technology and forward-thinking strategies to ensure our clients stay ahead in the fast-evolving digital landscape.",
+    "id": "show-up-deliver",
+    "title": "Show Up and Deliver",
+    "description": "Veteran-owned means we understand commitment. When we say we'll do something, it gets done. Period.",
     "order": 4
   },
   {
-    "id": "integrity",
-    "title": "Integrity",
-    "description": "We operate with transparency and honesty in everything we do, building trust and strong, lasting partnerships with our clients.",
+    "id": "long-term-thinking",
+    "title": "Long-Term Thinking",
+    "description": "We're not here for quick wins that don't last. We build systems that compound over time — real assets for your business.",
     "order": 5
   }
 ]
