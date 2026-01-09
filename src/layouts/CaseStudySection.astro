@@ -1,0 +1,102 @@
+---
+// src/layouts/CaseStudySection.astro
+/**
+ * Case Study Section - Showcase results for a specific client
+ * Used for highlighting Koi Roofing and Solar success story
+ */
+
+import SectionHeader from "@/components/SectionHeader";
+import Button from "@/components/Button/Button";
+import Icon from "@/components/Icon";
+import SideGallery from "@/components/SideGallery/SideGallery.astro";
+import type { GalleryImage } from "@/components/SideGallery/SideGallery.astro";
+
+export interface Stat {
+  value: string;
+  label: string;
+}
+
+export interface Props {
+  subtitle?: string;
+  title: string;
+  description: string;
+  images: GalleryImage[];
+  stats?: Stat[];
+  ctaText?: string;
+  ctaUrl?: string;
+}
+
+const {
+  subtitle = "Case Study",
+  title,
+  description,
+  images = [],
+  stats = [],
+  ctaText = "See How We Can Help You",
+  ctaUrl = "/contact",
+} = Astro.props;
+---
+
+<section class="bg-white py-20">
+  <div class="container mx-auto px-4 max-w-7xl">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <SectionHeader
+        subtitle={subtitle}
+        title={title}
+        align="center"
+        titleTag="h2"
+        subtitleClass="text-gray-500 font-semibold text-sm tracking-wider uppercase mb-4"
+        titleClass="text-4xl md:text-5xl font-bold text-black"
+        containerClass="space-y-2"
+      />
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-12 items-center">
+      <!-- Left Column - Image Gallery -->
+      <div class="lg:w-1/2">
+        <SideGallery images={images} />
+      </div>
+
+      <!-- Right Column - Content -->
+      <div class="lg:w-1/2 space-y-8">
+        <!-- Description -->
+        <p class="text-gray-700 text-lg leading-relaxed">
+          {description}
+        </p>
+
+        <!-- Stats Grid -->
+        {stats.length > 0 && (
+          <div class="grid grid-cols-2 gap-6">
+            {stats.map((stat) => (
+              <div class="bg-gray-50 p-6 rounded-lg border border-gray-100">
+                <div class="text-3xl md:text-4xl font-bold text-black mb-2">
+                  {stat.value}
+                </div>
+                <div class="text-gray-600 text-sm uppercase tracking-wide">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <!-- Additional Content Slot -->
+        <slot />
+
+        <!-- CTA Button -->
+        <div class="pt-4">
+          <Button
+            href={ctaUrl}
+            variant="primary"
+            size="lg"
+            aria-label={ctaText}
+          >
+            {ctaText}
+            <Icon icon="lu:arrow-right" className="w-5 h-5 ml-2" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

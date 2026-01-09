@@ -7,5 +7,71 @@ order: 4
 parent: ["call-center-and-lead-generation"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-When a homeowner has a question at midnight, your AI chatbot is there to help and capture their info for follow-up.
+<EditorialSection slug="ai-chatbot" collection="services">
+## The 2 AM Lead Is Worth Money
+
+It's 2 AM. A homeowner just noticed water dripping from their ceiling. They pull out their phone, find your website, and have questions. Will you be there to answer?
+
+Most websites offer a contact form. Maybe a phone number. But at 2 AM, they're not going to call and leave a voicemail. They want answers now. And if they don't get them from you, they'll get them from someone else.
+
+AI chatbots provide instant response, 24 hours a day, 7 days a week. Questions answered. Leads qualified. Appointments booked. While you sleep.
+
+## Why Chatbots Win
+
+Visitor behavior has changed. People expect instant responses—and they're willing to interact with AI if it's helpful.
+
+**Instant engagement.** The moment someone lands on your site with a question, the chatbot is there. No wait time. No "we'll get back to you." Immediate help.
+
+**Qualification at scale.** Not every visitor is a good lead. Chatbots can ask qualifying questions, gather project details, and identify the best opportunities—automatically.
+
+**24/7 availability.** Your website gets traffic around the clock. Evening browsers. Weekend researchers. Late-night emergencies. The chatbot is always on duty.
+
+**Reduced friction.** Some people don't want to fill out a form. Don't want to call. But they'll chat. Chatbots offer another conversion path for visitors who prefer it.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="AI chatbot for contractors" class="w-full h-auto" />
+</div>
+
+## AI That Works for Contractors
+
+We deploy AI chatbots trained specifically on home services—understanding your business, your services, and how to convert visitors into leads.
+
+**Custom training.** The chatbot knows your services, your service area, your pricing structure, your FAQs. It answers questions accurately because it's trained on your business.
+
+**Lead qualification.** Smart questions identify project scope, timeline, budget, and fit. Hot leads get flagged for immediate follow-up. Tire-kickers get filtered out.
+
+**Appointment booking.** Qualified leads can book directly into your calendar. No back-and-forth. No delays. Instant scheduling when they're ready.
+
+**CRM integration.** Every conversation is logged. Every lead is captured. Contact information flows directly into your system for follow-up.
+
+## The Conversation Starts Whether You're There or Not
+
+Your competitors' websites are static. Visitors land, look around, and leave. Your website engages them. Answers their questions. Qualifies their interest. Books their appointment.
+
+The difference is a chatbot that's trained to help—and available every hour of every day.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="AI Chat That Converts"
+  description="We deploy chatbots that actually book appointments—not just answer basic questions. Custom trained, seamlessly integrated, and optimized for conversion."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Your 24/7 Digital Sales Assistant</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We build and deploy AI chatbots that turn website visitors into booked appointments. Custom training on your business, smart qualification flows, direct calendar integration—all designed to capture leads you'd otherwise miss and convert visitors who aren't ready to call.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

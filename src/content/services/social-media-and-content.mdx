@@ -7,5 +7,71 @@ order: 2
 tags: featured
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-Your best marketing is your work. We help you show it off with professional photos, videos, and social media content that builds credibility and keeps your business top of mind in your community.
+<EditorialSection slug="social-media-and-content" collection="services">
+## Your Work Speaks—If Anyone Sees It
+
+You just finished another incredible project. The homeowner is thrilled. The work is flawless. But tomorrow, that beautiful installation becomes invisible—seen only by the family who lives there.
+
+Meanwhile, your competitor posts a grainy before-and-after on Facebook, and suddenly everyone's talking about how great their work is. They're not better than you. They're just louder.
+
+In the contracting world, perception is reality. The companies that look professional get treated as professionals. The ones that stay invisible get overlooked.
+
+## The Visibility Gap
+
+Most contractors are terrible at social media—not because they lack skills, but because they lack time. Between managing crews, handling customers, and actually doing the work, who has time to take photos, write posts, and build an online presence?
+
+**The invisible contractor problem.** You do great work, but nobody outside your existing customers knows it. Referrals are nice, but they're not enough to scale. You need visibility.
+
+**The amateur content trap.** When you do post, it's rushed—blurry photos, no context, inconsistent timing. Sporadic, low-quality content can actually hurt your brand more than posting nothing at all.
+
+**The platform overwhelm.** Facebook, Instagram, TikTok, YouTube, LinkedIn—each platform has different formats, different audiences, different algorithms. Who has time to master them all?
+
+**The consistency cliff.** You post for a few weeks, get busy, and disappear for months. The algorithm punishes inconsistency. Your followers forget you exist.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Social media and content creation" class="w-full h-auto" />
+</div>
+
+## Content That Builds Your Brand
+
+We handle everything—capturing your work, creating professional content, posting consistently, and engaging with your community. You focus on the job. We make sure everyone sees it.
+
+**Professional documentation.** We capture your best work with professional photography and video. Before-and-afters that make people stop scrolling. Project showcases that demonstrate your expertise.
+
+**Consistent posting.** Regular content keeps you visible and builds trust over time. We maintain your presence across platforms so you're always top of mind when someone needs your services.
+
+**Platform-optimized content.** What works on TikTok doesn't work on LinkedIn. We create content specifically designed for each platform's audience and algorithm—maximizing reach everywhere.
+
+**Community engagement.** Social media isn't just broadcasting—it's building relationships. We respond to comments, engage with your community, and build the kind of presence that turns followers into customers.
+
+## Your Work Deserves an Audience
+
+Every project you complete is proof of your expertise. Every satisfied customer is a story worth telling. Every before-and-after is marketing gold. The question isn't whether you have great content—it's whether anyone's capturing it.
+
+Stop letting your best work disappear into the void. Start building the visibility your business deserves.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Content Without the Headache"
+  description="We've managed social media for contractors across the country—building brands, growing followings, and generating real business through consistent, professional content."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Show Up Without Showing Up</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We become your content team—documenting your work, creating professional posts, maintaining your presence, and growing your audience. You'll have a consistent, professional online presence that builds your brand and attracts customers—without spending a single hour on social media yourself.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

@@ -7,5 +7,71 @@ order: 1
 tags: featured
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-Your website is your 24/7 salesperson. We build contractor websites that load fast, look professional, and actually generate leads — then optimize them to rank in local search so customers find you first.
+<EditorialSection slug="website-and-seo" collection="services">
+## Your Website Is Working Against You
+
+Right now, someone in your service area just searched for exactly what you do. They typed in "roofer near me" or "best HVAC company in [your city]." They looked at the search results, picked a company, and called them.
+
+It probably wasn't you.
+
+If your website is slow, outdated, or invisible on Google, you're not just missing opportunities—you're handing them to competitors. Every day your website underperforms is another day of leads going elsewhere.
+
+## The Digital Foundation Problem
+
+Most contractor websites fail for the same reasons:
+
+**They're invisible.** A website nobody can find is a website that generates no business. If you're not ranking on page one of Google for your services in your area, you might as well not exist online.
+
+**They're slow.** Modern customers expect websites to load in under 3 seconds. Every second beyond that costs you 7% of conversions. Many contractor websites take 8-10 seconds to load on mobile. Do the math.
+
+**They don't convert.** Traffic means nothing without action. Visitors need clear paths to contact you—phone numbers that are easy to tap, forms that are simple to complete, chat options for quick questions.
+
+**They're not mobile-ready.** Over 60% of searches happen on phones. If your site doesn't work flawlessly on mobile, you're losing most of your potential customers before they even see your services.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Website and SEO services" class="w-full h-auto" />
+</div>
+
+## Building Your Digital Headquarters
+
+We build websites specifically for home service contractors—not generic templates, but strategic digital properties designed to rank, convert, and grow your business.
+
+**Lightning-fast performance.** Our sites load in under 2 seconds. We achieve this through modern development practices, optimized images, and premium hosting infrastructure. Speed isn't a feature—it's a requirement.
+
+**Local SEO built in.** Every website we build is structured for search engine success. Schema markup, local business optimization, Google Business Profile integration—the technical foundation that gets you ranking.
+
+**Conversion-focused design.** Clear calls to action, mobile-optimized layouts, trust signals in the right places. Every element serves one purpose: turning visitors into leads.
+
+**Growth-ready architecture.** Your website should grow with your business. We build on modern foundations that scale—easy to update, simple to expand, built to last.
+
+## The Center of Everything
+
+Your website isn't just another marketing expense. It's the center of your entire digital presence. Your ads drive traffic there. Your social media links back to it. Your Google Business Profile connects to it. Your reputation is built on it.
+
+When the center is strong, everything else works better. When it's weak, everything else struggles.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Websites That Work While You Work"
+  description="We've built hundreds of contractor websites that rank and convert. Our process combines technical excellence with local market understanding—giving you a digital foundation that actually grows your business."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Your 24/7 Sales Machine</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Every website we build follows a proven process: understanding your business and market, designing for conversion, building for speed, optimizing for search, and launching with proper tracking. You'll own a digital property that generates leads around the clock—while you focus on the work you do best.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

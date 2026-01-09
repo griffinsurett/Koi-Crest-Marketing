@@ -7,5 +7,71 @@ order: 1
 parent: ["call-center-and-lead-generation"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-Stop losing leads to sticky notes and forgotten voicemails. A properly configured CRM turns chaos into closed deals.
+<EditorialSection slug="crm-setup" collection="services">
+## Your Business Is Running on Chaos
+
+The lead from last Tuesday—where did you write down their number? That customer who wanted a follow-up estimate—did anyone call them back? The hot prospect your tech mentioned three days ago—what happened to them?
+
+Right now, your leads live on sticky notes. In text messages. On random pieces of paper in the truck. In your head. And every day, some of them disappear into the void.
+
+A CRM (Customer Relationship Management) system changes everything. Every lead, every customer, every interaction—organized, tracked, and accessible. Nothing slips through the cracks.
+
+## The Cost of Disorganization
+
+When you don't have a system, you lose money in ways you can't even see.
+
+**Forgotten follow-ups.** The estimate you sent that needs a check-in. The customer who said "call me next week." The referral your satisfied customer mentioned. Without a system, these opportunities vanish.
+
+**Repeated conversations.** "What was the scope of work again?" "Didn't we already discuss pricing?" When customer history isn't accessible, you waste time—and look unprofessional.
+
+**Zero visibility.** How many leads did you get last month? What's your close rate? Which marketing channels actually work? Without data, you're making decisions blind.
+
+**Team confusion.** Who's handling this lead? Did anyone respond to that inquiry? When your team doesn't share a system, balls get dropped constantly.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="CRM setup and management" class="w-full h-auto" />
+</div>
+
+## A System That Runs Your Business
+
+We set up and configure CRM systems specifically for contractors—organized around how you actually work, not generic software defaults.
+
+**Custom setup.** Pipelines configured for your sales process. Lead stages that match your workflow. Custom fields for the information you actually need. A system built around your business, not the other way around.
+
+**Automatic lead capture.** Website forms, call tracking, chat—every lead automatically enters your CRM with full source attribution. No manual entry. No lost leads.
+
+**Follow-up automation.** Tasks automatically created. Reminders automatically triggered. Follow-ups that never get forgotten because the system handles them.
+
+**Team coordination.** Everyone sees the same information. Lead ownership is clear. Hand-offs are smooth. No more "I thought you were handling that."
+
+## From Chaos to Control
+
+A properly configured CRM doesn't just organize leads—it transforms how you run your business. You'll know exactly where every opportunity stands, what needs attention, and how your business is actually performing.
+
+The contractors scaling past $1M all have one thing in common: they have systems. This is where it starts.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="CRM That Actually Gets Used"
+  description="We've set up CRM systems for contractors of all sizes—from owner-operators to multi-crew companies. Our focus is always practical: systems that your team will actually use, not software that collects dust."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Systems Built for Contractors</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We don't just install software—we build systems. Custom configuration for your workflow, integrations with your existing tools, training for your team, and ongoing support to keep everything running. You'll have a CRM that actually helps you sell more and forget less.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

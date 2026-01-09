@@ -7,5 +7,71 @@ order: 2
 parent: ["call-center-and-lead-generation"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-The right message at the right time, automatically. While you're on a job site, your marketing keeps working.
+<EditorialSection slug="marketing-automation" collection="services">
+## Your Follow-Up Is Killing Your Close Rate
+
+How many times have you said "I'll follow up tomorrow" and never did? How many estimates went cold because you got busy? How many leads asked for information and never heard back?
+
+Manual follow-up doesn't work. Not because you're bad at it—because you're busy doing the actual work. Every time you're on a job, leads are going uncontacted. Every time you're focused on production, sales is suffering.
+
+Marketing automation fixes this. The right message, to the right lead, at the right time—automatically. While you're working, your follow-up system never sleeps.
+
+## The Follow-Up Gap
+
+The data is brutal: 80% of sales require 5+ follow-ups. But most contractors give up after one—if they follow up at all.
+
+**Speed-to-lead matters.** The first company to respond gets the job 78% of the time. When you're busy, leads sit for hours—sometimes days. Automation responds in seconds.
+
+**Persistence wins.** Homeowners are shopping around. They're comparing options. The contractor who stays top of mind—through consistent, valuable follow-up—closes more deals.
+
+**Life gets in the way.** You meant to send that follow-up email. Then the phone rang. Then there was an emergency. Then you forgot. Automation never forgets.
+
+**Scaling is impossible.** You can follow up manually with 10 leads. What about 50? 100? Without automation, growth breaks your sales process.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Marketing automation" class="w-full h-auto" />
+</div>
+
+## Automated Sequences That Close Deals
+
+We build marketing automation systems specifically for contractors—follow-up sequences that nurture leads from first contact to booked appointment.
+
+**Instant lead response.** New lead comes in, automation triggers immediately. Thank you message, next steps, calendar link—all within seconds of submission.
+
+**Nurture sequences.** Not ready to book? No problem. Automated emails and texts drip value over time—educational content, social proof, special offers—until they're ready.
+
+**Quote follow-up.** Sent an estimate? Automation follows up with testimonials, portfolio examples, and gentle reminders. No more wondering if they got it.
+
+**Re-engagement campaigns.** Old leads that went cold get automatically re-engaged. Many of them just needed more time—automation brings them back when they're ready.
+
+## Work On Jobs, Not In Your Inbox
+
+Your expertise is doing the work—not writing follow-up emails. Automation lets you focus on production while your sales system runs in the background, converting leads into appointments 24/7.
+
+The contractors outgrowing their competitors aren't working harder. They're working smarter—with systems that scale.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Automation That Actually Works"
+  description="We've built automation systems for contractors across the country—sequences that generate real appointments, not just email opens. Our focus is always results: more booked jobs, less manual follow-up."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Follow-Up That Never Stops</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We design and implement automation sequences that turn leads into customers—without requiring your constant attention. Instant responses, nurture campaigns, quote follow-ups, re-engagement sequences—all running automatically while you focus on the work that pays.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

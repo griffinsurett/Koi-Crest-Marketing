@@ -7,5 +7,71 @@ order: 5
 parent: ["social-media-and-content"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-Short-form video is how homeowners discover contractors now. We make sure they find you.
+<EditorialSection slug="short-form-video" collection="services">
+## The Content That Actually Gets Watched
+
+Scroll through TikTok for five minutes. You'll see contractors with millions of views. Roofers. Plumbers. Electricians. Their videos of installations, repairs, and transformations are getting more attention than Super Bowl ads.
+
+Short-form video isn't the future—it's happening right now. The algorithm doesn't care about your ad budget. It rewards content that people want to watch. And it turns out, people love watching skilled tradespeople do their work.
+
+Your competitors are building audiences of thousands—for free. The question is whether you're going to let them own that space.
+
+## Why Short-Form Video Wins
+
+The numbers tell the story:
+
+**Massive organic reach.** A single TikTok can reach 100,000+ people without spending a dime on ads. The algorithm surfaces good content regardless of follower count.
+
+**The attention shift.** People spend more time on TikTok, Instagram Reels, and YouTube Shorts than anywhere else online. That's where attention lives now.
+
+**Contractor content performs.** Transformations, satisfying repairs, before-and-afters—this content naturally performs well. Your daily work is entertainment for millions of homeowners.
+
+**Local discovery.** These platforms are increasingly serving local content. Videos get shown to people in your area. Short-form video is becoming local advertising.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Short-form video content" class="w-full h-auto" />
+</div>
+
+## Content That Builds Your Brand
+
+We create short-form video content specifically for contractors—capturing your work, editing for engagement, and posting strategically across platforms.
+
+**On-site capture.** We document your best projects with short-form in mind. The satisfying moments. The transformations. The work that makes people stop scrolling.
+
+**Platform-optimized editing.** Each platform has different preferences. We edit content specifically for TikTok, Instagram Reels, and YouTube Shorts—optimized for each algorithm.
+
+**Consistent posting.** The algorithm rewards consistency. We maintain a regular posting schedule so you're always building momentum, not starting from zero.
+
+**Trending formats.** We stay on top of trending sounds, formats, and styles—adapting proven viral frameworks to your content.
+
+## Your Work Is Already Content
+
+Every job you complete is potential viral content. That beautiful roof install. That satisfying drain clear. That dramatic before-and-after. You're creating content every day—you just haven't been capturing it.
+
+The contractors dominating short-form video aren't doing anything special. They're just showing their work to people who want to see it.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Video That Reaches Thousands"
+  description="We've helped contractors build audiences of tens of thousands through strategic short-form video content. Our approach combines great documentation with platform expertise—getting your best work in front of the people who need to see it."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Your Work, Amplified</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We handle everything—capturing footage, editing for each platform, posting consistently, and optimizing for reach. You focus on doing great work. We make sure thousands of people see it. Your next customer might discover you while scrolling on their couch.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

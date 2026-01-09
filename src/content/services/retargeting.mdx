@@ -7,5 +7,71 @@ order: 4
 parent: ["online-advertising"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-Most visitors don't convert on the first visit. Retargeting brings them back when they're ready.
+<EditorialSection slug="retargeting" collection="services">
+## They Visited. They Left. They Haven't Forgotten.
+
+Someone found your website. They looked at your services. Checked your reviews. Maybe even started filling out your contact form.
+
+Then they got distracted. Their phone rang. The kids needed attention. They thought "I'll do this later"—and later never came.
+
+That visitor is still interested. They just need a reminder. Retargeting puts your business back in front of them, across the web and social media, until they're ready to take action.
+
+## Why Retargeting Works
+
+Most visitors don't convert on the first visit. Not because they're not interested—because life gets in the way. Retargeting solves this problem.
+
+**The 98% problem.** Less than 2% of website visitors convert on the first visit. The other 98% leave without taking action. Retargeting reaches them again.
+
+**Warm audience advantage.** These aren't strangers—they already know who you are. They've seen your website, your services, your reviews. The trust-building has started. Retargeting continues it.
+
+**The consideration window.** Home services decisions often take days or weeks. Retargeting keeps you visible throughout that entire consideration process—so when they're ready to decide, you're there.
+
+**Lower costs.** You've already paid to get them to your website once. Retargeting reach is significantly cheaper than acquiring new traffic. You're maximizing the investment you've already made.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Retargeting ads" class="w-full h-auto" />
+</div>
+
+## Strategic Remarketing Campaigns
+
+We build retargeting campaigns that bring visitors back—with the right message, at the right time, through the right channel.
+
+**Multi-platform reach.** Your ads follow them across Google Display Network, Facebook, Instagram, and more. Wherever they browse, they see your business.
+
+**Segmented audiences.** Someone who visited your pricing page is more qualified than someone who bounced from the homepage. We segment audiences by behavior and serve different messages accordingly.
+
+**Frequency management.** There's a line between being memorable and being annoying. We manage ad frequency to stay visible without becoming invasive.
+
+**Sequential messaging.** Different messages for different stages. First reminder about your services. Then social proof and reviews. Then a special offer. The story unfolds over time.
+
+## Don't Let Warm Leads Go Cold
+
+You're spending money to drive traffic to your website. Some of that traffic will convert immediately. Most won't. But many of those visitors are still potential customers—they just need more time.
+
+Retargeting bridges that gap. It keeps your business visible throughout the entire decision process, turning "maybe later" into "let's do this."
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Retargeting That Brings Them Back"
+  description="We've recovered thousands of leads through strategic retargeting—turning website visitors who left into customers who called. Our approach maximizes the ROI on traffic you've already earned."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Second Chances That Convert</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We build retargeting systems that recover interested visitors. Multi-platform campaigns, smart segmentation, strategic messaging—all designed to bring people back when they're ready to act. You'll see exactly how many leads retargeting recovers and what they cost.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

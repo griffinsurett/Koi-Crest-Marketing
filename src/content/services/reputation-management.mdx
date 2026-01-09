@@ -3,9 +3,75 @@ title: "Reputation Management"
 heading: "Own Your Online Reputation"
 description: "Monitor, manage, and grow your online reviews across Google, Facebook, and industry platforms. Turn happy customers into 5-star reviews that close more jobs."
 icon: "lu:star"
-order: 3
+order: 8
 parent: ["social-media-and-content"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-Your reputation is your most valuable marketing asset. We help you build, protect, and leverage it.
+<EditorialSection slug="reputation-management" collection="services">
+## Reviews Are Your New Resume
+
+Before hiring a contractor, 93% of homeowners check online reviews. They're not just glancing—they're reading. Comparing. Deciding.
+
+Your reviews are the most powerful sales tool you have. A strong review profile closes deals before you even pick up the phone. A weak one costs you jobs you'll never know you lost.
+
+You do great work. Your customers are happy. But are they leaving reviews? Without a system, most satisfied customers never share their experience online—while one unhappy person will review you everywhere.
+
+## The Review Gap
+
+Most contractors have fewer reviews than they deserve—and it's costing them money.
+
+**The silent majority problem.** Happy customers don't leave reviews by default. They need to be asked. They need it to be easy. Without a system, great work goes undocumented.
+
+**The unhappy vocal minority.** Dissatisfied customers always leave reviews. Without a counterbalance of positive reviews, one negative experience can dominate your profile.
+
+**The recency factor.** Old reviews lose weight. A profile with no recent reviews looks like a business that isn't active. Customers wonder what happened.
+
+**Platform fragmentation.** Google, Facebook, Yelp, BBB, Angi, HomeAdvisor—reviews are scattered everywhere. Managing reputation means managing all of them.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Reputation management" class="w-full h-auto" />
+</div>
+
+## Building Your Review Engine
+
+We help you systematically generate reviews from satisfied customers—while monitoring and managing your online reputation across platforms.
+
+**Automated review requests.** After every completed job, automated messages ask for reviews at the perfect moment. High response rates because the process is easy and timely.
+
+**Platform optimization.** We ensure your profiles are claimed, optimized, and up-to-date across all relevant platforms. Consistent information. Professional presentation.
+
+**Monitoring and alerts.** Real-time monitoring catches reviews as they're posted—positive ones to share, negative ones to address. Nothing surprises you.
+
+**Response management.** Professional, prompt responses to every review—thanking positive reviewers and addressing concerns from negative ones. How you respond matters as much as what they say.
+
+## Your Reputation Is Your Most Valuable Asset
+
+Reviews compound over time. Every five-star review makes the next customer more likely to call. Every call you close adds another potential reviewer. The flywheel builds.
+
+The contractors with hundreds of five-star reviews didn't get lucky. They built systems that turn great work into visible proof.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Reviews That Win Jobs"
+  description="We've helped contractors build review profiles that dominate local search. Our systematic approach turns satisfied customers into consistent five-star reviews across every platform that matters."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Turn Happy Customers Into Proof</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We build review systems that work—automated requests, platform management, monitoring, and response. Your great work becomes visible proof that wins more work. You'll watch your review count grow month over month, building the social proof that closes deals.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

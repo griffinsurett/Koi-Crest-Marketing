@@ -7,5 +7,71 @@ order: 3
 parent: ["online-advertising"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-Local Service Ads put you above regular Google Ads with a trust badge. You only pay when someone actually contacts you.
+<EditorialSection slug="local-service-ads" collection="services">
+## The Top of Google—With a Trust Badge
+
+There's a spot above Google Ads. Above organic results. Above everything else. It's reserved for Local Service Ads—and it comes with something competitors can't fake: Google's Guaranteed badge.
+
+When homeowners see that green checkmark, they know Google has verified your business. Checked your insurance. Validated your licenses. You're not just another ad—you're Google-endorsed.
+
+And you only pay when someone actually contacts you. Not clicks. Leads.
+
+## The LSA Advantage
+
+Local Service Ads are fundamentally different from traditional advertising—and the benefits compound.
+
+**Position zero.** You appear above regular paid ads and organic results. The most prominent real estate on Google's search page, right when people are looking for your services.
+
+**Pay per lead, not click.** With Google Ads, you pay for every click—whether they call or bounce. With LSAs, you only pay when someone actually contacts you. Tire-kickers don't cost you money.
+
+**The trust badge.** That "Google Guaranteed" or "Google Screened" badge immediately separates you from competitors. It's third-party validation that you're legitimate, insured, and trustworthy.
+
+**Built-in reviews.** Your Google reviews appear right in your ad. Strong reviews become instant social proof. Weak competitors with poor ratings become visible liabilities.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Google Local Service Ads" class="w-full h-auto" />
+</div>
+
+## Getting Your Business Google Guaranteed
+
+LSA setup isn't simple. Google requires background checks, insurance verification, license validation. Many contractors start the process and never finish it—or get stuck in verification limbo.
+
+**Complete verification support.** We handle the entire LSA onboarding process—background checks, documentation, verification steps. We know what Google needs and how to provide it.
+
+**Profile optimization.** Your LSA profile determines when you appear and how you convert. We optimize every element—services, service areas, photos, response times.
+
+**Review management integration.** LSA performance depends heavily on reviews. We help you build and maintain the review profile that wins in local search.
+
+**Ongoing optimization.** LSAs aren't set-and-forget. We monitor performance, adjust budgets, dispute invalid leads, and optimize bidding for maximum ROI.
+
+## The Best Leads in Digital Marketing
+
+When someone calls from a Local Service Ad, they're ready to hire. They searched for exactly what you do. They saw your Google Guaranteed badge. They clicked call.
+
+These aren't website visitors to nurture. These are homeowners ready to book. The highest intent leads you can get—and you only pay for actual contacts.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="LSA Management That Delivers"
+  description="We've helped hundreds of contractors get Google Guaranteed and maximize their Local Service Ads results. From initial setup through ongoing optimization, we handle everything."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Top of Google, Verified by Google</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We get you Google Guaranteed and keep you performing at the top of local search. Full verification support, profile optimization, review management, and ongoing campaign optimization—everything you need to dominate Local Service Ads in your market.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

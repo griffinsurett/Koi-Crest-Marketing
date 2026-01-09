@@ -11,9 +11,13 @@ import {
 } from "@/utils/query";
 import FrontPageHero from "@/layouts/FrontPageHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
+import CaseStudySection from "@/layouts/CaseStudySection.astro";
 import CTASection from "@/layouts/CTASection.astro";
 import { byTag, roots } from "@/utils/query/snippets";
 import homeAboutImage from "@/assets/template-1.png";
+import koiRoofingImage from "@/assets/koirandssite.png";
+import koiJohns from "@/assets/koijohns1.jpg";
+import koiTeam from "@/assets/koi_team2.JPG";
 ---
 
 <BaseLayout
@@ -64,6 +68,26 @@ import homeAboutImage from "@/assets/template-1.png";
         <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
       </div>
     </AboutSection>
+
+    <!-- Case Study: Koi Roofing and Solar -->
+    <CaseStudySection
+      subtitle="Where We Learned"
+      title="Built From Real Results With Koi Roofing & Solar"
+      description="This isn't theory — it's battle-tested. We built this marketing system to grow Koi Roofing and Solar from the ground up. The same strategies that filled their pipeline with qualified leads are now available to contractors like you."
+      images={[
+        { src: koiRoofingImage, alt: "Koi Roofing and Solar website" },
+        { src: koiJohns, alt: "Koi Roofing and Solar team member" },
+        { src: koiTeam, alt: "Koi Roofing and Solar team" },
+      ]}
+      stats={[
+        { value: "300%", label: "Increase in Leads" },
+        { value: "400%", label: "More Search Visibility" },
+        { value: "2.5x", label: "Revenue Growth" },
+        { value: "50+", label: "5-Star Reviews" },
+      ]}
+      ctaText="Get These Results For Your Business"
+      ctaUrl="/contact"
+    />
 
     <ContentRenderer query={query("reasons")} variant="WhyChooseUsVariant" />
 

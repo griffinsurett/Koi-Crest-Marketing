@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/utils/icons/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowRight, LuBadge, LuBadgeCheck, LuBot, LuBug, LuCamera, LuCheck, LuChevronRight, LuCircleCheck, LuCloud, LuCode, LuDroplet, LuFolder, LuGem, LuGithub, LuGlobe, LuLayoutDashboard, LuLinkedin, LuMail, LuMedal, LuMegaphone, LuMessageSquare, LuMousePointer, LuPalette, LuPhoneCall, LuRefreshCw, LuRocket, LuSearch, LuServer, LuShare2, LuShield, LuSparkles, LuStar, LuSun, LuTarget, LuThermometer, LuThumbsUp, LuTrees, LuTwitter, LuType, LuUsers, LuVideo, LuWorkflow, LuZap } from 'react-icons/lu';
+import { LuArrowRight, LuBadge, LuBadgeCheck, LuBot, LuBug, LuCamera, LuCheck, LuChevronRight, LuCircleCheck, LuCloud, LuCode, LuDroplet, LuFolder, LuGem, LuGithub, LuGlobe, LuLinkedin, LuMail, LuMedal, LuMegaphone, LuMessageSquare, LuMousePointer, LuPalette, LuPhoneCall, LuRefreshCw, LuRocket, LuSearch, LuServer, LuShare2, LuShield, LuSparkles, LuStar, LuSun, LuTarget, LuThermometer, LuThumbsUp, LuTrees, LuTwitter, LuType, LuUsers, LuVideo, LuWorkflow, LuZap } from 'react-icons/lu';
 import { FaCaretRight, FaChartBar, FaPhone } from 'react-icons/fa';
 import { SiFacebook } from 'react-icons/si';
 
@@ -26,7 +26,6 @@ export const iconMap = {
   'lu:gem': LuGem,
   'lu:github': LuGithub,
   'lu:globe': LuGlobe,
-  'lu:layout-dashboard': LuLayoutDashboard,
   'lu:linkedin': LuLinkedin,
   'lu:mail': LuMail,
   'lu:medal': LuMedal,

@@ -6,18 +6,26 @@
  * Features:
  * - MainHero with title, heading (as subtitle), and description
  * - Editorial section with MDX content (left) + child services sidebar (right)
- * - About section for "Why Choose Us"
+ * - Child services if this service has children
+ * - Steps process section
  * - Pricing, Testimonials, Portfolio sections below
+ * - Industries section
  * - CTA section at bottom linking to pricing
  */
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import type { CollectionLayoutProps } from "./types";
 import MainHero from "../QuoteHero.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import CaseStudySection from "@/layouts/CaseStudySection.astro";
 import { query, sortByDate, sortByOrder } from "@/utils/query";
 import { children, roots, siblings } from "@/utils/query/snippets";
 import Button from "@/components/Button/Button";
 import SectionHeader from "@/components/SectionHeader";
+
+// Case study images for Koi Roofing
+import koiRoofingImage from "@/assets/koirandssite.png";
+import koiJohns from "@/assets/koijohns1.jpg";
+import koiTeam from "@/assets/koi_team2.JPG";
 
 const {
   entry,
@@ -30,6 +38,17 @@ const {
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
+
+// Get the entry ID for querying children
+const entryId = entry?.id || entry?.slug || "";
+
+// Check if this service has children
+const childrenQuery = children("services", entryId);
+const childServices = await childrenQuery.get();
+const hasChildren = childServices.entries.length > 0;
+
+// Check if this is a parent service (no parent field)
+const isParentService = !data.parent;
 ---
 
 <BaseLayout {...seoProps}>
@@ -41,9 +60,51 @@ const data = entry?.data || {};
       description={data.description}
     />
 
+    {/* Child Services - if this service has children, show them ABOVE body content */}
+    {hasChildren && (
+      <ContentRenderer
+        query={children("services", entryId)}
+        variant="ServicesVariant"
+        columns={3}
+        gap="lg"
+        title={`${data.title} Services`}
+        heading="What's Included"
+      />
+    )}
+
     {/* Landing page content section: MDX with EditorialSection wrapper */}
     {Content && (
       <Content />
+    )}
+
+    {/* Process Steps Section - under body content */}
+    <ContentRenderer
+      query={query("steps").orderBy(sortByOrder())}
+      variant="StepsVariant"
+      title="Our Process"
+      heading="How We Get You More Customers"
+    />
+
+    {/* Case Study - Show on parent services */}
+    {isParentService && (
+      <CaseStudySection
+        subtitle="Real Results"
+        title="Built From Real Results With Koi Roofing & Solar"
+        description="This isn't theory — it's battle-tested. We built this marketing system to grow Koi Roofing and Solar from the ground up. The same strategies that filled their pipeline with qualified leads are now available to contractors like you."
+        images={[
+          { src: koiRoofingImage, alt: "Koi Roofing and Solar website" },
+          { src: koiJohns, alt: "Koi Roofing and Solar team member" },
+          { src: koiTeam, alt: "Koi Roofing and Solar team" },
+        ]}
+        stats={[
+          { value: "300%", label: "Increase in Leads" },
+          { value: "400%", label: "More Search Visibility" },
+          { value: "2.5x", label: "Revenue Growth" },
+          { value: "50+", label: "5-Star Reviews" },
+        ]}
+        ctaText="Get These Results For Your Business"
+        ctaUrl="/contact"
+      />
     )}
 
     {/* Pricing */}
@@ -55,13 +116,16 @@ const data = entry?.data || {};
       gap="lg"
     />
 
-    {/* Related Services - siblings or children */}
-    <ContentRenderer
-      query={siblings("services", entry)}
-      variant="ServicesVariant"
-      columns={3}
-      gap="lg"
-    />
+    {/* Related Services - siblings (other services under same parent) */}
+    {!hasChildren && (
+      <ContentRenderer
+        query={siblings("services", entry)}
+        variant="ServicesVariant"
+        columns={3}
+        gap="lg"
+        title="Related Services"
+      />
+    )}
 
     {/* projects and testimonials must remain but stay commented out due to the lack of these and will be reenabled at a later point
     <ContentRenderer
@@ -78,6 +142,15 @@ const data = entry?.data || {};
     <ContentRenderer
       query={query("faq")}
       variant="AccordionVariant"
+    />
+
+    {/* Industries We Serve */}
+    <ContentRenderer
+      query={query("industries").orderBy(sortByOrder())}
+      variant="IndustriesGridVariant"
+      title="Industries We Serve"
+      heading="Built For Home Service Contractors"
+      description="Our marketing strategies work across the trades. See how we can help grow your business."
     />
 
     {/* CTA Section */}

@@ -7,5 +7,71 @@ order: 3
 tags: featured
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-Missed calls are missed money. Our call center handles your phones professionally, qualifies leads, and books appointments — so you can focus on the work while we fill your schedule.
+<EditorialSection slug="call-center-and-lead-generation" collection="services">
+## Every Missed Call Is Money Walking Away
+
+The phone rings. You're on a roof. In a crawl space. Knee-deep in a repair. By the time you get to your phone, the customer has already called your competitor. And they answered.
+
+Studies show 85% of customers who can't reach you on the first try will call someone else. They're not leaving voicemails. They're not waiting for callbacks. They're calling the next contractor on Google—right now.
+
+How many calls did you miss this week? Each one could have been a $5,000 job. A $15,000 project. A customer for life.
+
+## The Lead Leakage Problem
+
+You spend money driving calls—ads, SEO, referral programs. But what happens when those calls come in?
+
+**The unanswered call epidemic.** Research shows contractors miss 50-70% of incoming calls. Not because they don't care—because they're working. You can't answer the phone when you're on a ladder.
+
+**The voicemail graveyard.** "Leave a message and we'll call you back" is where leads go to die. Less than 20% of people leave voicemails. Even fewer wait for callbacks.
+
+**The amateur answer problem.** Having your spouse or office person answer is better than nothing—but can they qualify leads? Book appointments? Handle objections? Close the sale?
+
+**The after-hours gap.** Your phone stops ringing at 5 PM, but customers don't stop searching. Evening and weekend calls go straight to voicemail—straight to your competitors who answer.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Call center and lead generation" class="w-full h-auto" />
+</div>
+
+## Capturing Every Opportunity
+
+We answer your phones professionally, qualify leads instantly, and book appointments directly into your calendar. Every call. Every time. Even at 9 PM on a Saturday.
+
+**Live answer, always.** Real people answering real calls—trained on your services, your pricing, your processes. No robocalls. No voicemail. No missed opportunities.
+
+**Lead qualification.** Not every caller is a good lead. We qualify prospects, gather project details, and filter out tire-kickers before they waste your time.
+
+**Appointment booking.** Qualified leads get scheduled immediately. Direct calendar integration means appointments appear in your system—confirmed, with all relevant details.
+
+**24/7 availability.** Emergency calls at midnight. Quote requests on Sunday morning. We're there when your customers need you—even when you can't be.
+
+## Stop Paying for Leads You Never Get
+
+Think about your marketing spend. Every dollar that drives a call that goes unanswered is a dollar wasted. Every lead that calls once and moves on is a lead you paid for but never got.
+
+Professional call handling isn't an expense—it's lead insurance. It protects the investment you're already making in marketing.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Your Calls, Handled Professionally"
+  description="We've handled millions of calls for contractors nationwide. Our agents are trained specifically on home services—they speak your language, understand your business, and know how to convert callers into booked appointments."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Never Miss Another Job</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Every call answered professionally. Every lead qualified properly. Every good opportunity booked immediately. You'll never wonder how many calls you missed or how much business walked away. Your phone becomes what it should be—a revenue machine, not an anxiety source.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

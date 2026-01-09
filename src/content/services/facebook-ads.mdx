@@ -7,5 +7,71 @@ order: 2
 parent: ["online-advertising"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-Most homeowners don't know they need you until they see what you can do. We show them.
+<EditorialSection slug="facebook-ads" collection="services">
+## Reach Them Before They Need You
+
+Most homeowners don't wake up thinking about their roof. Their HVAC system. Their gutters. They don't know they need you—until they do.
+
+Facebook and Instagram advertising lets you reach them first. Before the emergency. Before they start searching. While they're scrolling through their feed, you can be the contractor they remember when it matters.
+
+By the time they actually need services, you're not a stranger. You're the company they've seen. The one that looks professional. The one they'll call.
+
+## The Social Advertising Advantage
+
+Google Ads captures existing demand. Facebook and Instagram create it.
+
+**Precision targeting.** Reach homeowners in your exact service area. Target by neighborhood, home value, age of home, even homeowner status. No wasted spend on renters or people outside your territory.
+
+**Visual storytelling.** Your best work, in front of the right eyes. Before-and-after photos. Drone footage. Project showcases. Social media is built for visual content—and your work is inherently visual.
+
+**Brand building at scale.** Every impression builds familiarity. Every ad reinforces your brand. When someone needs your services, the company they've seen multiple times feels safer than a complete stranger.
+
+**Lower competition.** Everyone fights for Google search traffic. Fewer contractors have cracked Facebook advertising. The opportunity is less crowded, and often more affordable.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Facebook and Instagram advertising" class="w-full h-auto" />
+</div>
+
+## Social Ads That Drive Real Business
+
+We build Facebook and Instagram campaigns that generate leads, not just likes. Targeting the right homeowners, with the right message, at the right moment.
+
+**Audience building.** Custom audiences of homeowners in your service area. Lookalike audiences based on your best customers. Retargeting audiences of website visitors. We find your people.
+
+**Creative that converts.** Scroll-stopping visuals. Copy that compels action. Ads designed for mobile screens and short attention spans. Content that earns clicks, not just impressions.
+
+**Lead generation campaigns.** Facebook Lead Forms that capture contact info instantly. Messenger campaigns that start conversations. Landing pages designed for mobile traffic. Multiple paths to conversion.
+
+**Full-funnel optimization.** Awareness campaigns build your audience. Consideration campaigns warm them up. Conversion campaigns close the deal. We manage the entire journey.
+
+## Plant Seeds, Harvest Leads
+
+Social advertising is about planting seeds. Every impression is a seed of awareness. Some sprout immediately—direct leads from your ads. Others grow over time—people who remember you months later when they need help.
+
+The contractors winning in 2024 aren't just capturing demand. They're creating it.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Social Ads That Generate Business"
+  description="We've run thousands of social campaigns for contractors—building audiences, generating leads, and proving that Facebook and Instagram can deliver real ROI for home service businesses."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">From Scroll to Call</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We build social advertising systems that turn scrollers into leads. Precise targeting, compelling creative, optimized campaigns—all designed to reach homeowners in your market and convert them into customers. You'll see exactly how social ads contribute to your pipeline and what each lead costs.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

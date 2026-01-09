@@ -1,0 +1,191 @@
+---
+// src/components/SideGallery/SideGallery.astro
+/**
+ * Side Gallery Component - Grid gallery with lightbox
+ *
+ * Features:
+ * - First image spans full width
+ * - Remaining images in equal-height grid
+ * - Click to open lightbox for full view
+ * - Astro Image optimization
+ */
+
+import { Image } from "astro:assets";
+
+export interface GalleryImage {
+  src: ImageMetadata;
+  alt?: string;
+}
+
+export interface Props {
+  images: GalleryImage[];
+  class?: string;
+}
+
+const { images = [], class: className = "" } = Astro.props;
+
+// Generate unique ID for this gallery instance
+const galleryId = `gallery-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class={`side-gallery ${className}`} data-gallery-id={galleryId}>
+  <div class="grid grid-cols-2 gap-4">
+    {images.map((img, index) => (
+      <button
+        type="button"
+        class={`gallery-item relative rounded-lg overflow-hidden shadow-xl cursor-pointer transition-transform duration-300 hover:scale-[1.02] ${index === 0 ? 'col-span-2' : ''}`}
+        data-gallery-index={index}
+        aria-label={`View ${img.alt || 'image'} full size`}
+      >
+        <Image
+          src={img.src}
+          alt={img.alt || "Gallery image"}
+          class={`w-full object-cover ${index === 0 ? 'h-auto' : 'h-48 md:h-56'}`}
+          loading="lazy"
+        />
+        <div class="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+          <span class="opacity-0 hover:opacity-100 text-white text-sm font-medium transition-opacity duration-300">
+            Click to enlarge
+          </span>
+        </div>
+      </button>
+    ))}
+  </div>
+
+  <!-- Lightbox -->
+  <div
+    id={`${galleryId}-lightbox`}
+    class="lightbox fixed inset-0 z-50 bg-black/95 hidden items-center justify-center p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Image lightbox"
+  >
+    <!-- Close Button -->
+    <button
+      type="button"
+      class="lightbox-close absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
+      aria-label="Close lightbox"
+    >
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Navigation Arrows -->
+    <button
+      type="button"
+      class="lightbox-prev absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10"
+      aria-label="Previous image"
+    >
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <button
+      type="button"
+      class="lightbox-next absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10"
+      aria-label="Next image"
+    >
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+    <!-- Image Container -->
+    <div class="lightbox-content max-w-5xl max-h-[90vh] flex items-center justify-center">
+      {images.map((img, index) => (
+        <Image
+          src={img.src}
+          alt={img.alt || "Gallery image"}
+          class={`lightbox-image max-w-full max-h-[85vh] object-contain ${index === 0 ? '' : 'hidden'}`}
+          data-lightbox-index={index}
+          loading="eager"
+        />
+      ))}
+    </div>
+
+    <!-- Image Counter -->
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm">
+      <span class="lightbox-current">1</span> / <span class="lightbox-total">{images.length}</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initGalleries() {
+    document.querySelectorAll('.side-gallery').forEach((gallery) => {
+      const galleryId = gallery.getAttribute('data-gallery-id');
+      const lightbox = document.getElementById(`${galleryId}-lightbox`);
+      if (!lightbox) return;
+
+      const images = lightbox.querySelectorAll('.lightbox-image');
+      const currentSpan = lightbox.querySelector('.lightbox-current');
+      const closeBtn = lightbox.querySelector('.lightbox-close');
+      const prevBtn = lightbox.querySelector('.lightbox-prev');
+      const nextBtn = lightbox.querySelector('.lightbox-next');
+
+      let currentIndex = 0;
+      const totalImages = images.length;
+
+      function showImage(index: number) {
+        images.forEach((img, i) => {
+          img.classList.toggle('hidden', i !== index);
+        });
+        currentIndex = index;
+        if (currentSpan) currentSpan.textContent = String(index + 1);
+      }
+
+      function openLightbox(index: number) {
+        showImage(index);
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+
+      function nextImage() {
+        showImage((currentIndex + 1) % totalImages);
+      }
+
+      function prevImage() {
+        showImage((currentIndex - 1 + totalImages) % totalImages);
+      }
+
+      // Gallery item clicks
+      gallery.querySelectorAll('.gallery-item').forEach((item) => {
+        item.addEventListener('click', () => {
+          const index = parseInt(item.getAttribute('data-gallery-index') || '0');
+          openLightbox(index);
+        });
+      });
+
+      // Lightbox controls
+      closeBtn?.addEventListener('click', closeLightbox);
+      prevBtn?.addEventListener('click', prevImage);
+      nextBtn?.addEventListener('click', nextImage);
+
+      // Close on backdrop click
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (lightbox.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+      });
+    });
+  }
+
+  // Initialize on load and after navigation
+  initGalleries();
+  document.addEventListener('astro:after-swap', initGalleries);
+</script>

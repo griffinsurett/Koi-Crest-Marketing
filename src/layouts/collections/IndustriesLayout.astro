@@ -13,10 +13,16 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import type { CollectionLayoutProps } from "./types";
 import IndustryHero from "../IndustryHero.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import CaseStudySection from "@/layouts/CaseStudySection.astro";
 import { query, sortByDate, sortByOrder } from "@/utils/query";
 import { children, roots } from "@/utils/query/snippets";
 import Button from "@/components/Button/Button";
 import SectionHeader from "@/components/SectionHeader";
+
+// Case study images for Koi Roofing
+import koiRoofingImage from "@/assets/koirandssite.png";
+import koiJohns from "@/assets/koijohns1.jpg";
+import koiTeam from "@/assets/koi_team2.JPG";
 
 const {
   entry,
@@ -29,6 +35,9 @@ const {
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
+
+// Check if this is the roofers page for case study
+const isRoofersPage = entry?.id === "roofers" || entry?.slug === "roofers";
 ---
 
 <BaseLayout {...seoProps}>
@@ -44,6 +53,36 @@ const data = entry?.data || {};
     {/* Landing page content section: MDX with EditorialSection wrapper */}
     {Content && (
       <Content />
+    )}
+
+    {/* Process Steps Section */}
+    <ContentRenderer
+      query={query("steps").orderBy(sortByOrder())}
+      variant="StepsVariant"
+      title="Our Process"
+      heading="How We Get You More Customers"
+    />
+
+    {/* Case Study - Only show on Roofers page */}
+    {isRoofersPage && (
+      <CaseStudySection
+        subtitle="Our Success Story"
+        title="Built From Real Results With Koi Roofing & Solar"
+        description="This is our trade. We built this marketing system to grow Koi Roofing and Solar from the ground up. The same strategies that filled their pipeline with qualified leads are now available to roofers like you."
+        images={[
+          { src: koiRoofingImage, alt: "Koi Roofing and Solar website" },
+          { src: koiJohns, alt: "Koi Roofing and Solar team member" },
+          { src: koiTeam, alt: "Koi Roofing and Solar team" },
+        ]}
+        stats={[
+          { value: "300%", label: "Increase in Leads" },
+          { value: "400%", label: "More Search Visibility" },
+          { value: "2.5x", label: "Revenue Growth" },
+          { value: "50+", label: "5-Star Reviews" },
+        ]}
+        ctaText="Get These Results For Your Business"
+        ctaUrl="/contact"
+      />
     )}
 
         {/* Pricing */}
@@ -79,6 +118,15 @@ const data = entry?.data || {};
       query={query("faq")}
       variant="AccordionVariant"
       />
+
+    {/* Other Industries We Serve */}
+    <ContentRenderer
+      query={query("industries").where((item) => item.id !== entry?.id).orderBy(sortByOrder())}
+      variant="IndustriesGridVariant"
+      title="Other Trades We Serve"
+      heading="We Help All Home Service Contractors"
+      description="Our marketing strategies work across the trades. See how we can help grow your business."
+    />
 
     {/* CTA Section */}
     <section class="container mx-auto">

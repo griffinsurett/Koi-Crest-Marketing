@@ -3,9 +3,75 @@ title: "Brand Identity"
 heading: "Look Like the Pro You Are"
 description: "Professional logos, color schemes, vehicle wraps, and branded materials that make your business instantly recognizable and build trust before you say a word."
 icon: "lu:badge"
-order: 4
+order: 7
 parent: ["social-media-and-content"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-First impressions happen fast. Professional branding makes sure yours says "hire me."
+<EditorialSection slug="brand-identity" collection="services">
+## First Impressions Are Made in Seconds
+
+A homeowner is choosing between two contractors. One pulls up in a plain white van. The other arrives in a professionally wrapped vehicle with a clean logo, matching uniforms, and branded materials.
+
+Who do they trust more? Who do they assume charges more? Who do they expect to do better work?
+
+Branding isn't vanity—it's psychology. Before you say a word, your brand has already told customers who you are. Professional branding signals professional work. Amateur branding signals amateur business.
+
+## The Credibility Gap
+
+Many skilled contractors lose jobs to less capable competitors simply because they look less professional.
+
+**The trust equation.** Customers can't evaluate your technical skills before hiring you. They evaluate what they can see—your appearance, your materials, your brand. Visual professionalism implies work professionalism.
+
+**Price perception.** Professional-looking businesses can charge professional prices. When everything looks polished, customers expect to pay more—and they're willing to.
+
+**Memorability.** Generic looks make you forgettable. Distinctive branding makes you memorable. When someone needs your services months later, will they remember your name?
+
+**Referral confidence.** People recommend businesses that make them look good. A professionally branded contractor is easier to refer than one with a generic truck and no materials.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Brand identity design" class="w-full h-auto" />
+</div>
+
+## Building Your Brand System
+
+We develop complete brand identities for contractors—visual systems that work across every touchpoint, from business cards to building wraps.
+
+**Logo design.** A mark that's distinctively yours—professional, memorable, and built to work everywhere. Not clip art. Not templates. A real logo designed for your business.
+
+**Color and typography.** Strategic color palettes and fonts that convey the right message. Colors that work on trucks, uniforms, and websites. Typography that reads well everywhere.
+
+**Vehicle graphics.** Truck and trailer wraps designed for impact. Your vehicles become moving billboards—advertising your business every mile you drive.
+
+**Collateral materials.** Business cards, door hangers, estimate forms, yard signs—everything you need to look professional at every customer interaction.
+
+## Invest in Perception
+
+The contractors who charge premium prices don't just do premium work—they look like they do premium work. Every visual touchpoint reinforces their professionalism.
+
+Branding is an investment that pays dividends every day. In customer trust. In price confidence. In referral quality. In being memorable.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Branding That Works"
+  description="We've built brand identities for contractors of all sizes—from owner-operators to multi-location companies. Our focus is always practical: visual systems that build trust and work in the real world."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">The Complete Professional Package</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We build brand systems that work—logos, colors, typography, and materials that all work together to communicate professionalism. You'll have a visual identity that builds trust at every touchpoint, from the moment customers see your truck to the moment they sign your estimate.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

@@ -7,5 +7,73 @@ order: 1
 parent: ["online-advertising"]
 featuredImage: "@/assets/template-2.png"
 ---
+import { Image } from "astro:assets";
+import placeholderImage from "@/assets/template-2.png";
+import EditorialSection from "@/layouts/EditorialSection.astro";
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
-When someone Googles "roofer near me" they're ready to hire. We make sure you're the one they call.
+<EditorialSection slug="google-ads" collection="services">
+## The Moment They're Ready to Buy
+
+Someone just typed "emergency plumber near me" into Google. Their pipe is leaking. They need help now. They're going to call the first contractor they see.
+
+That's the power of Google Ads. You're not interrupting people who might be interested someday. You're appearing at the exact moment they're ready to hire. High intent. Immediate need. Ready to convert.
+
+The question is whether that customer sees you—or your competitor.
+
+## Why Most Google Ads Fail
+
+Google Ads looks simple. Pick some keywords, write an ad, set a budget. What could go wrong?
+
+Everything.
+
+**Keyword chaos.** Bidding on "roofing" seems smart until you realize you're paying for "roofing materials," "roofing DIY," and "roofing jobs hiring." Broad keywords burn budgets on irrelevant clicks.
+
+**Landing page leaks.** Paying $50 per click to send traffic to your homepage? That's not advertising—it's waste. Generic landing pages kill conversion rates and inflate costs.
+
+**The set-it-and-forget-it trap.** Google Ads requires constant optimization. Bids change. Competition shifts. What worked last month stops working this month. Unmanaged campaigns bleed money.
+
+**Tracking blindness.** "I think we're getting leads from Google" isn't a strategy. Without proper conversion tracking, you're flying blind—unable to optimize what you can't measure.
+
+<div class="my-12 rounded-lg overflow-hidden shadow-lg">
+  <Image src={placeholderImage} alt="Google Ads management" class="w-full h-auto" />
+</div>
+
+## Google Ads That Actually Work
+
+We build Google Ads campaigns specifically for contractors—targeting high-intent local searches, converting clicks into calls, and optimizing constantly for better results.
+
+**Strategic keyword targeting.** We target the searches that matter—people looking to hire, not research. "Emergency roofer [city]" not "roofing costs." Every click is a potential customer.
+
+**Conversion-optimized landing pages.** Custom landing pages designed to convert. Clear messaging, strong calls to action, mobile-optimized design. Traffic goes somewhere designed to book appointments.
+
+**Continuous optimization.** We monitor, test, and adjust daily. Pausing underperforming keywords. Increasing bids on winners. Improving ad copy. Your campaign gets better every week.
+
+**Full conversion tracking.** Know exactly which keywords generate calls and which generate waste. See your cost per lead, cost per job, and actual ROI. Make decisions based on data, not guesses.
+
+## Capture Demand That Already Exists
+
+SEO takes months. Social media builds slowly. But there are people searching for your services right now—today—ready to hire. Google Ads puts you in front of them immediately.
+
+The demand exists. The question is whether you're capturing it.
+</EditorialSection>
+
+<AboutSection
+  subtitle="Our Approach"
+  title="Google Ads That Generate ROI"
+  description="We've managed millions in Google Ads spend for contractors—building campaigns that generate real leads at profitable costs. Our focus is always return on investment, not just clicks."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Clicks That Convert</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        We build Google Ads campaigns that turn search traffic into booked jobs. Precise targeting, optimized landing pages, constant refinement—everything focused on one goal: generating leads at a cost that makes sense for your business. You'll know exactly what Google Ads generates and what each lead costs.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>
