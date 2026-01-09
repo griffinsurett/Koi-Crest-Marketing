@@ -100,55 +100,47 @@ export default function CookieConsentBanner() {
         ssr={false}
         ariaLabel="Cookie consent banner"
       >
-        <div className="outer-card-transition group text-left">
-          <div className="outer-card-style card-bg-2">
-            <div
-              className="inner-card-style inner-card-transition inner-card-color"
-              aria-hidden="true"
-            />
-            <div className="relative z-10 flex flex-col gap-6">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Cookie">
-                  🍪
-                </span>
-                <p className="text-sm text-text leading-relaxed">
-                  We use cookies to improve your browsing experience and for
-                  marketing purposes.{" "}
-                  <Button
-                    variant="link"
-                    onClick={handleOpenSettings}
-                    type="button"
-                  >
-                    Manage preferences
-                  </Button>
-                </p>
-              </div>
+        <div className="bg-white rounded-lg shadow-lg p-6 text-left">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl" role="img" aria-label="Cookie">
+                🍪
+              </span>
+              <p className="text-sm text-text leading-relaxed">
+                We use cookies to improve your browsing experience and for
+                marketing purposes.{" "}
+                <Button
+                  variant="link"
+                  onClick={handleOpenSettings}
+                  type="button"
+                >
+                  Manage preferences
+                </Button>
+              </p>
+            </div>
 
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  variant="secondary"
-                  onClick={handleRejectAll}
-                  fullWidth={true}
-                  type="button"
-                  buttonWrapperClasses="text-center"
-                  size="md"
-                  disabled={isPending}
-                >
-                  Reject All
-                </Button>
-                <Button
-                  variant="primary"
-                  onClick={handleAcceptAll}
-                  fullWidth={true}
-                  className="flex-1"
-                  animated={false}
-                  type="button"
-                  size="md"
-                  disabled={isPending}
-                >
-                  Accept All
-                </Button>
-              </div>
+            <div className="flex gap-3">
+              <Button
+                variant="secondary"
+                onClick={handleRejectAll}
+                type="button"
+                buttonWrapperClasses="flex-1 text-center"
+                size="md"
+                disabled={isPending}
+              >
+                Reject All
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleAcceptAll}
+                buttonWrapperClasses="flex-1"
+                animated={false}
+                type="button"
+                size="md"
+                disabled={isPending}
+              >
+                Accept All
+              </Button>
             </div>
           </div>
         </div>
