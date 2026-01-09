@@ -76,13 +76,34 @@ export default function HeaderLanguageSwitcher() {
             : "Enable functional cookies to change language"
         }
       >
-        {currentLanguage.flag && (
-          <span className="text-base leading-none notranslate" aria-hidden="true">
-            {currentLanguage.flag}
-          </span>
-        )}
-        <span className="hidden sm:inline uppercase notranslate">
-          {currentLanguage.code}
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M3.6 9h16.8M3.6 15h16.8"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M12 3a15.3 15.3 0 0 1 4 9 15.3 15.3 0 0 1-4 9 15.3 15.3 0 0 1-4-9 15.3 15.3 0 0 1 4-9Z"
+          />
+        </svg>
+        <span className="uppercase notranslate">
+          {currentLanguage.code.split("-")[0]}
         </span>
         <svg
           className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`}
