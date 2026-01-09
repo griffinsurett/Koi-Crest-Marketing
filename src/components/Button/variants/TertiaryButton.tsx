@@ -21,9 +21,9 @@ const TertiaryButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonP
     `;
 
     const sizeStyles = {
-      sm: 'px-4 py-2 text-sm',
-      md: 'px-6 py-2.5 text-base',
-      lg: 'px-8 py-3 text-lg',
+      sm: 'px-6 py-3 text-base',
+      md: 'px-8 py-4 text-lg',
+      lg: 'px-10 py-5 text-xl',
     };
 
     const combinedClassName = `${baseStyles} ${sizeStyles[size]} ${className}`.trim();

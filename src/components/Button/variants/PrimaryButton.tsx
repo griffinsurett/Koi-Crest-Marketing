@@ -20,7 +20,7 @@ export default function PrimaryButton({
   ...props
 }: ButtonProps) {
   // Koi Crest primary styling - dark background
-  const variantClasses = 'hover-scale-up-center bg-MainDark text-MainLight inline-flex justify-center items-center gap-2 bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition duration-200';
+  const variantClasses = 'hover-scale-up-center bg-MainDark text-MainLight inline-flex justify-center items-center gap-2 bg-black text-white px-8 py-4 text-lg font-medium rounded-md hover:bg-gray-800 transition duration-200';
 
   return (
     <ButtonBase

@@ -9,23 +9,12 @@
     --color-MainLight: var(--color-white);
 }
 
-@font-face {
-    font-family: "Outfit";
-    src: url("/fonts/Outfit/Outfit-VariableFont_wght.ttf") format("woff2");
-    font-weight: 300 900;
-    font-style: normal;
-    font-display: swap;
-}
-
 @layer base {
     h1, h2, h3, h4 {
-        font-family: 'Montserrat', sans-serif;
-    }
-    h1, h3 {
-        text-transform: uppercase;
+        font-family: 'Bebas Neue', sans-serif;
     }
     body {
-        font-family: 'Outfit', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
     }
 }
 
@@ -34,16 +23,16 @@
         @apply text-5xl md:text-6xl lg:text-7xl font-extrabold;
     }
     .h2 {
-        @apply text-4xl lg:text-5xl font-extrabold;
+        @apply text-4xl md:text-5xl lg:text-6xl font-extrabold;
     }
     .h3 {
-        @apply text-2xl lg:text-3xl font-extrabold;
+        @apply text-2xl md:text-3xl lg:text-4xl font-extrabold;
     }
     .h4 {
         @apply text-xl lg:text-2xl font-bold;
     }
     .h5 {
-        @apply text-lg lg:text-xl font-bold;
+        @apply text-lg md:text-xl lg:text-2xl font-bold;
     }
     .h6 {
         @apply text-base lg:text-lg font-bold;

@@ -17,7 +17,7 @@ export default function GhostButton({
   ...props
 }: ButtonProps) {
   // Koi Crest ghost styling - transparent with subtle hover
-  const variantClasses = 'inline-flex items-center gap-2 bg-transparent text-gray-700 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition duration-200';
+  const variantClasses = 'inline-flex items-center gap-2 bg-transparent text-gray-700 px-8 py-4 text-lg rounded-md font-medium hover:bg-gray-100 transition duration-200';
 
   return (
     <ButtonBase

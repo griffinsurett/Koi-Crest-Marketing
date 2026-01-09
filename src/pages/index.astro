@@ -12,7 +12,7 @@ import {
 import FrontPageHero from "@/layouts/FrontPageHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import CTASection from "@/layouts/CTASection.astro";
-import { byTag } from "@/utils/query/snippets";
+import { byTag, roots } from "@/utils/query/snippets";
 import homeAboutImage from "@/assets/template-1.png";
 ---
 
@@ -26,6 +26,15 @@ import homeAboutImage from "@/assets/template-1.png";
       title="Were Here To Get You Customers!"
       description={siteData.description}
       subtitle={siteData.tagline}
+    />
+
+        <!-- Services - auto-populates from services meta -->
+    <ContentRenderer
+      query={roots("services")}
+      variant="ServicesVariant"
+      columns={3}
+      gap="lg"
+      
     />
 
     <AboutSection
@@ -55,14 +64,6 @@ import homeAboutImage from "@/assets/template-1.png";
         <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
       </div>
     </AboutSection>
-
-    <!-- Services - auto-populates from services meta -->
-    <ContentRenderer
-      query={byTag("services", "featured")}
-      variant="ServicesVariant"
-      columns={3}
-      gap="lg"
-    />
 
     <ContentRenderer query={query("reasons")} variant="WhyChooseUsVariant" />
 
