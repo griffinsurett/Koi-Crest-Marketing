@@ -1,32 +1,32 @@
 [
   {
+    "id": "veteran-discipline",
+    "title": "Veteran Discipline",
+    "description": "Military service taught us commitment, follow-through, and never leaving a job half-done. That's how we run our roofing company, and that's how we serve you.",
+    "order": 1
+  },
+  {
     "id": "skin-in-the-game",
     "title": "Skin in the Game",
     "description": "We run Koi Roofing and Solar. Every strategy we recommend is one we use ourselves. We don't give advice we wouldn't take.",
-    "order": 1
+    "order": 2
+  },
+  {
+    "id": "coast-to-coast",
+    "title": "Coast to Coast",
+    "description": "We serve contractors across all 50 states. Whether you're in a big city or small town, we understand local markets and how to dominate them.",
+    "order": 3
+  },
+  {
+    "id": "straight-talk",
+    "title": "Straight Talk",
+    "description": "No jargon, no runaround. We tell you what's working, what's not, and what we're doing about it. Veteran contractor to contractor.",
+    "order": 4
   },
   {
     "id": "results-over-reports",
     "title": "Results Over Reports",
     "description": "We don't hide behind dashboards and metrics. We care about one thing: did your phone ring with qualified leads? Everything else is noise.",
-    "order": 2
-  },
-  {
-    "id": "straight-talk",
-    "title": "Straight Talk",
-    "description": "No jargon, no runaround. We tell you what's working, what's not, and what we're doing about it. Contractor to contractor.",
-    "order": 3
-  },
-  {
-    "id": "show-up-deliver",
-    "title": "Show Up and Deliver",
-    "description": "Veteran-owned means we understand commitment. When we say we'll do something, it gets done. Period.",
-    "order": 4
-  },
-  {
-    "id": "long-term-thinking",
-    "title": "Long-Term Thinking",
-    "description": "We're not here for quick wins that don't last. We build systems that compound over time — real assets for your business.",
     "order": 5
   }
 ]

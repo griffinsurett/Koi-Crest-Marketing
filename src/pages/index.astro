@@ -9,57 +9,52 @@ import {
   sortByOrder,
   whereArrayContains,
 } from "@/utils/query";
-import MainHero from "@/layouts/MainHero.astro";
+import FrontPageHero from "@/layouts/FrontPageHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import CTASection from "@/layouts/CTASection.astro";
 import { byTag } from "@/utils/query/snippets";
 import homeAboutImage from "@/assets/template-1.png";
 ---
 
-<BaseLayout title={`${siteData.title} - home`} description={siteData.description}>
+<BaseLayout
+  title={`${siteData.title} - home`}
+  description={siteData.description}
+>
   <main class="flex-1">
-    <!-- Hero ContentRenderer with static content -->
-    <MainHero
-      title={`${siteData.title} Marketing.`}
+    <!-- Hero with Portfolio Showcase -->
+    <FrontPageHero
+      title="Were Here To Get You Customers!"
       description={siteData.description}
       subtitle={siteData.tagline}
-      primaryCTA={{
-        text: "Get Started",
-        link: "/contact-us",
-      }}
-      secondaryCTA={{
-        text: "View Services",
-        link: "/services",
-      }}
     />
 
     <AboutSection
       subtitle="About Us"
-      title="We're Contractors Too. This Is Our Playbook."
-      description={`We own and operate Koi Roofing and Solar. Every strategy we offer is one we've tested
-    on our own company first. We know the feast-or-famine cycles, the tire-kickers, and what it actually
-    takes to close high-ticket jobs — because we live it every day.`}
+      title="Veteran-Owned. Contractor-Operated. Nationwide."
+      description={`Founded by a veteran who owns Koi Roofing and Solar, we built this marketing system to grow
+    our own contracting business. Now we're helping home service pros across the entire United States
+    dominate their local markets with the same proven playbook.`}
       learnMoreUrl="/about-us"
-      image={{ src: homeAboutImage, alt: "Koi Roofing and Solar team" }}
-
+      image={{ src: homeAboutImage, alt: "Veteran-owned contractor marketing" }}
     >
-  <div class="flex flex-col lg:flex-row gap-16 items-start">
-      <!-- Left Column - Our Promise -->
-      <div class="space-y-6 lg:w-3/5">
-        <h3 class="h3 font-bold">Free Website With Annual Plans</h3>
+      <div class="flex flex-col lg:flex-row gap-16 items-start">
+        <!-- Left Column - Our Promise -->
+        <div class="space-y-6 lg:w-3/5">
+          <h3 class="h3 font-bold">Free Website With Annual Plans</h3>
 
-        <p class="text-main text-gray-300 leading-relaxed">
-          Sign up for an annual plan and get a free website — built, hosted, and maintained by us.
-          These aren't template sites. They're lightning-fast, conversion-optimized machines that
-          load faster than your competition. Your site is often the first impression. We make sure
-          it's a good one.
-        </p>
+          <p class="text-main text-gray-300 leading-relaxed">
+            Sign up for an annual plan and get a free website — built, hosted,
+            and maintained by us. These aren't template sites. They're
+            lightning-fast, conversion-optimized machines that load faster than
+            your competition. We serve contractors nationwide, from coast to
+            coast.
+          </p>
+        </div>
+
+        <!-- Right Column - Benefits (from content collection) -->
+        <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
       </div>
-
-      <!-- Right Column - Benefits (from content collection) -->
-      <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
-    </div>
-  </AboutSection>
+    </AboutSection>
 
     <!-- Services - auto-populates from services meta -->
     <ContentRenderer
@@ -69,10 +64,7 @@ import homeAboutImage from "@/assets/template-1.png";
       gap="lg"
     />
 
-    <ContentRenderer
-      query={query("reasons")}
-      variant="WhyChooseUsVariant"
-    />
+    <ContentRenderer query={query("reasons")} variant="WhyChooseUsVariant" />
 
     <!-- Filtered query - still gets meta from authors -->
     <!-- <ContentRenderer
@@ -82,18 +74,17 @@ import homeAboutImage from "@/assets/template-1.png";
       gap="lg"
     /> -->
 
-    <!-- Portfolio with sorting -->
+    <!-- projects and testimonials must remain but stay commented out due to the lack of these and will be reenabled at a later point
     <ContentRenderer
       query={query("projects")
         .orderBy(sortByDate("publishDate", "desc"))}
-      variant="PortfolioVariant"
+      variant="PortfolioBoxVariant"
     />
-
-    <!-- Testimonials with rating filter -->
     <ContentRenderer
       query={query("testimonials")}
       variant="TestimonialsVariant"
     />
+    -->
 
     <!-- FAQ ContentRenderer -->
     <ContentRenderer
@@ -104,13 +95,13 @@ import homeAboutImage from "@/assets/template-1.png";
 
     <!-- Contact ContentRenderer -->
     <CTASection>
-
-    <!-- Multi-collection query - requires manual title/description -->
-    <ContentRenderer
-      query={query(["blog", "projects"]).orderBy(sortByDate()).limit(10)}
-      variant="ListVariant"
-      title="Recent Updates"
-      description="Latest from our blog and portfolio"
-    />
+      <!-- Multi-collection query - requires manual title/description -->
+      <ContentRenderer
+        query={query(["blog", "projects"]).orderBy(sortByDate()).limit(10)}
+        variant="ListVariant"
+        title="Recent Updates"
+        description="Latest from our blog and portfolio"
+      />
+    </CTASection>
   </main>
 </BaseLayout>

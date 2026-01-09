@@ -1,32 +1,32 @@
 [
   {
-    "id": "proven-system",
-    "title": "Proven System",
-    "description": "We use this exact system to grow Koi Roofing and Solar. Every strategy we offer has been tested on our own company first — not theory, real results.",
+    "id": "veteran-contractor",
+    "title": "Veteran Contractor-Owned",
+    "description": "Founded by a veteran who owns Koi Roofing and Solar. We're not marketers pretending to understand contractors — we ARE contractors. Military discipline meets trade experience.",
     "order": 1
   },
   {
-    "id": "contractor-owned",
-    "title": "Contractor-Owned",
-    "description": "We're not marketers who 'specialize' in home services. We're contractors who figured out marketing. Big difference. We know your business because we run one.",
+    "id": "nationwide-service",
+    "title": "Serving All 50 States",
+    "description": "From California to New York, Texas to Minnesota — we help home service contractors dominate their local markets across the entire United States.",
     "order": 2
+  },
+  {
+    "id": "proven-system",
+    "title": "Proven System",
+    "description": "We use this exact system to grow Koi Roofing and Solar. Every strategy we offer has been tested on our own company first — not theory, real results.",
+    "order": 3
   },
   {
     "id": "free-website",
     "title": "Free Website (Annual Plans)",
     "description": "Sign up for an annual plan and get a lightning-fast website built, hosted, and maintained by us. Faster than your competition, optimized to convert visitors into calls.",
-    "order": 3
+    "order": 4
   },
   {
     "id": "no-fluff-results",
     "title": "No Fluff, Just Results",
     "description": "We don't sell vanity metrics or pretty reports. We track what matters — leads, booked jobs, and revenue. If it doesn't make you money, we don't do it.",
-    "order": 4
-  },
-  {
-    "id": "veteran-owned",
-    "title": "Veteran-Owned",
-    "description": "Discipline, reliability, and follow-through aren't buzzwords to us. We show up, do the work, and deliver on what we promise. Every time.",
     "order": 5
   }
 ]

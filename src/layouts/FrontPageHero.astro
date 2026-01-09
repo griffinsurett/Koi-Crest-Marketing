@@ -1,0 +1,77 @@
+---
+// src/layouts/FrontPageHero.astro
+/**
+ * Front Page Hero - Landing page hero section with portfolio showcase
+ * Features: Large heading, description, stats, and portfolio screen showcase
+ */
+
+import type { BaseVariantProps } from "@/components/ContentRenderer/ContentRenderer.types";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import SectionHeader from "@/components/SectionHeader";
+import HeroStats from "@/components/HeroStats.astro";
+import Button from "@/components/Button/Button";
+import { query, sortByOrder } from "@/utils/query";
+
+interface Props extends BaseVariantProps {
+  subtitle?: string;
+  stats?: {
+    rating?: string;
+    customers?: string;
+  };
+}
+
+const {
+  items = [],
+  title,
+  subtitle,
+  description,
+  className = "",
+  stats = { rating: "5/5", customers: "64" },
+  id,
+} = Astro.props as Props;
+
+// Use first item if available for dynamic content
+const heroContent = items[0] || {};
+const displayTitle = title || heroContent.title || "Welcome";
+const displaySubtitle = subtitle || heroContent.subtitle || "";
+const displayDescription = description || heroContent.description || "";
+---
+
+<section id={id} class={`min-h-[90vh] flex justify-center items-center w-full bg-gray-50 ${className}`}>
+  <div class="flex flex-col lg:flex-row inner-container py-15 gap-16 lg:gap-25 items-start">
+    <!-- Left Column -->
+    <div class="space-y-6 py-8 lg:py-0 flex flex-col justify-center items-start gap-3 lg:sticky lg:top-0 lg:w-3/5">
+      <!-- Main Heading -->
+      <SectionHeader
+        subtitle={displaySubtitle}
+        title={`${displayTitle}`}
+        titleTag="h1"
+        subtitleClass="text-gray-400 font-semibold h6 m-0 p-0"
+        titleClass="text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-black m-0"
+      />
+
+      <!-- Description -->
+      <p class="text-gray-500 text-xl main-text leading-relaxed p-0 m-0">
+        {displayDescription}
+      </p>
+
+      <!-- Stats Section - commented out for now
+      <HeroStats stats={stats} />
+      -->
+
+      <!-- Get Started Button -->
+      <Button href="/contact-us" variant="primary" size="lg">
+        Get Started
+      </Button>
+    </div>
+
+    <!-- Right Column - Portfolio Showcase -->
+    <div class="lg:w-2/5 w-full">
+      <ContentRenderer
+        query={query("projects").orderBy(sortByOrder())}
+        variant="PortfolioScreenVariant"
+        size="normal"
+      />
+    </div>
+  </div>
+</section>

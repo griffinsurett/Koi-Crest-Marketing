@@ -2,7 +2,7 @@
 title: "Projects"
 heading: "Our recent projects"
 description: "Discover our past work in our Portfolio. From websites to digital marketing, view the diverse projects we’ve completed, showcasing our ability to deliver high-quality results across various industries."
-hasPage: true
+hasPage: false
 itemsHasPage: false
 addToMenu:
   - menu: "main-menu"
@@ -12,16 +12,17 @@ addToMenu:
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import { query, sortByOrder } from '@/utils/query';
 
+{/* projects and testimonials must remain but stay commented out due to the lack of these and will be reenabled at a later point
     <ContentRenderer
       query={query("projects").orderBy(sortByOrder())}
-      variant="PortfolioVariant"
+      variant="PortfolioBoxVariant"
       columns={3}
       gap="lg"
     />
-
     <ContentRenderer
       query={query("testimonials").orderBy(sortByOrder())}
       variant="TestimonialsVariant"
       columns={2}
       gap="lg"
       />
+*/}

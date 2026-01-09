@@ -9,7 +9,7 @@ import {
   sortByOrder,
   whereArrayContains,
 } from "@/utils/query";
-import MainHero from "@/layouts/MainHero.astro";
+import MainHero from "@/layouts/QuoteHero.astro";
 import AboutSection from "@/layouts/AboutSection.astro";
 import CTASection from "@/layouts/CTASection.astro";
 import SecondaryHero from "@/layouts/SecondaryHero.astro";
@@ -38,14 +38,20 @@ import aboutPageImage from "@/assets/template-2.png";
 
     <AboutSection
       subtitle="About Us"
-      title="We're Contractors First. Marketers Second."
-      description={`We didn't start as a marketing agency — we started as roofers. Koi Roofing and Solar is our company, and we built this marketing system to grow it. After seeing what actually works in the trades (and what doesn't), we realized other contractors needed the same playbook. So we started sharing it. Every strategy we recommend is one we've tested on our own business first. We know the slow seasons, the tire-kickers, and what it takes to close a $15K job. Veteran-owned, contractor-operated — we speak your language because we live your reality.`}
+      title="A Veteran Contractor Serving Contractors Nationwide"
+      description={`We didn't start as a marketing agency — we started as roofers. Koi Roofing and Solar is our company, founded by a veteran, and we built this marketing system to grow it. After seeing what actually works in the trades (and what doesn't), we realized contractors across the country needed the same playbook. Now we serve home service businesses throughout the entire United States. Every strategy we recommend is one we've tested on our own business first. We know the slow seasons, the tire-kickers, and what it takes to close a $15K job. Veteran-owned, contractor-operated — we speak your language because we live your reality.`}
       learnMoreUrl="/about-us"
       showButton={false}
-      image={{ src: aboutPageImage, alt: "Koi Roofing and Solar team" }}
+      image={{
+        src: aboutPageImage,
+        alt: "Veteran-owned contractor marketing team",
+      }}
     >
-      <ContentRenderer query={query("mission-vision")} variant="MissionVisionVariant" />
-  </AboutSection>
+      <ContentRenderer
+        query={query("mission-vision")}
+        variant="MissionVisionVariant"
+      />
+    </AboutSection>
 
     <ContentRenderer query={query("values")} variant="WhyChooseUsVariant" />
 

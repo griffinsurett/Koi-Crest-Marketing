@@ -1,0 +1,33 @@
+---
+// src/components/LoopTemplates/ComputerScreen.astro
+/**
+ * Computer Screen Component - UI Wrapper
+ * Static server-rendered browser chrome mockup that wraps content
+ */
+
+export interface Props {
+  className?: string;
+}
+
+const {
+  className = "",
+} = Astro.props;
+---
+
+<div class={`relative h-full w-full shadow-2xl ${className}`.trim()}>
+  <div class="relative h-full">
+    <!-- Browser chrome header -->
+    <div class="flex flex-col bg-MainLight gap-3 px-4 py-3 text-white/70 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-white/50">
+        <span class="flex items-center gap-1.5">
+          <span class="h-3 w-3 rounded-full bg-gray-800" />
+          <span class="h-3 w-3 rounded-full bg-gray-800" />
+          <span class="h-3 w-3 rounded-full bg-gray-800" />
+        </span>
+      </div>
+    </div>
+
+    <!-- Screen viewport -->
+    <slot />
+  </div>
+</div>

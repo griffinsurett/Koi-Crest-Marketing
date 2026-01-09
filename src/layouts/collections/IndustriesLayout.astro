@@ -63,17 +63,16 @@ const data = entry?.data || {};
       gap="lg"
     />
 
-    {/* Testimonials */}
+    {/* projects and testimonials must remain but stay commented out due to the lack of these and will be reenabled at a later point
     <ContentRenderer
       query={query("testimonials")}
       variant="TestimonialsVariant"
     />
-
-    {/* Portfolio */}
     <ContentRenderer
       query={query("projects").orderBy(sortByDate("publishDate", "desc"))}
-      variant="PortfolioVariant"
+      variant="PortfolioBoxVariant"
     />
+    */}
 
     <!-- {FAQ Section} -->
      <ContentRenderer

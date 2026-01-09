@@ -18,7 +18,7 @@
  */
 import { file } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
-import { baseSchema, MenuSchema, MenuItemFields, refSchema } from "./schema";
+import { baseSchema, MenuSchema, MenuItemFields, refSchema, imageInputSchema } from "./schema";
 import { MenuItemsLoader } from "@/utils/loaders/MenuItemsLoader";
 
 // Define your collections with the base schema - all support MDX
@@ -93,8 +93,10 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         projectUrl: z.string().url().optional(),
-        technologies: z.array(z.string()).default([]),
+        client: z.string().optional(),
         industry: z.string().optional(),
+        beforeImage: imageInputSchema({ image }),
+        afterImage: imageInputSchema({ image }),
       }),
   }),
   "testimonials": defineCollection({

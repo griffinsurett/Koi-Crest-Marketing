@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/utils/icons/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowRight, LuBot, LuBrain, LuBug, LuCamera, LuCheck, LuChevronRight, LuCircleCheck, LuCloud, LuCode, LuDroplet, LuFolder, LuGem, LuGithub, LuGlobe, LuGraduationCap, LuLayoutDashboard, LuLightbulb, LuLinkedin, LuMail, LuMedal, LuMegaphone, LuMessageSquare, LuMonitorPlay, LuMousePointer, LuNewspaper, LuPackage, LuPalette, LuRocket, LuSearch, LuServer, LuShield, LuShoppingBag, LuSparkles, LuTable, LuThermometer, LuThumbsUp, LuTrees, LuTrendingUp, LuTwitter, LuType, LuUsers, LuWorkflow, LuZap } from 'react-icons/lu';
+import { LuArrowRight, LuBadge, LuBadgeCheck, LuBug, LuCamera, LuCheck, LuChevronRight, LuCircleCheck, LuCloud, LuCode, LuDroplet, LuFolder, LuGem, LuGithub, LuGlobe, LuLayoutDashboard, LuLinkedin, LuMail, LuMedal, LuMegaphone, LuMessageSquare, LuMousePointer, LuPalette, LuPhoneCall, LuRefreshCw, LuRocket, LuSearch, LuServer, LuShare2, LuShield, LuSparkles, LuStar, LuSun, LuTarget, LuThermometer, LuThumbsUp, LuTrees, LuTwitter, LuType, LuVideo, LuZap } from 'react-icons/lu';
 import { FaCaretRight, FaChartBar, FaPhone } from 'react-icons/fa';
 import { SiFacebook } from 'react-icons/si';
 
@@ -11,8 +11,8 @@ export const iconMap = {
   'fa:chart-bar': FaChartBar,
   'fa:phone': FaPhone,
   'lu:arrow-right': LuArrowRight,
-  'lu:bot': LuBot,
-  'lu:brain': LuBrain,
+  'lu:badge': LuBadge,
+  'lu:badge-check': LuBadgeCheck,
   'lu:bug': LuBug,
   'lu:camera': LuCamera,
   'lu:check': LuCheck,
@@ -25,34 +25,31 @@ export const iconMap = {
   'lu:gem': LuGem,
   'lu:github': LuGithub,
   'lu:globe': LuGlobe,
-  'lu:graduation-cap': LuGraduationCap,
   'lu:layout-dashboard': LuLayoutDashboard,
-  'lu:lightbulb': LuLightbulb,
   'lu:linkedin': LuLinkedin,
   'lu:mail': LuMail,
   'lu:medal': LuMedal,
   'lu:megaphone': LuMegaphone,
   'lu:message-square': LuMessageSquare,
-  'lu:monitor-play': LuMonitorPlay,
   'lu:mouse-pointer': LuMousePointer,
-  'lu:newspaper': LuNewspaper,
-  'lu:package': LuPackage,
   'lu:palette': LuPalette,
+  'lu:phone-call': LuPhoneCall,
+  'lu:refresh-cw': LuRefreshCw,
   'lu:rocket': LuRocket,
   'lu:search': LuSearch,
   'lu:server': LuServer,
+  'lu:share-2': LuShare2,
   'lu:shield': LuShield,
-  'lu:shopping-bag': LuShoppingBag,
   'lu:sparkles': LuSparkles,
-  'lu:table': LuTable,
+  'lu:star': LuStar,
+  'lu:sun': LuSun,
+  'lu:target': LuTarget,
   'lu:thermometer': LuThermometer,
   'lu:thumbs-up': LuThumbsUp,
   'lu:trees': LuTrees,
-  'lu:trending-up': LuTrendingUp,
   'lu:twitter': LuTwitter,
   'lu:type': LuType,
-  'lu:users': LuUsers,
-  'lu:workflow': LuWorkflow,
+  'lu:video': LuVideo,
   'lu:zap': LuZap,
   'si:facebook': SiFacebook,
 } satisfies Record<string, IconType>;

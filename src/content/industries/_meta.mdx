@@ -1,7 +1,7 @@
 ---
 title: "Trades We Serve"
 heading: "Trades We Serve"
-description: "We run a roofing and solar company. We know exactly what it takes to grow in the trades. These are the contractors we help dominate their local markets with our proven system."
+description: "Founded by a veteran who runs a roofing and solar company, we serve contractors across all 50 states. These are the trades we help dominate their local markets with our proven system."
 hasPage: true
 itemsHasPage: true
 itemsRootPath: true
@@ -15,10 +15,10 @@ addToMenu:
 ---
 
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query } from "@/utils/query";
+import { query, sortByOrder } from "@/utils/query";
 
 <ContentRenderer
-  query={query("industries")}
+  query={query("industries").orderBy(sortByOrder())}
   variant="ServicesVariant"
   columns={3}
   gap="lg"

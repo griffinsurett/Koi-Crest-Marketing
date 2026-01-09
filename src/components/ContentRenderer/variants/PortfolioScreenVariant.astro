@@ -1,0 +1,301 @@
+---
+// PortfolioScreenVariant.astro
+// Below-the-fold portfolio showcase - hydrates only when visible
+import { getImage } from "astro:assets";
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import PortfolioScreenShowcase from "@/components/LoopTemplates/Portfolio/PortfolioScreenShowcase";
+import ComputerScreen from "@/components/LoopTemplates/ComputerScreen.astro";
+import { getImageAlt, resolveImageMetadata } from "@/utils/images";
+import { toArray } from "@/utils/array";
+
+type Breakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
+
+interface ResponsivityConfig {
+  show?: Breakpoint;
+  hide?: Breakpoint;
+}
+
+interface Props extends BaseVariantProps {
+  responsivity?: ResponsivityConfig;
+  optimizeForLCP?: boolean;
+  size?: "normal" | "large";
+}
+
+const {
+  items = [],
+  className = "",
+  id,
+  responsivity,
+  clientLoadPlaceholder = true,
+  optimizeForLCP = false,
+  size = "normal",
+} = Astro.props as Props;
+
+// Map Tailwind breakpoints to media queries
+const breakpointMap: Record<Breakpoint, string> = {
+  sm: "(min-width: 640px)",
+  md: "(min-width: 768px)",
+  lg: "(min-width: 1024px)",
+  xl: "(min-width: 1280px)",
+  "2xl": "(min-width: 1536px)",
+};
+
+// Map breakpoints to max-width media queries (for hide)
+const breakpointMaxMap: Record<Breakpoint, string> = {
+  sm: "(max-width: 639px)",
+  md: "(max-width: 767px)",
+  lg: "(max-width: 1023px)",
+  xl: "(max-width: 1279px)",
+  "2xl": "(max-width: 1535px)",
+};
+
+// Determine media query based on show/hide config
+let mediaQuery: string | undefined;
+if (responsivity?.show) {
+  // Show only on this breakpoint and above
+  mediaQuery = breakpointMap[responsivity.show];
+} else if (responsivity?.hide) {
+  // Hide on this breakpoint and above (show only below it)
+  mediaQuery = breakpointMaxMap[responsivity.hide];
+}
+
+// Filter to only include items with afterImage (website screenshots)
+const safeItems = toArray(items).filter((item) => {
+  const afterImage = item.afterImage;
+  return afterImage && (typeof afterImage === 'string' || typeof afterImage === 'object');
+});
+
+if (!safeItems.length) {
+  return;
+}
+
+// Target widths for responsive images - max-w-[920px] container, so ~850px actual display
+const IMAGE_WIDTHS = [480, 640, 850, 1024];
+const SIZES =
+  "(max-width: 640px) calc(100vw - 48px), (max-width: 1024px) min(calc(100vw - 48px), 850px), 850px";
+// Clamp extremely tall screenshots
+const MAX_RENDER_HEIGHT = 2500;
+
+type OptimizedFormat = "avif" | "webp";
+const FALLBACK_FORMAT: OptimizedFormat = "webp";
+// Higher quality for website screenshots with text/UI - need sharpness
+const IMAGE_FORMATS: { format: OptimizedFormat; quality: number }[] = [
+  { format: "avif", quality: 60 },
+  { format: "webp", quality: 75 },
+];
+
+// Process items and generate optimized images - use afterImage for website screenshots
+const processedItems = await Promise.all(
+  safeItems.map(async (item, index) => {
+    // Use afterImage as primary source for website screenshots
+    const primaryImage = item.afterImage;
+    const metadata = resolveImageMetadata(primaryImage);
+    const altText = primaryImage
+      ? getImageAlt(primaryImage, item.title ?? "Project preview")
+      : (item.title ?? "Project preview");
+
+    if (!metadata) {
+      return { data: item, mediaEntry: undefined };
+    }
+
+    // Generate optimized images for each format + width combo
+    const optimizedByFormat = await Promise.all(
+      IMAGE_FORMATS.map(async ({ format, quality }) => {
+        const images = await Promise.all(
+          IMAGE_WIDTHS.map((width) => {
+            const aspectRatio = metadata.height / metadata.width;
+            const naturalHeight = Math.round(aspectRatio * width);
+            const constrainedHeight = Math.min(
+              naturalHeight,
+              MAX_RENDER_HEIGHT,
+            );
+            const shouldConstrain = constrainedHeight < naturalHeight;
+            const resizeOptions = shouldConstrain
+              ? {
+                  height: constrainedHeight,
+                  fit: "cover" as const,
+                  position: "top" as const,
+                }
+              : {};
+
+            return getImage({
+              src: metadata,
+              width,
+              format,
+              quality,
+              ...resizeOptions,
+            });
+          }),
+        );
+        return { format, images };
+      }),
+    );
+
+    const fallbackFormatEntry =
+      optimizedByFormat.find((entry) => entry.format === FALLBACK_FORMAT) ??
+      optimizedByFormat[optimizedByFormat.length - 1];
+
+    if (!fallbackFormatEntry) {
+      return { data: item, mediaEntry: undefined };
+    }
+
+    const fallbackImages = fallbackFormatEntry.images;
+    if (!fallbackImages.length) {
+      return { data: item, mediaEntry: undefined };
+    }
+
+    const fallbackSrcSet = fallbackImages
+      .map((img, i) => `${img.src} ${IMAGE_WIDTHS[i]}w`)
+      .join(", ");
+    const defaultImage = fallbackImages[fallbackImages.length - 1];
+
+    // Calculate actual output dimensions (Astro's attributes may return source dimensions)
+    const defaultWidth = IMAGE_WIDTHS[IMAGE_WIDTHS.length - 1];
+    const aspectRatio = metadata.height / metadata.width;
+    const naturalHeight = Math.round(aspectRatio * defaultWidth);
+    const defaultHeight = Math.min(naturalHeight, MAX_RENDER_HEIGHT);
+
+    const pictureSources = optimizedByFormat
+      .filter((entry) => entry.format !== FALLBACK_FORMAT)
+      .map((entry) => ({
+        type: `image/${entry.format}`,
+        srcSet: entry.images
+          .map((img, i) => `${img.src} ${IMAGE_WIDTHS[i]}w`)
+          .join(", "),
+        sizes: SIZES,
+      }));
+
+    // First item gets LCP optimization if enabled
+    const isFirstItem = index === 0;
+    const shouldOptimizeForLCP = optimizeForLCP && isFirstItem;
+
+    return {
+      data: item,
+      mediaEntry: {
+        src: defaultImage.src,
+        srcSet: fallbackSrcSet,
+        sizes: SIZES,
+        width: defaultWidth,
+        height: defaultHeight,
+        alt: altText,
+        loading: (shouldOptimizeForLCP ? "eager" : "lazy") as const,
+        decoding: (shouldOptimizeForLCP ? "sync" : "async") as const,
+        fetchPriority: (shouldOptimizeForLCP ? "high" : "auto") as const,
+        sources: pictureSources,
+      },
+    };
+  }),
+);
+
+const portfolioItems = processedItems.map((entry) => entry.data);
+const showcaseMedia = processedItems.map((entry) => entry.mediaEntry);
+
+const showcaseProps = {
+  items: portfolioItems,
+  mediaEntries: showcaseMedia,
+  className: "w-full mx-auto",
+  optimizeFirstImage: optimizeForLCP,
+};
+
+// Generate Tailwind classes for show/hide based on responsivity
+let visibilityClasses = "";
+if (responsivity?.show) {
+  // Hidden by default, show only at breakpoint and above
+  visibilityClasses = `hidden ${responsivity.show}:block`;
+} else if (responsivity?.hide) {
+  // Visible by default, hide at breakpoint and above
+  visibilityClasses = `block ${responsivity.hide}:hidden`;
+}
+
+// Get first item's optimized media for SSR placeholder (use full srcset for LCP)
+const firstMedia = showcaseMedia[0];
+const firstItem = portfolioItems[0];
+
+// Placeholder always shows if we have media - prevents blank screen while carousel hydrates
+// clientLoadPlaceholder controls loading strategy: false = eager (SSR), true = lazy (client)
+// optimizeForLCP overrides to eager regardless of clientLoadPlaceholder
+const shouldEagerLoad = optimizeForLCP || !clientLoadPlaceholder;
+
+// Height classes based on size prop - same on mobile/tablet, different on lg+
+const heightClasses =
+  size === "large"
+    ? "h-[420px] sm:h-[520px] lg:h-[600px]"
+    : "h-[420px]";
+---
+
+<div
+  id={id}
+  class={`relative overflow-hidden z-10 ${className} ${visibilityClasses}`.trim()}
+>
+  <div class={`relative w-full max-w-[920px] mx-auto ${heightClasses}`}>
+    <div class="relative h-full top-0 rounded-lg">
+      <!-- ComputerScreen wrapper with client carousel inside -->
+      <ComputerScreen>
+        <div
+          class="relative h-full bottom-image-fade"
+          data-portfolio-container
+        >
+          <!-- SSR placeholder image - always shows to prevent blank screen while carousel hydrates -->
+          {
+            firstMedia && (
+              <figure
+                class="absolute inset-0 pointer-events-none overflow-hidden bg-black/40 z-0"
+                data-ssr-placeholder
+              >
+                <picture>
+                  {firstMedia.sources?.map((source) => (
+                    <source
+                      type={source.type}
+                      srcset={source.srcSet}
+                      sizes={source.sizes || firstMedia.sizes}
+                    />
+                  ))}
+                  <img
+                    src={firstMedia.src}
+                    srcset={firstMedia.srcSet}
+                    sizes={firstMedia.sizes}
+                    alt={
+                      firstMedia.alt || firstItem?.title || "Project preview"
+                    }
+                    width={firstMedia.width}
+                    height={firstMedia.height}
+                    loading={shouldEagerLoad ? "eager" : "lazy"}
+                    decoding={shouldEagerLoad ? "sync" : "async"}
+                    fetchpriority={shouldEagerLoad ? "high" : "auto"}
+                    draggable={false}
+                    class="block h-auto min-h-full w-full select-none object-cover object-top"
+                  />
+                </picture>
+              </figure>
+            )
+          }
+
+          <!-- Client carousel loads here - sits on top with z-10 -->
+          <div class="relative z-10 h-full">
+            {
+              mediaQuery ? (
+                <PortfolioScreenShowcase
+                  client:media={mediaQuery}
+                  {...showcaseProps}
+                />
+              ) : (
+                <PortfolioScreenShowcase client:visible {...showcaseProps} />
+              )
+            }
+          </div>
+        </div>
+      </ComputerScreen>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* SSR placeholder - visible until carousel loads, then hidden via JS */
+  [data-ssr-placeholder] {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.3s ease-out,
+      visibility 0.3s ease-out;
+  }
+</style>
