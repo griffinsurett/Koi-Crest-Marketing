@@ -1,0 +1,21 @@
+---
+// src/integrations/IntFooterScripts.astro
+/**
+ * Integration Footer Scripts
+ *
+ * Consolidates all integration components that render in the footer area.
+ * These are typically UI elements that appear at the bottom of the page
+ * and can be lazily loaded.
+ *
+ * Currently includes:
+ * - CookieConsentBanner: Initial consent banner (shows if no consent given)
+ *
+ * Note: CookiePreferencesButton and AccessibilityButton are rendered
+ * directly in Footer.astro for better layout control.
+ */
+
+import CookieConsentBanner from "@/integrations/preferences/consent/components/CookieConsentBanner";
+---
+
+{/* Cookie Consent Banner - Shows if user hasn't given consent */}
+<CookieConsentBanner client:idle />

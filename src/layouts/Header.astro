@@ -9,6 +9,7 @@ import { siteData } from "@/content/siteData";
 import { Image } from "astro:assets";
 import Logo from "@/components/Logo.astro";
 import PhoneLink from "@/components/Header/PhoneLink.astro";
+import HeaderLanguageSwitcher from "@/components/Header/HeaderLanguageSwitcher";
 ---
 
 <header class="z-[40] bg-white border-b border-gray-200 shadow-sm">
@@ -34,6 +35,9 @@ import PhoneLink from "@/components/Header/PhoneLink.astro";
         variant="MenuVariant"
       />
 
+        <!-- Language Switcher -->
+      <HeaderLanguageSwitcher client:load />
+      
       <!-- Phone Number -->
       <PhoneLink />
       </div>

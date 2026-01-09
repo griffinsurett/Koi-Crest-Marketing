@@ -21,7 +21,8 @@ import Theme from "./Theme.astro";
 import BodyTags from "./BodyTags.astro";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
-import AccessibilityScript from "@/integrations/preferences/accessibility/components/AccessibilityScript.astro";
+import IntHeadScripts from "@/integrations/IntHeadScripts.astro";
+import IntFooterScripts from "@/integrations/IntFooterScripts.astro";
 
 export interface Props {
   [key: string]: any;  // Accept any props for SEO component
@@ -47,8 +48,8 @@ const { ...seoProps } = Astro.props;
     {/* Additional head tags (analytics scripts, etc.) */}
     <HeadTags />
 
-    {/* Accessibility preferences - must run early to prevent FOUC */}
-    <AccessibilityScript />
+    {/* Integration head scripts (accessibility, language detection, translation) */}
+    <IntHeadScripts />
 
     {/* Optional noindex for unpublished content */}
     {seoProps.noindex && <meta name="robots" content="noindex,nofollow" />}
@@ -68,5 +69,8 @@ const { ...seoProps } = Astro.props;
       {/* Footer at bottom - now contains both consent and accessibility */}
       <Footer />
     </div>
+
+    {/* Integration footer scripts (consent banner, etc.) */}
+    <IntFooterScripts />
   </body>
 </html>

@@ -1,0 +1,32 @@
+---
+// src/integrations/IntHeadScripts.astro
+/**
+ * Integration Head Scripts
+ *
+ * Consolidates all integration scripts that need to run in the <head> section.
+ * These scripts run early to prevent FOUC and set up critical functionality.
+ *
+ * Currently includes:
+ * - ConsentScript: Cookie consent initialization (must run first)
+ * - AccessibilityScript: Applies saved accessibility preferences before render
+ * - LanguageDetectionScript: Detects browser language early
+ * - BrowserTranslateScript: Sets up translation (native + Google fallback)
+ */
+
+import ConsentScript from "@/integrations/preferences/consent/components/ConsentScript.astro";
+import AccessibilityScript from "@/integrations/preferences/accessibility/components/AccessibilityScript.astro";
+import BrowserTranslateScript from "@/integrations/preferences/language/components/BrowserTranslateScript.astro";
+import LanguageDetectionScript from "@/integrations/preferences/language/components/LanguageDetectionScript.astro";
+---
+
+{/* Consent Script - Must run first to check cookie consent */}
+<ConsentScript />
+
+{/* Accessibility preferences - must run early to prevent FOUC */}
+<AccessibilityScript />
+
+{/* Language detection - runs early to detect browser language */}
+<LanguageDetectionScript />
+
+{/* Browser translation script - hybrid native/Google approach */}
+<BrowserTranslateScript />
