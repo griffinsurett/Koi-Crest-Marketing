@@ -1,0 +1,104 @@
+---
+// src/components/consent/PrivacyPolicy/LegalContactSection.astro
+/**
+ * Legal Contact Section Component
+ *
+ * Reusable contact section for legal pages (Privacy Policy, Cookie Policy, Terms of Service, etc.)
+ * Displays contact information dynamically from the contact-us collection:
+ * - Email address (with mailto link)
+ * - Phone number (with tel link)
+ * - Physical address or location
+ * - Link to contact page
+ *
+ * Props:
+ * - sectionNumber: Optional section number for sequential numbering
+ * - heading: Custom heading text (defaults to "Contact Us")
+ * - introText: Custom intro paragraph (optional)
+ * - showContactPageLink: Whether to show "Visit: Contact Page" link (default: true)
+ *
+ * Usage:
+ *   <LegalContactSection
+ *     sectionNumber={9}
+ *     introText="If you have questions about this Privacy Policy or wish to exercise your rights, contact us:"
+ *   />
+ */
+
+import { find } from "@/utils/query";
+import { formatPhoneNumber } from "@/utils/string";
+import { siteData } from "@/content/siteData";
+
+interface Props {
+  sectionNumber?: number;
+  heading?: string;
+  introText?: string;
+  showContactPageLink?: boolean;
+}
+
+const {
+  sectionNumber,
+  heading = "Contact Us",
+  introText = "If you have questions, reach us at:",
+  showContactPageLink = true,
+} = Astro.props;
+
+// Query contact information dynamically from contact-us collection
+const emailEntry = await find("contact-us", "email");
+const phoneEntry = await find("contact-us", "phone");
+---
+
+<h2>{sectionNumber ? `${sectionNumber}. ` : ""}{heading}</h2>
+<p>{introText}</p>
+<ul>
+  {
+    emailEntry && (
+      <li>
+        <strong>Email:</strong>{" "}
+        <a
+          href={`${emailEntry.data.linkPrefix || "mailto:"}${emailEntry.data.title}`}
+          class="text-primary underline hover:text-primary-700"
+        >
+          {emailEntry.data.title}
+        </a>
+      </li>
+    )
+  }
+  {
+    phoneEntry && (
+      <li>
+        <strong>Phone:</strong>{" "}
+        <a
+          href={`${phoneEntry.data.linkPrefix || "tel:"}${phoneEntry.data.title}`}
+          class="text-primary underline hover:text-primary-700"
+        >
+          {formatPhoneNumber(phoneEntry.data.title)}
+        </a>
+      </li>
+    )
+  }
+  {
+    siteData.address ? (
+      <li>
+        <strong>Address:</strong> {siteData.address}
+      </li>
+    ) : (
+      siteData.location && (
+        <li>
+          <strong>Location:</strong> {siteData.location}
+        </li>
+      )
+    )
+  }
+  {
+    showContactPageLink && (
+      <li>
+        <strong>Visit:</strong>{" "}
+        <a
+          href="/contact"
+          class="text-primary underline hover:text-primary-700"
+        >
+          Contact Page
+        </a>
+      </li>
+    )
+  }
+</ul>

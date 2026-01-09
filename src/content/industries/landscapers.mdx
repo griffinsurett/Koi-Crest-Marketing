@@ -1,7 +1,35 @@
 ---
 title: "Landscapers"
+heading: "Marketing That Lands Bigger Jobs"
 description: "Maintenance contracts keep the lights on. Big installs change the game. We help landscapers fill the schedule year-round and land those $20K+ hardscape jobs."
 featuredImage: "@/assets/landscaping.jpg"
 icon: "lu:trees"
 order: 6
 ---
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<AboutSection
+  subtitle="Landscaping Marketing Experts"
+  title="From Maintenance to Major Installations"
+  description="Mowing lawns pays the bills. But patios, outdoor kitchens, and complete landscape transformations—that's where landscaping becomes a real business. We help you attract both."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Build Recurring Revenue While Landing Dream Projects</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        The smartest landscapers understand the game: maintenance contracts provide predictable cash flow, but installation projects deliver the real profit margins. The challenge is marketing for both simultaneously. Generic "landscaping services" ads attract price shoppers. We help you attract the right customers for each service.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Homeowners planning a $30,000 outdoor living space don't hire the first landscaper they find. They research. They look at portfolios. They read reviews. They want to see proof you can deliver their vision. We help you build the online presence that wins those jobs—with stunning project galleries, compelling content, and reviews that close deals.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        From weekly lawn care to complete property transformations, from spring cleanups to hardscape installations—we help landscaping companies attract customers across every service tier. More maintenance contracts. More big installations. Year-round revenue.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

@@ -1,7 +1,35 @@
 ---
 title: "Electricians"
+heading: "Marketing That Powers Your Growth"
 description: "Panel upgrades, EV chargers, smart home installs — the work is there. We help electricians get found first and build the reputation that closes bigger jobs."
 featuredImage: "@/assets/electrician.jpg"
 icon: "lu:zap"
 order: 3
 ---
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<AboutSection
+  subtitle="Electrical Contractor Marketing"
+  title="Get Found When Homeowners Need You Most"
+  description="The electrical trade is evolving fast. EV chargers, smart home systems, panel upgrades for solar—there's more work than ever. The question is whether customers find you or your competitors first."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Beyond Emergency Calls: Building a Predictable Pipeline</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Too many electricians rely on word-of-mouth and emergency calls. That's feast or famine. One week you're turning down work, the next you're wondering where the phone went. We build marketing systems that create consistent lead flow—so you can plan your schedule and grow your team.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        The highest-margin electrical work isn't emergency service calls. It's whole-home rewires, panel upgrades, EV charger installations, and smart home systems. These are considered purchases where homeowners research online before calling anyone. We help you show up in that research—with content that positions you as the expert.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        From ranking for "electrician near me" to dominating searches for "EV charger installation," we help electrical contractors capture the customers actively looking for their services. No more hoping the phone rings. Start controlling your pipeline.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

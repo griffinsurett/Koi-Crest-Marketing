@@ -36,8 +36,10 @@ const {
 
 const data = entry?.data || {};
 
-// Check if this is the roofers page for case study
+// Check if this is a page that should show the Koi Roofing & Solar case study
 const isRoofersPage = entry?.id === "roofers" || entry?.slug === "roofers";
+const isSolarPage = entry?.id === "solar" || entry?.slug === "solar";
+const showKoiCaseStudy = isRoofersPage || isSolarPage;
 ---
 
 <BaseLayout {...seoProps}>
@@ -50,7 +52,15 @@ const isRoofersPage = entry?.id === "roofers" || entry?.slug === "roofers";
       image={data.featuredImage}
     />
 
-    {/* Landing page content section: MDX with EditorialSection wrapper */}
+    {/* Services we offer for this industry - right after hero */}
+    <ContentRenderer
+      query={roots("services")}
+      variant="ServicesVariant"
+      columns={3}
+      gap="lg"
+    />
+
+    {/* Landing page content section: MDX with AboutSection for unique industry content */}
     {Content && (
       <Content />
     )}
@@ -63,12 +73,15 @@ const isRoofersPage = entry?.id === "roofers" || entry?.slug === "roofers";
       heading="How We Get You More Customers"
     />
 
-    {/* Case Study - Only show on Roofers page */}
-    {isRoofersPage && (
+    {/* Case Study - Show on Roofers and Solar pages */}
+    {showKoiCaseStudy && (
       <CaseStudySection
-        subtitle="Our Success Story"
+        subtitle="Where We Learned"
         title="Built From Real Results With Koi Roofing & Solar"
-        description="This is our trade. We built this marketing system to grow Koi Roofing and Solar from the ground up. The same strategies that filled their pipeline with qualified leads are now available to roofers like you."
+        description={isRoofersPage
+          ? "This is our trade. We built this marketing system to grow Koi Roofing and Solar from the ground up. The same strategies that filled their pipeline with qualified leads are now available to roofers like you."
+          : "This is our trade. We built this marketing system to grow Koi Roofing and Solar from the ground up. The same strategies that filled their pipeline with qualified leads are now available to solar companies like you."
+        }
         images={[
           { src: koiRoofingImage, alt: "Koi Roofing and Solar website" },
           { src: koiJohns, alt: "Koi Roofing and Solar team member" },
@@ -94,14 +107,6 @@ const isRoofersPage = entry?.id === "roofers" || entry?.slug === "roofers";
       gap="lg"
     />
 
-    {/* Services we offer for this industry */}
-    <ContentRenderer
-      query={roots("services")}
-      variant="ServicesVariant"
-      columns={3}
-      gap="lg"
-    />
-
     {/* projects and testimonials must remain but stay commented out due to the lack of these and will be reenabled at a later point
     <ContentRenderer
       query={query("testimonials")}
@@ -113,12 +118,6 @@ const isRoofersPage = entry?.id === "roofers" || entry?.slug === "roofers";
     />
     */}
 
-    <!-- {FAQ Section} -->
-     <ContentRenderer
-      query={query("faq")}
-      variant="AccordionVariant"
-      />
-
     {/* Other Industries We Serve */}
     <ContentRenderer
       query={query("industries").where((item) => item.id !== entry?.id).orderBy(sortByOrder())}
@@ -127,6 +126,12 @@ const isRoofersPage = entry?.id === "roofers" || entry?.slug === "roofers";
       heading="We Help All Home Service Contractors"
       description="Our marketing strategies work across the trades. See how we can help grow your business."
     />
+
+    <!-- {FAQ Section} -->
+     <ContentRenderer
+      query={query("faq")}
+      variant="AccordionVariant"
+      />
 
     {/* CTA Section */}
     <section class="container mx-auto">

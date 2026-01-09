@@ -1,7 +1,35 @@
 ---
 title: "Plumbers"
+heading: "Marketing That Drives High-Ticket Jobs"
 description: "Emergency calls, drain cleaning, water heaters — high-ticket jobs that need to close fast. We help plumbers own their local search and convert more calls into booked work."
 featuredImage: "@/assets/plumbing.jpg"
 icon: "lu:droplet"
 order: 5
 ---
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<AboutSection
+  subtitle="Plumbing Marketing Experts"
+  title="Own Your Local Market"
+  description="When a pipe bursts at 2 AM, homeowners aren't shopping around—they're calling whoever shows up first in their search. We make sure that's you, every time."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">From Emergency Calls to Complete Repiping Jobs</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Plumbing is the ultimate emergency trade. When water is flooding a basement or sewage is backing up, homeowners will pay premium prices for someone who can show up now. But most plumbers are invisible online—missing out on the highest-urgency, highest-margin calls in their area.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Beyond emergencies, the real money in plumbing is in big-ticket projects: whole-home repiping, water heater replacements, sewer line repairs, bathroom remodels. These are considered purchases where homeowners compare multiple contractors. We help you win that comparison with reviews, content, and a website that builds trust instantly.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        From "plumber near me" emergency searches to "tankless water heater installation" research queries, we help plumbing contractors capture leads across every service they offer. Stop losing calls to competitors who just happen to show up first.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

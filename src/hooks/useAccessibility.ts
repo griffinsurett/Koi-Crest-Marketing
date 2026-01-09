@@ -5,7 +5,7 @@ import useLocalStorage from "./useLocalStorage";
 import {
   DEFAULT_PREFS,
   type A11yPreferences,
-} from "@/components/preferences/accessibility/types";
+} from "@/integrations/preferences/accessibility/components/types";
 
 // Cursor tracking handlers
 let guideHandler: ((e: MouseEvent) => void) | null = null;

@@ -1,7 +1,35 @@
 ---
 title: "Roofers"
+heading: "Marketing That Fills Your Pipeline"
 description: "This is our trade. We run Koi Roofing and Solar and use this exact system ourselves. Storm damage, re-roofs, new construction — we know what works because we live it."
 icon: "lu:shield"
 order: 1
 featuredImage: "../../assets/roofing-pic.PNG"
 ---
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<AboutSection
+  subtitle="Built By Roofers"
+  title="Roofing Is Where We Proved It"
+  description="We started in solar, but roofing is where we scaled. When we expanded Koi Roofing and Solar into the roofing trade, we applied everything we learned—and the results were even better. This system works because we use it every day on our own roofing jobs."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">From Solar Success to Roofing Dominance</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        After building a successful solar business with our marketing system, we expanded into roofing. The transition made sense—same homeowners, same trust-building process, same need for quality leads. We took everything that worked in solar and adapted it for roofing. The results exceeded our expectations.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Roofing has its own challenges: storm seasons that demand immediate response, insurance claims that require educated homeowners, off-seasons where the phone goes quiet. We've lived through all of it. When a hailstorm hits, we know how to capture those leads before competitors even wake up. When winter slows down, we know how to keep our name in front of prospects until spring.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Storm damage, re-roofs, new construction, commercial flat roofs—we've marketed and closed jobs across every category. The funnels, the ads, the follow-up sequences—we built them for ourselves first. Now you can use the exact same system that keeps our roofing crews busy year-round.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

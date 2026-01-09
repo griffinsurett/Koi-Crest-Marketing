@@ -1,0 +1,834 @@
+---
+// src/components/preferences/language/BrowserTranslateScript.astro
+/**
+ * Hybrid Browser Translation Script
+ *
+ * Uses Chrome's Translator API (138+) / Edge (143+) when available.
+ * Falls back to Google Translate SDK for other browsers (requires functional consent).
+ *
+ * Features:
+ * - Native API for desktop Chrome/Edge (fastest, offline capable, no consent needed)
+ * - Google Translate SDK fallback for mobile & other browsers (requires consent)
+ * - MutationObserver to translate dynamically added content (React components)
+ * - Original text storage for reversion
+ *
+ * Props:
+ * - enableNative: boolean (default: true) - Enable Chrome/Edge native Translator API
+ * - enableGoogle: boolean (default: true) - Enable Google Translate SDK fallback
+ */
+
+export interface Props {
+  enableNative?: boolean;
+  enableGoogle?: boolean;
+}
+
+const {
+  enableNative = true,
+  enableGoogle = true
+} = Astro.props;
+---
+<script is:inline define:vars={{ enableNative, enableGoogle }}>
+(function() {
+  var STORAGE_KEY = "user-language";
+  var CONSENT_COOKIE = "cookie-consent";
+
+  // Configuration from props
+  var CONFIG = {
+    enableNative: enableNative,
+    enableGoogle: enableGoogle
+  };
+
+  var state = {
+    currentLanguage: "en",
+    translator: null,
+    isTranslating: false,
+    translationMethod: 'none', // 'native' | 'google' | 'none'
+    originalTexts: new WeakMap(),
+    translatedNodes: new WeakSet(),
+    pendingNodes: new Set(),
+    translateTimeout: null,
+    observer: null,
+    googleInitialized: false,
+    googleScriptRequested: false,
+    pendingGoogleLanguage: null,
+    config: CONFIG,
+    translationVersion: 0, // Incremented on each translation request to cancel stale ones
+  };
+
+  window.__browserTranslation = state;
+
+  function getStoredLanguage() {
+    try {
+      return localStorage.getItem(STORAGE_KEY) || "en";
+    } catch (e) {
+      return "en";
+    }
+  }
+
+  function setStoredLanguage(code) {
+    try {
+      localStorage.setItem(STORAGE_KEY, code);
+    } catch (e) {}
+  }
+
+  // Check for functional consent from cookie
+  function hasFunctionalConsent() {
+    try {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.indexOf(CONSENT_COOKIE + '=') === 0) {
+          var value = decodeURIComponent(cookie.substring(CONSENT_COOKIE.length + 1));
+          var consent = JSON.parse(value);
+          return consent && consent.functional === true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  // ============================================
+  // Chrome Translator API (Native)
+  // ============================================
+
+  function hasTranslatorAPI() {
+    // Check if native is enabled via config AND browser supports it
+    return CONFIG.enableNative && typeof window !== "undefined" && "Translator" in window;
+  }
+
+  async function checkLanguageSupport(targetLang) {
+    if (!hasTranslatorAPI() || !window.Translator) return false;
+
+    try {
+      var availability = await window.Translator.availability({
+        sourceLanguage: "en",
+        targetLanguage: targetLang,
+      });
+      return availability === "available" || availability === "downloadable" || availability === "downloading";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function createTranslator(targetLang) {
+    if (!hasTranslatorAPI() || !window.Translator) return null;
+
+    try {
+      var translator = await window.Translator.create({
+        sourceLanguage: "en",
+        targetLanguage: targetLang,
+      });
+      return translator;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  // ============================================
+  // Google Translate SDK (Fallback with consent)
+  // ============================================
+
+  function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+  }
+
+  function clearCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  }
+
+  function ensureGoogleTranslateScript() {
+    // Check if Google Translate is enabled via config
+    if (!CONFIG.enableGoogle) return;
+    if (state.googleScriptRequested || state.googleInitialized) return;
+    if (!hasFunctionalConsent()) return;
+
+    var existing = document.getElementById("google-translate-sdk");
+    if (existing) {
+      state.googleScriptRequested = true;
+      return;
+    }
+
+    state.googleScriptRequested = true;
+
+    // Create hidden container for Google Translate
+    var el = document.getElementById('google_translate_element');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'google_translate_element';
+      el.style.display = 'none';
+      document.body.appendChild(el);
+    }
+
+    var script = document.createElement("script");
+    script.id = "google-translate-sdk";
+    script.src = "https://translate.google.com/translate_a/element.js?cb=initializeGoogleTranslate";
+    script.async = true;
+    script.onerror = function() { state.googleScriptRequested = false; };
+    document.head.appendChild(script);
+  }
+
+  window.initializeGoogleTranslate = function() {
+    var google = window.google;
+    if (!google || !google.translate || !google.translate.TranslateElement) {
+      state.googleScriptRequested = false;
+      return;
+    }
+
+    new google.translate.TranslateElement(
+      { pageLanguage: "en", includedLanguages: "", autoDisplay: false },
+      "google_translate_element"
+    );
+
+    state.googleInitialized = true;
+    state.translationMethod = 'google';
+
+    // Apply pending language if any - use retry since combo may not be ready immediately
+    var desiredLanguage = state.pendingGoogleLanguage || getStoredLanguage();
+    if (desiredLanguage && desiredLanguage !== "en") {
+      // Small delay for Google Translate widget to fully initialize its combo element
+      setTimeout(function() {
+        applyGoogleLanguageWithRetry(desiredLanguage);
+      }, 100);
+    }
+  };
+
+  function applyGoogleLanguage(languageCode, forceApply) {
+    var combo = document.querySelector("select.goog-te-combo");
+    if (!(combo instanceof HTMLSelectElement)) return false;
+
+    var normalized = languageCode === "en" ? "" : languageCode;
+
+    // Skip if already at target language (unless force apply)
+    if (!forceApply && combo.value === normalized) {
+      state.pendingGoogleLanguage = null;
+      return true;
+    }
+
+    var currentComboValue = combo.value;
+
+    // For reverting to English, Google Translate doesn't reliably restore content
+    // when setting combo to empty. We need to use their restore function or reload.
+    if (normalized === "") {
+      // Try to find and trigger Google Translate's restore mechanism
+      var restoreButton = document.querySelector('.goog-te-banner-frame')?.contentDocument?.querySelector('[id*="restore"]');
+
+      // Method 1: Set combo to empty and dispatch change
+      combo.value = "";
+      combo.dispatchEvent(new Event("change"));
+
+      // Method 2: Clear the googtrans cookie completely (forces fresh state on next load)
+      clearCookie("googtrans");
+      // Also clear from root domain
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
+
+      // Method 3: Trigger Google's internal restore by manipulating their state
+      // Google stores translation state in a hidden iframe - clearing cookies should help on next interaction
+
+      // If the page doesn't revert properly after a short delay, force a soft reload
+      setTimeout(function() {
+        // Check if page still appears translated (Google adds 'translated-ltr' or 'translated-rtl' class)
+        var htmlEl = document.documentElement;
+        var stillTranslated = htmlEl.classList.contains('translated-ltr') ||
+                             htmlEl.classList.contains('translated-rtl') ||
+                             document.body.classList.contains('translated-ltr') ||
+                             document.body.classList.contains('translated-rtl');
+
+        if (stillTranslated) {
+          // Page didn't revert - do a soft reload to restore original content
+          // Using location.reload(false) to use cache
+          window.location.reload();
+        }
+      }, 300);
+
+      document.documentElement.removeAttribute("data-preferred-language");
+      document.documentElement.lang = "en";
+      state.currentLanguage = "en";
+      state.pendingGoogleLanguage = null;
+      return true;
+    }
+
+    // For language-to-language switches (not involving English),
+    // Google Translate needs to go back to English first, then to the new language
+    if (currentComboValue && currentComboValue !== "" && normalized && normalized !== "") {
+      // Currently translated to a language, switching to another language
+      // First reset to English
+      combo.value = "";
+      combo.dispatchEvent(new Event("change"));
+
+      // Then after a short delay, apply the new language
+      setTimeout(function() {
+        var comboAgain = document.querySelector("select.goog-te-combo");
+        if (comboAgain instanceof HTMLSelectElement) {
+          comboAgain.value = normalized;
+          comboAgain.dispatchEvent(new Event("change"));
+        }
+      }, 100);
+    } else {
+      // Simple case: English to language
+      combo.value = normalized;
+      combo.dispatchEvent(new Event("change"));
+    }
+
+    document.documentElement.dataset.preferredLanguage = languageCode;
+    document.documentElement.lang = languageCode;
+
+    state.currentLanguage = languageCode;
+    state.pendingGoogleLanguage = null;
+    return true;
+  }
+
+  // Retry wrapper for applyGoogleLanguage - the combo element may not be ready immediately
+  function applyGoogleLanguageWithRetry(languageCode, attempts) {
+    attempts = attempts || 0;
+    var maxAttempts = 10;
+    var delay = 200;
+
+    var success = applyGoogleLanguage(languageCode);
+    if (success) return;
+
+    if (attempts < maxAttempts) {
+      setTimeout(function() {
+        applyGoogleLanguageWithRetry(languageCode, attempts + 1);
+      }, delay);
+    }
+  }
+
+  function persistGoogleCookie(languageCode) {
+    if (!hasFunctionalConsent()) {
+      if (languageCode === "en") clearCookie("googtrans");
+      return;
+    }
+
+    if (languageCode === "en") {
+      clearCookie("googtrans");
+    } else {
+      setCookie("googtrans", "/en/" + languageCode, 365);
+    }
+  }
+
+  // ============================================
+  // Native Translation (Chrome/Edge)
+  // ============================================
+
+  function shouldTranslateNode(node) {
+    var parent = node.parentElement;
+    if (!parent) return false;
+
+    var tagName = parent.tagName.toLowerCase();
+    // Skip script, style, and form elements
+    if (tagName === "script" || tagName === "style" || tagName === "noscript" || tagName === "textarea" || tagName === "input") {
+      return false;
+    }
+
+    // Skip SVG elements entirely (icons)
+    if (parent.closest("svg") || tagName === "svg") {
+      return false;
+    }
+
+    // Skip elements marked as notranslate
+    if (parent.closest(".notranslate, [translate='no']")) {
+      return false;
+    }
+
+    // Skip screen reader only text (sr-only class) - these are for accessibility
+    if (parent.classList && parent.classList.contains("sr-only")) {
+      return false;
+    }
+
+    // Skip icon containers, tech stack items, and emoji icons
+    if (parent.closest("[data-tech-item], [data-icon], .iconify, [aria-hidden='true'], [role='img']")) {
+      return false;
+    }
+
+    // Skip if parent is a button with only an icon (no meaningful text)
+    if (parent.closest("button") && parent.closest("svg, [role='img'], .iconify")) {
+      return false;
+    }
+
+    var text = node.textContent ? node.textContent.trim() : "";
+    if (!text || text.length < 2) {
+      return false;
+    }
+
+    if (state.translatedNodes.has(node)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function getTranslatableNodes(root) {
+    root = root || document.body;
+    var walker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode: function(node) {
+          return shouldTranslateNode(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        },
+      }
+    );
+
+    var nodes = [];
+    var node;
+    while ((node = walker.nextNode())) {
+      nodes.push(node);
+    }
+    return nodes;
+  }
+
+  async function translateNodesNative(nodes, version) {
+    if (!state.translator || nodes.length === 0) return;
+
+    // Translate all nodes in parallel for speed
+    await Promise.all(
+      nodes.map(async function(node) {
+        // Check if this translation was cancelled (new language selected)
+        if (version !== state.translationVersion) return;
+        if (!node.parentElement || state.translatedNodes.has(node)) return;
+
+        var originalText = node.textContent || "";
+        if (!originalText.trim()) return;
+
+        if (!state.originalTexts.has(node)) {
+          state.originalTexts.set(node, originalText);
+        }
+
+        try {
+          var translated = await state.translator.translate(originalText);
+          // Check again after async operation
+          if (version !== state.translationVersion) return;
+          if (translated && translated !== originalText && node.parentElement) {
+            node.textContent = translated;
+            state.translatedNodes.add(node);
+          }
+        } catch (error) {
+          // Individual translation failed, keep original
+        }
+      })
+    );
+  }
+
+  // Quick scan to translate any nodes that haven't been translated yet
+  // Used for follow-up scans after React hydration
+  async function translateUntranslatedNodes() {
+    var currentVersion = state.translationVersion;
+    if (state.translationMethod !== 'native') return;
+    if (state.currentLanguage === 'en') return;
+    if (!state.translator) {
+      // Try to recreate translator if missing
+      try {
+        state.translator = await createTranslator(state.currentLanguage);
+      } catch (e) {
+        return;
+      }
+    }
+    if (!state.translator) return;
+    if (currentVersion !== state.translationVersion) return;
+
+    var allNodes = getTranslatableNodes();
+    var untranslatedNodes = allNodes.filter(function(n) {
+      return !state.translatedNodes.has(n);
+    });
+
+    if (untranslatedNodes.length > 0) {
+      await translateNodesNative(untranslatedNodes, currentVersion);
+    }
+  }
+
+  function schedulePendingTranslation() {
+    if (state.translateTimeout) {
+      clearTimeout(state.translateTimeout);
+    }
+
+    // Quick 50ms debounce - fast response for React hydration
+    state.translateTimeout = setTimeout(async function() {
+      var currentVersion = state.translationVersion;
+      if (state.pendingNodes.size === 0) return;
+      if (state.translationMethod !== 'native') return;
+      if (state.currentLanguage === 'en') return;
+
+      var nodes = Array.from(state.pendingNodes);
+      state.pendingNodes.clear();
+
+      var validNodes = nodes.filter(function(n) { return n.parentElement && shouldTranslateNode(n); });
+      if (validNodes.length === 0) return;
+
+      // If translator doesn't exist or is for wrong language, recreate it
+      if (!state.translator) {
+        try {
+          state.translator = await createTranslator(state.currentLanguage);
+        } catch (e) {
+          return;
+        }
+      }
+
+      if (state.translator) {
+        await translateNodesNative(validNodes, currentVersion);
+      }
+    }, 50);
+  }
+
+  function setupMutationObserver() {
+    if (state.observer) return;
+
+    state.observer = new MutationObserver(function(mutations) {
+      if (state.currentLanguage === "en" || state.translationMethod !== 'native') return;
+
+      var hasNewNodes = false;
+
+      for (var i = 0; i < mutations.length; i++) {
+        var mutation = mutations[i];
+
+        // Handle added nodes (React hydration creates new nodes)
+        for (var j = 0; j < mutation.addedNodes.length; j++) {
+          var addedNode = mutation.addedNodes[j];
+          if (addedNode.nodeType === Node.TEXT_NODE) {
+            if (shouldTranslateNode(addedNode)) {
+              state.pendingNodes.add(addedNode);
+              hasNewNodes = true;
+            }
+          } else if (addedNode.nodeType === Node.ELEMENT_NODE) {
+            // For element nodes, get all translatable text nodes within
+            var textNodes = getTranslatableNodes(addedNode);
+            for (var k = 0; k < textNodes.length; k++) {
+              state.pendingNodes.add(textNodes[k]);
+              hasNewNodes = true;
+            }
+          }
+        }
+
+        // Handle text content changes
+        if (mutation.type === "characterData" && mutation.target.nodeType === Node.TEXT_NODE) {
+          var node = mutation.target;
+          if (!state.translatedNodes.has(node) && shouldTranslateNode(node)) {
+            state.pendingNodes.add(node);
+            hasNewNodes = true;
+          }
+        }
+      }
+
+      if (hasNewNodes && state.pendingNodes.size > 0) {
+        schedulePendingTranslation();
+      }
+    });
+
+    state.observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+  }
+
+  function stopMutationObserver() {
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+    state.pendingNodes.clear();
+    if (state.translateTimeout) {
+      clearTimeout(state.translateTimeout);
+      state.translateTimeout = null;
+    }
+  }
+
+  async function translatePageNative(targetLang, version) {
+    state.isTranslating = true;
+    document.documentElement.dataset.translating = "true";
+
+    try {
+      // Check if cancelled before expensive operations
+      if (version !== state.translationVersion) return false;
+
+      var isSupported = await checkLanguageSupport(targetLang);
+      if (!isSupported) return false;
+      if (version !== state.translationVersion) return false;
+
+      var translator = await createTranslator(targetLang);
+      if (!translator) return false;
+      if (version !== state.translationVersion) return false;
+
+      state.translator = translator;
+      state.translationMethod = 'native';
+      state.currentLanguage = targetLang;
+
+      var nodes = getTranslatableNodes();
+      await translateNodesNative(nodes, version);
+
+      // Check if cancelled after translation
+      if (version !== state.translationVersion) return false;
+
+      setupMutationObserver();
+
+      document.documentElement.lang = targetLang;
+      document.documentElement.dataset.preferredLanguage = targetLang;
+
+      // Quick follow-up scans for lazy React components (client:visible, client:idle)
+      // These also check the version internally
+      setTimeout(function() { if (version === state.translationVersion) translateUntranslatedNodes(); }, 200);
+      setTimeout(function() { if (version === state.translationVersion) translateUntranslatedNodes(); }, 600);
+      setTimeout(function() { if (version === state.translationVersion) translateUntranslatedNodes(); }, 1200);
+
+      return true;
+    } catch (error) {
+      return false;
+    } finally {
+      // Only clear isTranslating if this is still the current version
+      if (version === state.translationVersion) {
+        state.isTranslating = false;
+        delete document.documentElement.dataset.translating;
+      }
+    }
+  }
+
+  function revertNativeTranslations() {
+    stopMutationObserver();
+
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      var original = state.originalTexts.get(node);
+      if (original !== undefined) {
+        node.textContent = original;
+        state.originalTexts.delete(node);
+      }
+    }
+
+    state.translatedNodes = new WeakSet();
+    state.translator = null;
+  }
+
+  // ============================================
+  // Main Translation Logic
+  // ============================================
+
+  async function translatePage(targetLang) {
+    // Increment version to cancel any in-progress translation
+    state.translationVersion++;
+    var currentVersion = state.translationVersion;
+
+    if (targetLang === "en") {
+      // Revert to English
+      if (state.translationMethod === 'native') {
+        revertNativeTranslations();
+      } else if (state.translationMethod === 'google' && state.googleInitialized) {
+        applyGoogleLanguage("en");
+        clearCookie("googtrans");
+      }
+      state.currentLanguage = "en";
+      state.translationMethod = 'none';
+      state.isTranslating = false;
+      document.documentElement.lang = "en";
+      document.documentElement.removeAttribute("data-preferred-language");
+      delete document.documentElement.dataset.translating;
+      return;
+    }
+
+    // If switching to a different language (not from English), revert first
+    if (state.currentLanguage !== "en" && state.currentLanguage !== targetLang) {
+      if (state.translationMethod === 'native') {
+        revertNativeTranslations();
+        state.translationMethod = 'none';
+      }
+      // For Google, we just apply the new language directly - it handles switching
+    }
+
+    // Try native Translator API first (Chrome/Edge - no consent needed)
+    if (hasTranslatorAPI()) {
+      var success = await translatePageNative(targetLang, currentVersion);
+      if (success) {
+        return;
+      }
+      // If cancelled (version changed), exit early
+      if (currentVersion !== state.translationVersion) return;
+    }
+
+    // Fall back to Google Translate SDK (requires functional consent)
+    if (CONFIG.enableGoogle && hasFunctionalConsent()) {
+      state.pendingGoogleLanguage = targetLang;
+      state.currentLanguage = targetLang;
+      persistGoogleCookie(targetLang);
+
+      if (state.googleInitialized) {
+        applyGoogleLanguageWithRetry(targetLang);
+      } else {
+        ensureGoogleTranslateScript();
+      }
+    } else if (CONFIG.enableGoogle && !hasFunctionalConsent()) {
+      // Google enabled but no consent - dispatch event so UI can prompt user
+      window.dispatchEvent(new CustomEvent('translation-needs-consent', {
+        detail: { language: targetLang }
+      }));
+    }
+    // If neither native nor Google is available/enabled, translation silently fails
+  }
+
+  // Initialize - auto-translate saved preference after page loads
+  // Uses requestIdleCallback/setTimeout to avoid blocking initial render
+  function init() {
+    var savedLang = getStoredLanguage();
+
+    // Skip if English or no saved preference
+    if (!savedLang || savedLang === "en") {
+      return;
+    }
+
+    // For native API - translate after a short delay (non-blocking)
+    if (hasTranslatorAPI()) {
+      // Use requestIdleCallback if available, otherwise setTimeout
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(function() {
+          translatePage(savedLang);
+        }, { timeout: 2000 });
+      } else {
+        setTimeout(function() {
+          translatePage(savedLang);
+        }, 500);
+      }
+      return;
+    }
+
+    // For Google Translate - only if consent is given
+    // Load after page is fully rendered to avoid blocking
+    if (CONFIG.enableGoogle && hasFunctionalConsent()) {
+      // Wait for page to be interactive/complete before loading Google
+      if (document.readyState === "complete") {
+        // Page already loaded - use idle callback or timeout
+        if ("requestIdleCallback" in window) {
+          requestIdleCallback(function() {
+            translatePage(savedLang);
+          }, { timeout: 3000 });
+        } else {
+          setTimeout(function() {
+            translatePage(savedLang);
+          }, 1000);
+        }
+      } else {
+        // Wait for load event, then defer further
+        window.addEventListener("load", function() {
+          setTimeout(function() {
+            translatePage(savedLang);
+          }, 500);
+        });
+      }
+    }
+  }
+
+  // Expose changeLanguage globally
+  window.changeLanguage = function(languageCode) {
+    var code = languageCode || "en";
+    setStoredLanguage(code);
+
+    if (!document.body) {
+      document.addEventListener("DOMContentLoaded", function() {
+        translatePage(code);
+      });
+      return;
+    }
+
+    translatePage(code);
+  };
+
+  // Expose helpers for UI components
+  window.translationNeedsConsent = function() {
+    // Returns true if translation will need Google (i.e., no native API available/enabled)
+    return !hasTranslatorAPI();
+  };
+
+  window.getTranslationMethod = function() {
+    return state.translationMethod;
+  };
+
+  window.getTranslationConfig = function() {
+    return CONFIG;
+  };
+
+  window.isTranslationAvailable = function() {
+    // Returns true if at least one translation method is enabled and available
+    var nativeAvailable = CONFIG.enableNative && typeof window !== "undefined" && "Translator" in window;
+    var googleAvailable = CONFIG.enableGoogle;
+    return nativeAvailable || googleAvailable;
+  };
+
+  window.hasFunctionalConsent = hasFunctionalConsent;
+
+  // Listen for consent changes
+  window.addEventListener("consent-changed", function() {
+    if (!hasFunctionalConsent()) return;
+    var preferred = getStoredLanguage();
+    if (preferred === "en") return;
+
+    // If we're not using native, try Google now that we have consent
+    if (state.translationMethod !== 'native') {
+      state.pendingGoogleLanguage = preferred;
+      state.currentLanguage = preferred;
+      persistGoogleCookie(preferred);
+      if (state.googleInitialized) {
+        applyGoogleLanguageWithRetry(preferred);
+      } else {
+        ensureGoogleTranslateScript();
+      }
+    }
+  });
+
+  // Run init after DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+  // Fix accessibility: Add title to Google Translate iframes
+  function fixGoogleTranslateIframes() {
+    const iframes = document.querySelectorAll('iframe.goog-te-menu-frame, iframe.skiptranslate, iframe[id^="goog-gt"]');
+    iframes.forEach((iframe) => {
+      if (!iframe.getAttribute('title')) {
+        iframe.setAttribute('title', 'Google Translate');
+      }
+    });
+  }
+
+  // Run periodically to catch dynamically injected iframes
+  const iframeObserver = new MutationObserver(fixGoogleTranslateIframes);
+  iframeObserver.observe(document.body, { childList: true, subtree: true });
+  fixGoogleTranslateIframes();
+})();
+</script>
+
+<div id="google_translate_element" style="display: none;"></div>
+
+<style>
+  /* Show subtle indicator while translating */
+  html[data-translating="true"] body {
+    cursor: progress;
+  }
+
+  /* Hide Google Translate UI elements */
+  .goog-te-banner-frame,
+  .goog-te-balloon-frame,
+  .goog-te-gadget,
+  .skiptranslate,
+  iframe.goog-te-menu-frame,
+  #google_translate_element,
+  body > .skiptranslate,
+  iframe.skiptranslate {
+    display: none !important;
+  }
+
+  body {
+    top: 0 !important;
+  }
+
+  /* Ensure notranslate elements are respected */
+  .notranslate,
+  [translate="no"] {
+    /* These are handled in JS, but this provides a CSS hook if needed */
+  }
+</style>

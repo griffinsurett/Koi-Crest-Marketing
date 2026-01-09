@@ -1,7 +1,35 @@
 ---
 title: "HVAC"
+heading: "Marketing That Keeps Your Schedule Full"
 description: "Seasonal demand swings can kill your business. We build marketing systems that smooth out the slow months and capture every lead when things heat up — literally."
 featuredImage: "@/assets/hvac.jpg"
 icon: "lu:thermometer"
 order: 4
 ---
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<AboutSection
+  subtitle="HVAC Marketing Specialists"
+  title="End the Feast-or-Famine Cycle"
+  description="Every HVAC contractor knows the pain: summer and winter you're slammed, spring and fall the phone barely rings. We build marketing systems that smooth out those swings and keep your technicians busy year-round."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Capture Every Lead When Demand Spikes</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        When the first heat wave hits or the first freeze arrives, every HVAC company in your area is competing for the same desperate homeowners. The companies that dominate local search and have their ads dialed in capture most of those leads. Everyone else fights over scraps. We make sure you're in the first group.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        But seasonal spikes aren't enough to build a real business. The smart HVAC contractors focus on maintenance agreements—recurring revenue that smooths out the slow months and creates customers for life. We help you market those programs and convert one-time service calls into long-term relationships.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        From emergency AC repair to complete system replacements, from furnace tune-ups to indoor air quality solutions—we help HVAC contractors get found for every service they offer. More visibility. More leads. More consistent revenue.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

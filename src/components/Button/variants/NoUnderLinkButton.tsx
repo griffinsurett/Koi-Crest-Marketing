@@ -13,7 +13,7 @@ import { renderButtonIcon } from '../utils';
 export default function LinkButton({
   leftIcon,
   rightIcon,
-  className = '',
+  className = 'cursor-pointer',
   size = 'md',
   href,
   children,

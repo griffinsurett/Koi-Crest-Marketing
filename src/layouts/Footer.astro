@@ -15,8 +15,8 @@ import { siteData } from "@/content/siteData";
 import { Image } from "astro:assets";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortBy, whereNoParent } from "@/utils/query";
-import CookiePreferencesButton from "@/components/preferences/consent/CookiePreferencesButton";
-// import AccessibilityButton from "@/components/preferences/accessibility/AccessibilityButton";
+import CookiePreferencesButton from "@/integrations/preferences/consent/components/CookiePreferencesButton";
+import AccessibilityButton from "@/integrations/preferences/accessibility/components/AccessibilityButton";
 import Logo from "@/components/Logo.astro";
 import { roots } from "@/utils/query/snippets";
 ---
@@ -84,7 +84,7 @@ import { roots } from "@/utils/query/snippets";
             <div class="flex flex-col items-start gap-4 text-base">
               <!-- Preference Buttons -->
               <CookiePreferencesButton client:visible />
-              <!-- <AccessibilityButton client:idle /> -->
+              <AccessibilityButton client:visible />
             </div>
             <!-- Preference Buttons & Legal Links -->
           </div>

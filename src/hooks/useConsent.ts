@@ -8,9 +8,9 @@
 
 import { useEffect, useMemo } from 'react';
 import { useCookieStorage } from './useCookieStorage';
-import { getConsent, hasConsentFor as hasConsentForUtil } from '@/utils/consent/consent';
-import { enableScriptsForCategory, enableConsentedScripts } from '@/utils/scriptManager';
-import type { CookieConsent, CookieCategory } from '@/components/preferences/consent/types';
+import { getConsent, hasConsentFor as hasConsentForUtil } from '@/integrations/preferences/consent/utils/consent';
+import { enableScriptsForCategory, enableConsentedScripts } from '@/integrations/preferences/consent/scripts/scriptManager';
+import type { CookieConsent, CookieCategory } from '@/integrations/preferences/consent/components/types';
 
 interface UseConsentReturn {
   consent: CookieConsent | null;

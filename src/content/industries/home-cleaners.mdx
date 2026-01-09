@@ -1,7 +1,35 @@
 ---
 title: "Home Cleaners"
-featuredImage: "@/assets/clean.jpg"
+heading: "Marketing That Fills Your Calendar"
 description: "Recurring clients are everything in cleaning. We help you get found, build trust fast, and turn one-time jobs into weekly accounts that pay reliably."
+featuredImage: "@/assets/clean.jpg"
 icon: "lu:sparkles"
 order: 8
 ---
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<AboutSection
+  subtitle="Cleaning Business Marketing"
+  title="Build a Cleaning Business That Runs on Recurring Revenue"
+  description="The cleaning businesses that thrive aren't chasing one-off deep cleans. They're building schedules packed with weekly and bi-weekly clients who pay reliably, month after month. We help you attract and retain those clients."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">From First Clean to Forever Client</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Trust is everything in the cleaning business. You're asking people to let strangers into their homes when they're not there. That's why online reputation is critical—homeowners check reviews obsessively before hiring a cleaning service. We help you build the five-star reputation that makes booking easy.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        The path to a full schedule isn't complicated: attract new clients, deliver exceptional service, convert them to recurring appointments. But most cleaning businesses struggle with that first step—getting found by homeowners actively looking for cleaning help. We solve that with local SEO, targeted ads, and a website that builds trust instantly.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        From regular house cleaning to move-in/move-out services, from deep cleaning to specialty services like post-construction cleanup—we help cleaning companies attract customers across every service they offer. More first-time bookings. More recurring clients. A calendar that stays full.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

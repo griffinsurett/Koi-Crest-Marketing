@@ -3,10 +3,12 @@
 @import "@/styles/language-switcher.css";
 @import "@/styles/legal.css";
 @import "@/styles/menu.css";
+@import "@/integrations/preferences/accessibility/styles/accessibility.css";
 
 @theme {
     --color-MainDark: var(--color-black);
     --color-MainLight: var(--color-white);
+    --color-bg: var(--color-white)
 }
 
 @layer base {

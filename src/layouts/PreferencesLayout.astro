@@ -12,18 +12,18 @@
  */
 
 // Cookie Consent Preferences
-import CookiePreferencesButton from "@/components/preferences/consent/CookiePreferencesButton";
-import CookieConsentBanner from "@/components/preferences/consent/CookieConsentBanner";
-import ConsentScript from "@/components/preferences/consent/ConsentScript.astro";
+import CookiePreferencesButton from "@/integrations/preferences/consent/components/CookiePreferencesButton";
+import CookieConsentBanner from "@/integrations/preferences/consent/components/CookieConsentBanner";
+import ConsentScript from "@/integrations/preferences/consent/components/ConsentScript.astro";
 
 // Accessibility Preferences
-// import AccessibilityButton from "@/components/preferences/accessibility/AccessibilityButton";
-// import "../styles/accessibility.css";
+import AccessibilityButton from "@/integrations/preferences/accessibility/components/AccessibilityButton";
+// import "@/integrations/preferences/accessibility/styles/accessibility.css";
 
 // Language Switcher
-// import LanguageSwitcher from "@/components/preferences/language/LanguageSwitcher";
-// import GoogleTranslateScript from "@/components/preferences/language/GoogleTranslateScript.astro";
-// import "../styles/language-switcher.css";
+// import LanguageSwitcher from "@/integrations/preferences/language/components/LanguageSwitcher";
+// import GoogleTranslateScript from "@/integrations/preferences/language/components/GoogleTranslateScript.astro";
+// import "@/integrations/preferences/language/language-switcher.css";
 ---
 
 {/* Consent Script - Inline initialization, runs immediately */}
@@ -40,4 +40,4 @@ import ConsentScript from "@/components/preferences/consent/ConsentScript.astro"
 <CookieConsentBanner client:idle />
 
 {/* Accessibility Button - Client-side only */}
-<!-- <AccessibilityButton client:idle /> -->
+<AccessibilityButton client:idle />

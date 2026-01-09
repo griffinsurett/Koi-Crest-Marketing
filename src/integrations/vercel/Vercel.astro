@@ -1,0 +1,20 @@
+---
+// src/integrations/vercel/components/VercelAnalytics.astro
+/**
+ * Vercel Analytics Component
+ *
+ * Wraps Vercel's official Analytics and Speed Insights components.
+ * Place this in the body of your layout to enable:
+ * - Web Analytics (page views, visitors, referrers)
+ * - Speed Insights (Core Web Vitals monitoring)
+ *
+ * @see https://vercel.com/docs/analytics
+ * @see https://vercel.com/docs/speed-insights
+ */
+
+import SpeedInsights from "@vercel/speed-insights/astro";
+import Analytics from '@vercel/analytics/astro';
+---
+
+<SpeedInsights />
+<Analytics />

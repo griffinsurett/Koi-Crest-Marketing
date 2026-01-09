@@ -1,7 +1,35 @@
 ---
 title: "Solar"
-description: "Solar is the other half of Koi Roofing and Solar. We've closed solar deals and know exactly how to generate quality leads that convert into installs."
+heading: "Marketing That Generates Quality Installs"
+description: "Solar is where we started. We built Koi Roofing and Solar from the ground up and know exactly how to generate quality leads that convert into installs."
 featuredImage: "../../assets/solarpanels.jpg"
 icon: "lu:sun"
 order: 2
 ---
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<AboutSection
+  subtitle="Where It All Started"
+  title="Solar Is Our Origin Story"
+  description="Koi Roofing and Solar began as a solar company. We cut our teeth in this industry—knocking doors, sitting at kitchen tables, closing deals. The marketing system we're offering you? We built it to grow our own solar business first."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">We Started Where You Are</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        Solar was our first trade. We learned the hard way what works and what doesn't—buying junk leads from call centers, watching no-shows pile up, dealing with tire-kickers who just wanted a free quote. We got tired of wasting money on marketing that didn't deliver, so we built our own system.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        That system transformed our solar business. Instead of chasing cold leads, homeowners started coming to us—educated, interested, and ready to talk numbers. Our close rate went up. Our cost per acquisition went down. We finally had a predictable pipeline instead of feast-or-famine chaos.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        The success we had in solar gave us the foundation to expand into roofing. Same marketing principles, same systems, same results. Now we're offering that playbook to solar companies like yours. This isn't theory from a marketing textbook—it's battle-tested strategy from a company that's closed solar deals and knows exactly what it takes to fill your pipeline with qualified homeowners.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>

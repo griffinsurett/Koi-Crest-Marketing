@@ -1,7 +1,35 @@
 ---
 title: "Pest Control"
+heading: "Marketing That Builds Recurring Revenue"
 description: "Recurring revenue meets emergency calls. We help pest control companies build subscription bases while capturing those urgent 'I need someone NOW' leads."
 featuredImage: "@/assets/pest-control.jpg"
 icon: "lu:bug"
 order: 7
 ---
+import AboutSection from "@/layouts/AboutSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<AboutSection
+  subtitle="Pest Control Marketing Experts"
+  title="Turn One-Time Calls Into Lifelong Customers"
+  description="The pest control companies that win aren't chasing one-off treatments. They're building subscription bases that generate predictable monthly revenue. We help you do both—capture urgent calls and convert them into recurring accounts."
+  learnMoreUrl="#pricing"
+  showButton={true}
+>
+  <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="space-y-6 lg:w-3/5">
+      <h3 class="h3 font-bold">Emergency Calls Today. Subscriptions Tomorrow.</h3>
+      <p class="text-main text-gray-300 leading-relaxed">
+        When someone finds roaches in their kitchen or a wasp nest by their front door, they're not price shopping—they want the problem gone immediately. These emergency calls are goldmines, but only if homeowners find you first. We make sure they do, with dominant local search presence and ads that capture urgent intent.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        But the real value of emergency calls isn't the one-time treatment. It's the opportunity to convert panicked homeowners into quarterly service customers. We help you build the follow-up systems and marketing that turn every call into a potential subscription—multiplying the lifetime value of each customer.
+      </p>
+      <p class="text-main text-gray-300 leading-relaxed">
+        From general pest control to specialized services like termite treatment, bed bug elimination, and wildlife removal—we help pest control companies attract customers across every service category. More emergency calls. More subscriptions. Predictable, growing revenue.
+      </p>
+    </div>
+    <ContentRenderer query={query("benefits")} variant="BenefitsVariant" />
+  </div>
+</AboutSection>
