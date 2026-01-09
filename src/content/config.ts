@@ -167,4 +167,11 @@ export const collections = {
         whyGreat: z.string().optional(),
       }),
   }),
+  "steps": defineCollection({
+    loader: file("src/content/steps/steps.json"),
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        step: z.number(),
+      }),
+  }),
 };

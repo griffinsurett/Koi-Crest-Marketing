@@ -67,6 +67,22 @@ import homeAboutImage from "@/assets/template-1.png";
 
     <ContentRenderer query={query("reasons")} variant="WhyChooseUsVariant" />
 
+    <!-- Industries Section -->
+    <ContentRenderer
+      query={query("industries").orderBy(sortByOrder())}
+      variant="IndustriesGridVariant"
+      heading="Built For Home Service Contractors"
+      description="From roofers to plumbers, HVAC techs to landscapers — we specialize in marketing for the trades. Our strategies are tailored to how homeowners actually search for and hire contractors in your specific industry."
+    />
+
+    <!-- Process Steps Section -->
+    <ContentRenderer
+      query={query("steps").orderBy(sortByOrder())}
+      variant="StepsVariant"
+      title="Our Process"
+      heading="How We Get You More Customers"
+    />
+
     <!-- Filtered query - still gets meta from authors -->
     <!-- <ContentRenderer
       query={query("authors").where(whereArrayContains("tags", "featured"))}

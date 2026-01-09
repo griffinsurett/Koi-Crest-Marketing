@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/utils/icons/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowRight, LuBadge, LuBadgeCheck, LuBug, LuCamera, LuCheck, LuChevronRight, LuCircleCheck, LuCloud, LuCode, LuDroplet, LuFolder, LuGem, LuGithub, LuGlobe, LuLayoutDashboard, LuLinkedin, LuMail, LuMedal, LuMegaphone, LuMessageSquare, LuMousePointer, LuPalette, LuPhoneCall, LuRefreshCw, LuRocket, LuSearch, LuServer, LuShare2, LuShield, LuSparkles, LuStar, LuSun, LuTarget, LuThermometer, LuThumbsUp, LuTrees, LuTwitter, LuType, LuVideo, LuZap } from 'react-icons/lu';
+import { LuArrowRight, LuBadge, LuBadgeCheck, LuBot, LuBug, LuCamera, LuCheck, LuChevronRight, LuCircleCheck, LuCloud, LuCode, LuDroplet, LuFolder, LuGem, LuGithub, LuGlobe, LuLayoutDashboard, LuLinkedin, LuMail, LuMedal, LuMegaphone, LuMessageSquare, LuMousePointer, LuPalette, LuPhoneCall, LuRefreshCw, LuRocket, LuSearch, LuServer, LuShare2, LuShield, LuSparkles, LuStar, LuSun, LuTarget, LuThermometer, LuThumbsUp, LuTrees, LuTwitter, LuType, LuUsers, LuVideo, LuWorkflow, LuZap } from 'react-icons/lu';
 import { FaCaretRight, FaChartBar, FaPhone } from 'react-icons/fa';
 import { SiFacebook } from 'react-icons/si';
 
@@ -13,6 +13,7 @@ export const iconMap = {
   'lu:arrow-right': LuArrowRight,
   'lu:badge': LuBadge,
   'lu:badge-check': LuBadgeCheck,
+  'lu:bot': LuBot,
   'lu:bug': LuBug,
   'lu:camera': LuCamera,
   'lu:check': LuCheck,
@@ -49,7 +50,9 @@ export const iconMap = {
   'lu:trees': LuTrees,
   'lu:twitter': LuTwitter,
   'lu:type': LuType,
+  'lu:users': LuUsers,
   'lu:video': LuVideo,
+  'lu:workflow': LuWorkflow,
   'lu:zap': LuZap,
   'si:facebook': SiFacebook,
 } satisfies Record<string, IconType>;

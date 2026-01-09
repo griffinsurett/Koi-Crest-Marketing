@@ -31,7 +31,10 @@ const truncatedDescription = (() => {
 })();
 ---
 
-<div class="bg-gray-100 p-8 space-y-6 h-100">
+<div class="service-card group relative bg-gray-100 border border-gray-100 p-8 space-y-6 h-full flex flex-col justify-center transition-all duration-300 hover:bg-white hover:-translate-y-2.5 hover:shadow-xl">
+    <!-- Top bar that slides in on hover -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-black transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+
     <!-- Icon -->
     <div class="w-16 h-16 bg-black rounded-md flex items-center justify-center">
         <Icon icon={displayIcon} className="w-8 h-8 text-white" />
@@ -43,13 +46,13 @@ const truncatedDescription = (() => {
     <!-- Description -->
     <p class="text-gray-600 leading-relaxed">{truncatedDescription}</p>
 
-    <!-- Get Started Button -->
-    <Button 
+    <!-- Learn More Link -->
+    <a
         href={cardLink}
-        variant="primary"
-        size="md"
-        aria-label={`Get started with ${title}`}
+        class="inline-flex items-center gap-2 text-black font-medium hover:gap-3 transition-all duration-200"
+        aria-label={`Learn more about ${title}`}
     >
-        Get Started
-    </Button>
+        Learn More
+        <Icon icon="lu:arrow-right" className="w-4 h-4" />
+    </a>
 </div>

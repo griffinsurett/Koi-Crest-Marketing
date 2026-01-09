@@ -1,0 +1,77 @@
+---
+// src/components/ContentRenderer/variants/IndustriesGridVariant.astro
+/**
+ * Industries Grid Variant - Compact icon grid for home service industries
+ * Features: Icon, title, hover effects, dark theme optimized
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import Icon from "@/components/Icon";
+import SectionHeader from "@/components/SectionHeader";
+
+interface Props extends BaseVariantProps {
+  columns?: 4 | 8;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "",
+  columns = 8,
+  id,
+} = Astro.props as Props;
+
+const columnClasses = {
+  4: "grid-cols-2 md:grid-cols-4",
+  8: "grid-cols-2 sm:grid-cols-4 lg:grid-cols-8",
+};
+---
+
+<section id={id} class={`bg-MainDark text-MainLight py-20 ${className}`}>
+  <div class="container mx-auto px-4 max-w-7xl">
+    <!-- Section Header -->
+    <div class="text-center mb-6">
+      <SectionHeader
+        subtitle={title || "Industries We Serve"}
+        title={heading || "Built For Home Service Contractors"}
+        align="center"
+        titleTag="h2"
+        subtitleClass="text-gray-400 font-semibold h6 tracking-wider uppercase"
+        titleClass="h2 font-bold leading-tight"
+        containerClass="space-y-4"
+      />
+    </div>
+
+    {description && (
+      <p class="text-gray-300 text-center max-w-3xl mx-auto mb-12 text-lg leading-relaxed">
+        {description}
+      </p>
+    )}
+
+    <!-- Industries Grid -->
+    {items.length > 0 && (
+      <ul class={`grid ${columnClasses[columns]} gap-4 list-none`}>
+        {items.map((item) => {
+          const url = item.url || `/${item.slug}`;
+          return (
+            <li class="h-full">
+              <a
+                href={url}
+                class="group flex flex-col items-center justify-center p-6 h-full rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105"
+              >
+                {item.icon && (
+                  <Icon icon={item.icon} className="w-12 h-12 text-white mb-4" />
+                )}
+                <span class="text-white font-medium text-center text-sm">
+                  {item.title}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </div>
+</section>

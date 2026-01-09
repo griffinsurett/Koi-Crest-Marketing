@@ -1,0 +1,30 @@
+[
+  {
+    "id": "discovery-call",
+    "title": "Discovery Call",
+    "description": "We learn about your business, your goals, and your current challenges. No sales pitch — just honest conversation about what you need.",
+    "step": 1,
+    "order": 1
+  },
+  {
+    "id": "custom-strategy",
+    "title": "Custom Strategy",
+    "description": "We build a marketing plan tailored to your trade, your market, and your budget. No cookie-cutter templates.",
+    "step": 2,
+    "order": 2
+  },
+  {
+    "id": "launch-execute",
+    "title": "Launch & Execute",
+    "description": "We handle everything — website, SEO, ads, social media. You focus on running your business while we drive leads.",
+    "step": 3,
+    "order": 3
+  },
+  {
+    "id": "optimize-scale",
+    "title": "Optimize & Scale",
+    "description": "We track results, optimize campaigns, and scale what's working. Monthly reports show exactly where your money goes.",
+    "step": 4,
+    "order": 4
+  }
+]

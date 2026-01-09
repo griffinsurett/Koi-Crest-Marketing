@@ -1,0 +1,85 @@
+---
+// src/components/ContentRenderer/variants/StepsVariant.astro
+/**
+ * Steps Variant - Process/How It Works section
+ *
+ * Features:
+ * - Numbered steps (01, 02, 03, 04)
+ * - Title and description for each step
+ * - Clean grid layout
+ * - Light background theme
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import SectionHeader from "@/components/SectionHeader";
+
+interface Props extends BaseVariantProps {}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "",
+  id,
+} = Astro.props as Props;
+
+// Sort items by step number or order
+const sortedItems = [...items].sort((a, b) => {
+  const stepA = a.step ?? a.order ?? 0;
+  const stepB = b.step ?? b.order ?? 0;
+  return stepA - stepB;
+});
+---
+
+<section id={id} class={`bg-gray-50 py-20 ${className}`}>
+  <div class="container mx-auto px-4 max-w-7xl">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <SectionHeader
+        subtitle={title || "Our Process"}
+        title={heading || "How We Get You More Customers"}
+        align="center"
+        titleTag="h2"
+        subtitleClass="text-gray-500 font-semibold text-sm tracking-wider uppercase mb-4"
+        titleClass="text-4xl md:text-5xl font-bold text-black"
+        containerClass="space-y-2"
+      />
+      {description && (
+        <p class="text-gray-600 text-lg mt-6 max-w-2xl mx-auto">
+          {description}
+        </p>
+      )}
+    </div>
+
+    <!-- Steps Grid -->
+    {sortedItems.length > 0 && (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {sortedItems.map((item, index) => {
+          const stepNumber = String(item.step ?? index + 1).padStart(2, '0');
+          return (
+            <div class="group relative">
+              <!-- Step Card -->
+              <div class="bg-white p-8 h-full border border-gray-200 transition-all duration-300 hover:shadow-lg hover:border-gray-300">
+                <!-- Step Number -->
+                <div class="text-6xl font-bold text-gray-200 mb-4 transition-colors duration-300 group-hover:text-black">
+                  {stepNumber}
+                </div>
+
+                <!-- Step Title -->
+                <h3 class="text-xl font-bold text-black mb-3">
+                  {item.title}
+                </h3>
+
+                <!-- Step Description -->
+                <p class="text-gray-600 leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</section>
