@@ -94,13 +94,13 @@ export default function CookieConsentBanner() {
         onClose={() => setShowBanner(false)}
         closeButton={false}
         position="bottom-left"
-        className="consent-banner"
+        className="consent-banner outline-none"
         overlayClass="bg-transparent pointer-events-none"
         allowScroll={true}
         ssr={false}
         ariaLabel="Cookie consent banner"
       >
-        <div className="bg-gray-50 rounded-lg shadow-lg p-6 text-left max-w-sm">
+        <div className="bg-gray-100 rounded-lg shadow-lg p-6 text-left max-w-sm">
           <div className="flex flex-col gap-6">
             <div className="flex items-start gap-3">
               <span className="text-2xl" role="img" aria-label="Cookie">

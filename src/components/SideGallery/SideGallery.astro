@@ -41,7 +41,10 @@ const galleryId = `gallery-${Math.random().toString(36).substr(2, 9)}`;
           src={img.src}
           alt={img.alt || "Gallery image"}
           class={`w-full object-cover ${index === 0 ? 'h-auto' : 'h-48 md:h-56'}`}
+          widths={index === 0 ? [400, 600, 800] : [200, 320, 400]}
+          sizes={index === 0 ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, 25vw"}
           loading="lazy"
+          quality={80}
         />
         <div class="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
           <span class="opacity-0 hover:opacity-100 text-white text-sm font-medium transition-opacity duration-300">
@@ -100,7 +103,10 @@ const galleryId = `gallery-${Math.random().toString(36).substr(2, 9)}`;
           alt={img.alt || "Gallery image"}
           class={`lightbox-image max-w-full max-h-[85vh] object-contain ${index === 0 ? '' : 'hidden'}`}
           data-lightbox-index={index}
-          loading="eager"
+          widths={[600, 900, 1200]}
+          sizes="(max-width: 1024px) 90vw, 1200px"
+          loading="lazy"
+          quality={85}
         />
       ))}
     </div>
