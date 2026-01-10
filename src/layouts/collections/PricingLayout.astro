@@ -42,28 +42,34 @@ const features = (data.features || []) as PricingFeature[];
 <BaseLayout {...seoProps}>
   <main class="flex-1">
     {/* Hero section with all pricing info */}
-    <section class={`min-h-[70vh] flex items-center ${data.featured ? 'bg-black' : 'bg-gray-900'}`}>
+    <section
+      class={`min-h-[70vh] flex items-center ${data.featured ? "bg-black" : "bg-gray-900"}`}
+    >
       <div class="container mx-auto px-4 py-20">
         <div class="max-w-4xl mx-auto text-center">
           {/* Featured Badge */}
-          {data.featured && (
-            <div class="mb-6">
-              <span class="bg-yellow-400 text-gray-900 text-sm font-bold px-4 py-2 rounded-full">
-                Most Popular Plan
-              </span>
-            </div>
-          )}
+          {
+            data.featured && (
+              <div class="mb-6">
+                <span class="bg-yellow-400 text-gray-900 text-sm font-bold px-4 py-2 rounded-full">
+                  Most Popular Plan
+                </span>
+              </div>
+            )
+          }
 
           {/* Icon */}
-          {data.icon && (
-            <div class="flex justify-center mb-6">
-              <Icon
-                icon={data.icon}
-                size="xl"
-                className={data.featured ? "text-yellow-400" : "text-white"}
-              />
-            </div>
-          )}
+          {
+            data.icon && (
+              <div class="flex justify-center mb-6">
+                <Icon
+                  icon={data.icon}
+                  size="xl"
+                  className={data.featured ? "text-yellow-400" : "text-white"}
+                />
+              </div>
+            )
+          }
 
           {/* Title */}
           <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">
@@ -71,37 +77,42 @@ const features = (data.features || []) as PricingFeature[];
           </h1>
 
           {/* Description/Tagline */}
-          {data.description && (
-            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              {data.description}
-            </p>
-          )}
+          {
+            data.description && (
+              <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                {data.description}
+              </p>
+            )
+          }
 
           {/* Price */}
           <div class="mb-8">
             <div class="text-6xl md:text-7xl font-bold text-white">
-              {data.monthlyPrice}<span class="text-2xl font-normal text-gray-400"> /month</span>
+              {data.monthlyPrice}<span
+                class="text-2xl font-normal text-gray-500"
+              >
+                /month</span
+              >
             </div>
-            {data.downPayment && (
-              <p class="text-lg mt-2 text-gray-400">
-                {data.downPayment}
-              </p>
-            )}
+            {
+              data.downPayment && (
+                <p class="text-lg mt-2 text-gray-500">{data.downPayment}</p>
+              )
+            }
           </div>
 
           {/* Best For */}
-          {data.bestFor && (
-            <div class="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
-              <span class="font-semibold text-white">Best for:</span> {data.bestFor}
-            </div>
-          )}
+          {
+            data.bestFor && (
+              <div class="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
+                <span class="font-semibold text-white">Best for:</span>{" "}
+                {data.bestFor}
+              </div>
+            )
+          }
 
           {/* CTA Button */}
-          <Button
-            href="#quote-form"
-            variant={"secondary"}
-            size="lg"
-          >
+          <Button href="#quote-form" variant={"secondary"} size="lg">
             Get Started with {data.title}
           </Button>
         </div>
@@ -111,50 +122,57 @@ const features = (data.features || []) as PricingFeature[];
     {/* Features Section */}
     <section class="bg-white py-16">
       <div class="container mx-auto px-4 max-w-4xl">
-
         {/* Includes Reference */}
-        {data.includes && (
-          <div class="text-center mb-8 text-lg text-gray-600">
-            <Icon icon="lu:circle-check" className="w-5 h-5 inline mr-2" />
-            Everything in <span class="font-semibold capitalize">{data.includes}</span>, plus:
-          </div>
-        )}
+        {
+          data.includes && (
+            <div class="text-center mb-8 text-lg text-gray-600">
+              <Icon icon="lu:circle-check" className="w-5 h-5 inline mr-2" />
+              Everything in{" "}
+              <span class="font-semibold capitalize">{data.includes}</span>,
+              plus:
+            </div>
+          )
+        }
 
         {/* Features by Category */}
-        {features.length > 0 && (
-          <div class="grid md:grid-cols-2 gap-8">
-            {features.map((featureGroup) => (
-              <div class="bg-gray-50 rounded-xl p-6">
-                <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Icon icon="lu:folder" className="w-5 h-5 text-heading" />
-                  {featureGroup.category}
-                </h3>
-                <ul class="space-y-3">
-                  {featureGroup.items.map((feature) => (
-                    <li class="flex items-start gap-3">
-                      <Icon
-                        icon="lu:check"
-                        className="w-5 h-5 mt-0.5 flex-shrink-0 text-green-600"
-                      />
-                      <span class="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        )}
+        {
+          features.length > 0 && (
+            <div class="grid md:grid-cols-2 gap-8">
+              {features.map((featureGroup) => (
+                <div class="bg-gray-50 rounded-xl p-6">
+                  <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <Icon icon="lu:folder" className="w-5 h-5 text-heading" />
+                    {featureGroup.category}
+                  </h3>
+                  <ul class="space-y-3">
+                    {featureGroup.items.map((feature) => (
+                      <li class="flex items-start gap-3">
+                        <Icon
+                          icon="lu:check"
+                          className="w-5 h-5 mt-0.5 flex-shrink-0 text-green-600"
+                        />
+                        <span class="text-gray-700">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )
+        }
       </div>
     </section>
 
     {/* MDX content if present */}
-    {Content && (
-      <article class="container mx-auto px-4 py-12">
-        <div class="prose prose-lg max-w-4xl mx-auto">
-          <Content />
-        </div>
-      </article>
-    )}
+    {
+      Content && (
+        <article class="container mx-auto px-4 py-12">
+          <div class="prose prose-lg max-w-4xl mx-auto">
+            <Content />
+          </div>
+        </article>
+      )
+    }
 
     {/* Quote Form Section */}
     <section id="quote-form" class="bg-gray-100 py-20">

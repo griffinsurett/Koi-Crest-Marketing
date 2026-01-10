@@ -42,42 +42,46 @@ const columnClasses = {
 <section id={id} class={`bg-MainDark text-white py-20 ${className}`}>
   <div class="container mx-auto px-4 max-w-7xl">
     <!-- Header with CTA Button -->
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-16">
-      {(title || description) && (
-        <SectionHeader
-          subtitle={title}
-          title={heading || description || ""}
-          titleTag="h2"
-          subtitleClass="text-gray-400 h6 tracking-wider"
-          titleClass="h2 leading-tight max-w-4xl text-white"
-        />
-      )}
+    <div
+      class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-16"
+    >
+      {
+        (title || description) && (
+          <SectionHeader
+            subtitle={title}
+            title={heading || description || ""}
+            titleTag="h2"
+            subtitleClass="text-gray-500 h6 tracking-wider"
+            titleClass="h2 leading-tight max-w-4xl text-white"
+          />
+        )
+      }
 
-      {shouldShowCollectionCTA(collectionUrl, items.length) && (
-        <div class="flex-shrink-0">
-          <Button
-            href={collectionUrl}
-            variant="secondary"
-            size="lg"
-          >
-            {viewAllText}
-          </Button>
-        </div>
-      )}
+      {
+        shouldShowCollectionCTA(collectionUrl, items.length) && (
+          <div class="flex-shrink-0">
+            <Button href={collectionUrl} variant="secondary" size="lg">
+              {viewAllText}
+            </Button>
+          </div>
+        )
+      }
     </div>
 
     <!-- Testimonials Grid with ContentBridge -->
-    {items.length > 0 && (
-      <ContentBridge items={items} bridgeId={bridgeId}>
-        <div class={`grid ${columnClasses[columns]} gap-6`}>
-          {items.map((item, index) => (
-            <TestimonialCard 
-              {...item} 
-              contentSlotId={`${bridgeId}-slot-${index}`}
-            />
-          ))}
-        </div>
-      </ContentBridge>
-    )}
+    {
+      items.length > 0 && (
+        <ContentBridge items={items} bridgeId={bridgeId}>
+          <div class={`grid ${columnClasses[columns]} gap-6`}>
+            {items.map((item, index) => (
+              <TestimonialCard
+                {...item}
+                contentSlotId={`${bridgeId}-slot-${index}`}
+              />
+            ))}
+          </div>
+        </ContentBridge>
+      )
+    }
   </div>
 </section>

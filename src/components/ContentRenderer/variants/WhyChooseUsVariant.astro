@@ -2,7 +2,7 @@
 // src/components/ContentRenderer/variants/WhyChooseUsVariant.astro
 /**
  * Why Choose Us Variant - Reasons/benefits showcase
- * 
+ *
  * Features:
  * - Left: Subtitle, title, large image
  * - Right: Numbered list with black badges
@@ -33,64 +33,71 @@ const {
 const fallbackAlt = description || title || DEFAULT_ALT;
 const displayImage: NormalizedImage | undefined = normalizeCollectionImage(
   featuredImage as CollectionImage,
-  fallbackAlt
+  fallbackAlt,
 );
 ---
 
 <section id={id} class={`bg-gray-50 py-20 ${className}`}>
   <div class="container mx-auto px-4 max-w-7xl">
     <div class="flex flex-col lg:flex-row gap-12 lg:gap-16">
-      
       <!-- Left Column: Header + Image -->
       <div class="relative lg:w-1/2 lg:sticky lg:top-0">
-        {(title || description) && (
-          <SectionHeader
-            subtitle={title}
-            title={description || ""}
-            titleTag="h2"
-            subtitleClass="text-gray-400 text-sm font-semibold uppercase tracking-wider mb-4"
-            titleClass="text-4xl lg:text-5xl font-bold leading-tight text-MainDark"
-            align="left"
-          />
-        )}
-
-        <!-- Featured Image or Placeholder -->
-        {displayImage ? (
-          displayImage.type === "asset" ? (
-            <Image
-              src={displayImage.src}
-              alt={displayImage.alt}
-              class="w-full rounded-lg object-cover shadow-lg"
-              loading="lazy"
-            />
-          ) : (
-            <img
-              src={displayImage.src}
-              alt={displayImage.alt}
-              class="w-full rounded-lg object-cover shadow-lg"
-              loading="lazy"
+        {
+          (title || description) && (
+            <SectionHeader
+              subtitle={title}
+              title={description || ""}
+              titleTag="h2"
+              subtitleClass="text-gray-500 text-sm font-semibold uppercase tracking-wider mb-4"
+              titleClass="text-4xl lg:text-5xl font-bold leading-tight text-MainDark"
+              align="left"
             />
           )
-        ) : (
-          <div class="w-full aspect-[3/2] bg-gray-200 rounded-lg flex items-center justify-center">
-            <span class="text-6xl text-gray-400 font-bold">600 × 400</span>
-          </div>
-        )}
+        }
+
+        <!-- Featured Image or Placeholder -->
+        {
+          displayImage ? (
+            displayImage.type === "asset" ? (
+              <Image
+                src={displayImage.src}
+                alt={displayImage.alt}
+                class="w-full rounded-lg object-cover shadow-lg"
+                loading="lazy"
+              />
+            ) : (
+              <img
+                src={displayImage.src}
+                alt={displayImage.alt}
+                class="w-full rounded-lg object-cover shadow-lg"
+                loading="lazy"
+              />
+            )
+          ) : (
+            <div class="w-full aspect-[3/2] bg-gray-200 rounded-lg flex items-center justify-center">
+              <span class="text-6xl text-gray-500 font-bold">600 × 400</span>
+            </div>
+          )
+        }
       </div>
 
       <!-- Right Column: Numbered Reasons List -->
       <div class="lg:w-1/2 space-y-8">
-        {items.length > 0 ? (
-          items.map((item) => (
-            <ReasonCard
-              number={item.order || 1}
-              title={item.title || "Untitled"}
-              description={item.description}
-            />
-          ))
-        ) : (
-          <p class="text-red-500">No items found - check your reasons collection</p>
-        )}
+        {
+          items.length > 0 ? (
+            items.map((item) => (
+              <ReasonCard
+                number={item.order || 1}
+                title={item.title || "Untitled"}
+                description={item.description}
+              />
+            ))
+          ) : (
+            <p class="text-red-500">
+              No items found - check your reasons collection
+            </p>
+          )
+        }
       </div>
     </div>
   </div>

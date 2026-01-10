@@ -35,16 +35,23 @@ const displaySubtitle = subtitle || heroContent.subtitle || "";
 const displayDescription = description || heroContent.description || "";
 ---
 
-<section id={id} class={`min-h-9/10 flex justify-center items-center w-full bg-gray-50 ${className}`}>
-  <div class="flex flex-col lg:flex-row inner-container py-15 gap-16 lg:gap-25 items-start">
+<section
+  id={id}
+  class={`min-h-9/10 flex justify-center items-center w-full bg-gray-50 ${className}`}
+>
+  <div
+    class="flex flex-col lg:flex-row inner-container py-15 gap-16 lg:gap-25 items-start"
+  >
     <!-- Left Column -->
-    <div class="space-y-6 py-8 lg:py-0 flex flex-col justify-center items-start gap-6 lg:sticky lg:top-0 lg:w-3/5">
+    <div
+      class="space-y-6 py-8 lg:py-0 flex flex-col justify-center items-start gap-6 lg:sticky lg:top-0 lg:w-3/5"
+    >
       <!-- Main Heading -->
-      <SectionHeader 
+      <SectionHeader
         subtitle={displaySubtitle}
         title={`${displayTitle}`}
         titleTag="h1"
-        subtitleClass="text-gray-400 font-semibold h6 m-0 p-0"
+        subtitleClass="text-gray-500 font-semibold h6 m-0 p-0"
         titleClass="h1 text-black m-0"
       />
 
