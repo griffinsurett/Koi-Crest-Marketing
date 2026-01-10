@@ -100,13 +100,13 @@ export default function CookieConsentBanner() {
         ssr={false}
         ariaLabel="Cookie consent banner"
       >
-        <div className="bg-white rounded-lg shadow-lg p-6 text-left">
+        <div className="bg-gray-50 rounded-lg shadow-lg p-6 text-left max-w-sm">
           <div className="flex flex-col gap-6">
             <div className="flex items-start gap-3">
               <span className="text-2xl" role="img" aria-label="Cookie">
                 🍪
               </span>
-              <p className="text-sm text-text leading-relaxed">
+              <p className="text-base text-text leading-relaxed">
                 We use cookies to improve your browsing experience and for
                 marketing purposes.{" "}
                 <Button

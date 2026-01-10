@@ -277,5 +277,5 @@ body {
 }
 
 @utility consent-banner {
-  @apply max-w-[500px] w-full bg-transparent border-0 p-0 shadow-none;
+  @apply max-w-[500px] bg-transparent border-0 p-0 shadow-none;
 }
