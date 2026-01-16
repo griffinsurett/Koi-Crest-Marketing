@@ -8,12 +8,14 @@
  *
  * Currently includes:
  * - ConsentScript: Cookie consent initialization (must run first)
+ * - GoogleTagManager: GTM with Consent Mode v2 (runs after consent check)
  * - AccessibilityScript: Applies saved accessibility preferences before render
  * - LanguageDetectionScript: Detects browser language early
  * - BrowserTranslateScript: Sets up translation (native + Google fallback)
  */
 
 import ConsentScript from "@/integrations/preferences/consent/components/ConsentScript.astro";
+import GoogleTagManager from "@/integrations/analytics/GoogleTagManager.astro";
 import AccessibilityScript from "@/integrations/preferences/accessibility/components/AccessibilityScript.astro";
 import BrowserTranslateScript from "@/integrations/preferences/language/components/BrowserTranslateScript.astro";
 import LanguageDetectionScript from "@/integrations/preferences/language/components/LanguageDetectionScript.astro";
@@ -21,6 +23,9 @@ import LanguageDetectionScript from "@/integrations/preferences/language/compone
 
 {/* Consent Script - Must run first to check cookie consent */}
 <ConsentScript />
+
+{/* Google Tag Manager with Consent Mode v2 - respects cookie consent */}
+<GoogleTagManager />
 
 {/* Accessibility preferences - must run early to prevent FOUC */}
 <AccessibilityScript />

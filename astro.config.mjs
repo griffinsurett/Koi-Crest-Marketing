@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import partytown from '@astrojs/partytown';
+import sitemap from '@astrojs/sitemap';
 import { buildRedirectConfig } from './src/utils/redirects';
 import { manualChunks, assetFileNames } from './vite.chunks.js';
 import iconGeneratorIntegration from './src/utils/icons/icon-generator.integration.mjs';
@@ -50,6 +51,7 @@ export default defineConfig({
         debug: process.env.NODE_ENV === 'development',
       },
     }),
+    sitemap(),
   ],
   
   build: {

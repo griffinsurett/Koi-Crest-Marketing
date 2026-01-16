@@ -66,7 +66,7 @@ const heroImage =
 
 // Generate optimized responsive images for LCP optimization
 // Lower quality for faster load - hero images are large so compression matters
-const qualitySettings = { mobile: 40, tablet: 45, desktop: 50 };
+const qualitySettings = { mobile: 30, tablet: 35, desktop: 40 };
 
 let responsiveImages = null;
 
@@ -162,6 +162,8 @@ if (heroImage.type === "asset") {
                 <img
                   src={responsiveImages.desktop.src}
                   alt={heroImage.alt}
+                  width={responsiveImages.desktop.attributes.width}
+                  height={responsiveImages.desktop.attributes.height}
                   class="w-full h-auto object-cover"
                   loading="eager"
                   fetchpriority="high"
@@ -172,6 +174,8 @@ if (heroImage.type === "asset") {
               <img
                 src={heroImage.type === "url" ? heroImage.src : ""}
                 alt={heroImage.alt}
+                width={600}
+                height={400}
                 class="w-full h-auto object-cover"
                 loading="eager"
                 fetchpriority="high"
