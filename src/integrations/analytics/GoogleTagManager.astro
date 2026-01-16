@@ -4,10 +4,10 @@
  * Google Tag Manager with Consent Mode v2
  *
  * GDPR/CCPA Compliance:
- * - Sets denied defaults BEFORE any tracking occurs
- * - GTM script blocked until user grants "performance" consent
- * - Consent Mode v2 signals sent to Google for all consent changes
- * - Listens for consent changes and updates GTM in real-time
+ * - Sets ALL consent signals to "denied" BEFORE GTM loads
+ * - GTM loads immediately but respects denied consent state
+ * - Consent Mode v2 signals update when user grants permission
+ * - No tracking occurs until user explicitly consents
  * - No noscript tag (would bypass consent)
  *
  * GTM ID should be set via PUBLIC_GTM_ID environment variable
@@ -64,20 +64,14 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       window.addEventListener('consent-changed', updateGoogleConsent);
     </script>
 
-    {/* GTM script - blocked until "performance" consent granted */}
-    <script
-      type="text/plain"
-      data-consent="performance"
-      id="gtm-loader"
-      is:inline
-      set:html={`
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','${GTM_ID}');
-      `}
-    />
+    {/* GTM loader - loads immediately, but respects Consent Mode v2 denied defaults */}
+    <script is:inline define:vars={{ GTM_ID }}>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer',GTM_ID);
+    </script>
   </>
 )}
 

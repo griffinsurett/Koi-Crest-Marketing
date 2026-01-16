@@ -4,16 +4,15 @@
  * Consent Script Initialization
  *
  * Pure inline script - no bundling, no module preloading.
- * For returning users with consent: dispatches event that triggers
- * script loading in CookieConsentBanner when it hydrates.
+ * Sets up consent checking flag for components.
  */
 ---
 
 <script is:inline>
-  // Check consent and notify - CookieConsentBanner handles the heavy lifting
+  // Check if consent exists and mark it
   (function() {
-    if (!document.cookie.includes('cookie-consent=')) return;
-    // Mark that consent exists for components to check
-    window.__CONSENT_EXISTS__ = true;
+    if (document.cookie.includes('cookie-consent=')) {
+      window.__CONSENT_EXISTS__ = true;
+    }
   })();
 </script>
