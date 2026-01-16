@@ -9,6 +9,8 @@ export interface AccordionItemProps {
   children?: ReactNode;
   isExpanded: boolean;
   onToggle: () => void;
+  headerSlot?: ReactNode;
+  showIndicator?: boolean;
 }
 
 export default function AccordionItem({
@@ -18,9 +20,11 @@ export default function AccordionItem({
   children,
   isExpanded,
   onToggle,
+  headerSlot,
+  showIndicator = true,
 }: AccordionItemProps) {
   return (
-    <div className="overflow-hidden bg-gray-200">
+    <div className="overflow-hidden bg-gray-200 rounded-lg">
       <button
         type="button"
         className="flex items-center justify-between p-4 cursor-pointer w-full text-left"
@@ -28,16 +32,24 @@ export default function AccordionItem({
         aria-expanded={isExpanded}
         aria-controls={`${id}-content`}
       >
-        <div className="flex-1 pr-4">
-          <span className="h4 font-medium text-gray-700 text-base">{title}</span>
-        </div>
-        
-        <Icon
-          icon="fa:caret-right"
-          size="md"
-          className={`text-gray-500 ${isExpanded ? 'transform rotate-90' : ''} transition-transform duration-200`}
-          aria-label={isExpanded ? "Collapse" : "Expand"}
-        />
+        {headerSlot ? (
+          headerSlot
+        ) : (
+          <>
+            <div className="flex-1 pr-4">
+              <span className="h4 font-medium text-gray-700 text-base">{title}</span>
+            </div>
+
+            {showIndicator && (
+              <Icon
+                icon="fa:caret-right"
+                size="md"
+                className={`text-gray-500 ${isExpanded ? 'transform rotate-90' : ''} transition-transform duration-200`}
+                aria-label={isExpanded ? "Collapse" : "Expand"}
+              />
+            )}
+          </>
+        )}
       </button>
 
       {isExpanded && children && (

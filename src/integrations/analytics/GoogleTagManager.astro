@@ -4,10 +4,9 @@
  * Google Tag Manager with Consent Mode v2
  *
  * GDPR/CCPA Compliance:
- * - Sets ALL consent signals to "denied" BEFORE GTM loads
- * - GTM loads immediately but respects denied consent state
- * - Consent Mode v2 signals update when user grants permission
- * - No tracking occurs until user explicitly consents
+ * - GTM script blocked until user accepts "performance" cookies
+ * - Sets consent defaults before loading GTM
+ * - Updates consent signals when user changes preferences
  * - No noscript tag (would bypass consent)
  *
  * GTM ID should be set via PUBLIC_GTM_ID environment variable
@@ -17,61 +16,67 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
 ---
 
 {GTM_ID && (
-  <>
-    {/* Consent Mode v2 initialization - MUST run before GTM loads */}
-    <script is:inline>
-      // Initialize dataLayer and gtag function
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+  <script is:inline define:vars={{ GTM_ID }}>
+    // Initialize dataLayer and gtag function
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
 
-      // Set default consent state - ALL denied until user accepts
-      // This runs immediately, before any Google scripts load
-      gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'analytics_storage': 'denied',
-        'functionality_storage': 'denied',
-        'personalization_storage': 'denied',
-        'security_storage': 'granted',
-        'wait_for_update': 500
-      });
+    // Set default consent state - ALL denied
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'denied',
+      'personalization_storage': 'denied',
+      'security_storage': 'granted',
+      'wait_for_update': 500
+    });
 
-      // Helper to update GTM consent based on cookie preferences
-      function updateGoogleConsent() {
-        try {
-          var cookieMatch = document.cookie.match(/cookie-consent=([^;]+)/);
-          if (cookieMatch) {
-            var consent = JSON.parse(decodeURIComponent(cookieMatch[1]));
-            gtag('consent', 'update', {
-              'analytics_storage': consent.performance ? 'granted' : 'denied',
-              'functionality_storage': consent.functional ? 'granted' : 'denied',
-              'personalization_storage': consent.functional ? 'granted' : 'denied',
-              'ad_storage': consent.targeting ? 'granted' : 'denied',
-              'ad_user_data': consent.targeting ? 'granted' : 'denied',
-              'ad_personalization': consent.targeting ? 'granted' : 'denied',
-            });
-          }
-        } catch (e) {
-          // Cookie not found or invalid - defaults remain
-        }
-      }
+    // Load GTM script
+    function loadGTM() {
+      if (window.__GTM_LOADED__) return;
+      window.__GTM_LOADED__ = true;
 
-      // Check for existing consent on page load
-      updateGoogleConsent();
-
-      // Listen for consent changes (when user updates preferences)
-      window.addEventListener('consent-changed', updateGoogleConsent);
-    </script>
-
-    {/* GTM loader - loads immediately, but respects Consent Mode v2 denied defaults */}
-    <script is:inline define:vars={{ GTM_ID }}>
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
       new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
       j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer',GTM_ID);
-    </script>
-  </>
+    }
+
+    // Update consent and load GTM if performance consent given
+    function checkConsentAndLoad() {
+      try {
+        var cookieMatch = document.cookie.match(/cookie-consent=([^;]+)/);
+        if (cookieMatch) {
+          var consent = JSON.parse(decodeURIComponent(cookieMatch[1]));
+
+          // Update Google consent signals
+          gtag('consent', 'update', {
+            'analytics_storage': consent.performance ? 'granted' : 'denied',
+            'functionality_storage': consent.functional ? 'granted' : 'denied',
+            'personalization_storage': consent.functional ? 'granted' : 'denied',
+            'ad_storage': consent.targeting ? 'granted' : 'denied',
+            'ad_user_data': consent.targeting ? 'granted' : 'denied',
+            'ad_personalization': consent.targeting ? 'granted' : 'denied',
+          });
+
+          // Only load GTM if performance consent granted
+          if (consent.performance) {
+            loadGTM();
+          }
+        }
+      } catch (e) {
+        // Invalid cookie - don't load
+      }
+    }
+
+    // Check on page load
+    checkConsentAndLoad();
+
+    // Listen for consent changes
+    window.addEventListener('consent-changed', checkConsentAndLoad);
+  </script>
 )}
 

@@ -86,7 +86,7 @@ export default function ToggleControl({
           disabled={disabled}
           onClick={handleToggle}
           className={`relative inline-flex ${trackSizes.track} items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-            checked ? "bg-primary" : "bg-text/20"
+            checked ? "bg-primary" : "bg-black"
           } ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
         >
           <span
