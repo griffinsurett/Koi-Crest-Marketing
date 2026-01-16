@@ -753,6 +753,7 @@ npm run build
 - **Prerendering**: All pages generated at build time
 - **Asset hashing**: Cache-busting for deployments
 
+
 ## Scripts
 ```bash
 # Development
