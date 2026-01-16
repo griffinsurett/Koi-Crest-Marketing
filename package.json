@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "generate:icons": "node src/utils/icons/generate-icon-map.mjs"
+    "generate:icons": "node src/integrations/icons/utils/generate-icon-map.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.6",

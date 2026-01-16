@@ -7,7 +7,7 @@
  */
 
 import { useState, useRef, useEffect } from "react";
-import { useLanguageSwitcher } from "@/integrations/preferences/language/hooks/useLanguageSwitcher";
+import { useLanguageSwitcher } from "@/integrations/preferences/language/core/hooks/useLanguageSwitcher";
 import Button from "../Button/Button";
 
 export default function HeaderLanguageSwitcher() {

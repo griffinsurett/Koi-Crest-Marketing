@@ -146,6 +146,7 @@ export function whereBefore<T extends CollectionKey>(
 
 /**
  * Create a filter for array field contains value
+ * Supports both array fields and single string values
  */
 export function whereArrayContains<T extends CollectionKey>(
   field: string,
@@ -153,8 +154,19 @@ export function whereArrayContains<T extends CollectionKey>(
 ): FilterFn<T> {
   return (entry: CollectionEntry<T>) => {
     const data = entry.data as any;
-    const arr = data[field];
-    return Array.isArray(arr) && arr.includes(value);
+    const fieldValue = data[field];
+
+    // Handle array field
+    if (Array.isArray(fieldValue)) {
+      return fieldValue.includes(value);
+    }
+
+    // Handle single string value (treat as array of one)
+    if (typeof fieldValue === 'string') {
+      return fieldValue === value;
+    }
+
+    return false;
   };
 }
 

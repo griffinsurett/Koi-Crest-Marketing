@@ -61,13 +61,13 @@ const variantComponents = await getVariantComponents();
 // PROPS: Extract and organize component props
 // ============================================================================
 const {
-  query: queryProp,              // Query object for fetching collection items
-  variant = "GridVariant",       // Which variant to render (defaults to GridVariant)
-  title: titleOverride,          // Manual title override
-  heading: headingOverride,      // Manual heading override
+  query: queryProp, // Query object for fetching collection items
+  variant = "GridVariant", // Which variant to render (defaults to GridVariant)
+  title: titleOverride, // Manual title override
+  heading: headingOverride, // Manual heading override
   description: descriptionOverride, // Manual description override
-  id: manualId,                  // Manual ID override (skips auto-generation)
-  ...restProps                   // All other props (passed to variant)
+  id: manualId, // Manual ID override (skips auto-generation)
+  ...restProps // All other props (passed to variant)
 } = Astro.props as SectionProps;
 
 // ============================================================================
@@ -194,12 +194,23 @@ if (queryProp) {
   // STATIC MODE: No query, using manually provided items
   // ──────────────────────────────────────────────────────────────────────────
   // Useful for hero sections, featured content, or any non-collection data
-  data = restProps.items ? restProps : { items: [], ...restProps };
+  data = {
+    items: restProps.items ?? [],
+    title: titleOverride,
+    description: descriptionOverride,
+    heading: headingOverride,
+    ...restProps,
+  };
 }
 
 // Skip rendering entirely if there are no items to show
 const items = Array.isArray(data?.items) ? data.items : [];
-if (items.length === 0) {
+const hasSlotContent =
+  Astro.slots?.has("default") ||
+  Astro.slots?.has("under-text") ||
+  Astro.slots?.has("under-button");
+
+if (items.length === 0 && !hasSlotContent) {
   return;
 }
 
@@ -238,5 +249,9 @@ if (!VariantComponent) {
 }
 ---
 
-<!-- Render the selected variant with all prepared data -->
-<VariantComponent {...data} />
+<!-- Render the selected variant with all prepared data and pass through named slots -->
+<VariantComponent {...data}>
+  <slot />
+  <slot name="under-text" slot="under-text" />
+  <slot name="under-button" slot="under-button" />
+</VariantComponent>

@@ -2,7 +2,8 @@
 /**
  * Node.js-Compatible Page Logic
  * 
- * ⚠️ IMPORTANT: This file contains INTENTIONAL DUPLICATES of functions from src/utils/pages.ts
+ * ⚠️ IMPORTANT: Thin wrappers around shared pageRules helpers so they can
+ * be used in Node-only contexts (astro.config.mjs, loaders, build scripts).
  * 
  * WHY THESE DUPLICATES EXIST:
  * - This file runs in pure Node.js context (astro.config.mjs, loaders, build scripts)
@@ -19,40 +20,14 @@
  * - ❌ In components that run during build
  * 
  * MAINTENANCE NOTE:
- * - If you update the logic in src/utils/pages.ts, update these functions too!
- * - These use the same getItemProperty pattern but work with plain objects
- * - The actual logic should remain identical to pages.ts
+ * - Core logic lives in src/utils/pages/pageRules.ts
+ * - Keep imports aligned if you change override behavior
  */
 
-/**
- * Get property value using override pattern
- * Item property > Collection property > Default
- * 
- * This is a Node.js-compatible version that works with plain objects
- * instead of Astro CollectionEntry types.
- * 
- * @param itemData - Item frontmatter data (plain object from parseFrontmatter)
- * @param metaData - Collection meta data (plain object from parseFrontmatter)
- * @param itemKey - Property key on item
- * @param metaKey - Property key on meta
- * @param defaultValue - Default value
- * @returns Resolved property value
- */
-function getItemProperty<T>(
-  itemData: any,
-  metaData: any,
-  itemKey: string,
-  metaKey: string,
-  defaultValue: T
-): T {
-  if (itemData?.[itemKey] !== undefined) {
-    return itemData[itemKey];
-  }
-  if (metaData?.[metaKey] !== undefined) {
-    return metaData[metaKey];
-  }
-  return defaultValue;
-}
+import {
+  shouldItemHavePageData,
+  shouldItemUseRootPathData,
+} from "../pages/pageRules";
 
 /**
  * Determine if an item should have a page (Node.js version)
@@ -67,7 +42,7 @@ function getItemProperty<T>(
  * @returns True if item should have a page
  */
 export function shouldItemHavePage(itemData: any, metaData: any): boolean {
-  return getItemProperty(itemData, metaData, 'hasPage', 'itemsHasPage', true);
+  return shouldItemHavePageData(itemData, metaData, true);
 }
 
 /**
@@ -85,5 +60,5 @@ export function shouldItemHavePage(itemData: any, metaData: any): boolean {
  * @returns True if item should use root path
  */
 export function shouldItemUseRootPath(itemData: any, metaData: any): boolean {
-  return getItemProperty(itemData, metaData, 'rootPath', 'itemsRootPath', false);
+  return shouldItemUseRootPathData(itemData, metaData, false);
 }

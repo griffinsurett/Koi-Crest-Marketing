@@ -8,7 +8,7 @@
  * - Fallback to default layout
  */
 
-import { getItemProperty } from '@/utils/metaOverrides';
+import { getItemProperty } from '@/utils/pages/pageRules';
 
 /**
  * All layout components loaded eagerly

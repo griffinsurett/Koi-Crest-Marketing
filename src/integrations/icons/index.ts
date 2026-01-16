@@ -14,9 +14,9 @@ export {
   iconSizeMap,
   type IconSize,
   type IconRenderOptions,
-} from './utils/iconLoader.js';
+} from './utils/iconLoader';
 
-export { iconMap, type IconKey } from './utils/iconMap.generated.js';
+export { iconMap, type IconKey } from './utils/iconMap.generated';
 
 export {
   ICON_LIBRARIES,

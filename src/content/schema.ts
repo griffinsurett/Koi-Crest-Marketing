@@ -240,6 +240,21 @@ export const iconSchema = ({ image }: { image: Function }) =>
 export type IconType = z.infer<ReturnType<typeof iconSchema>>;
 
 // ============================================================================
+// HEADING SCHEMA
+// ============================================================================
+
+export const headingSchema = z.union([
+  z.string().optional(),
+  z.object({
+    before: z.string().optional(),
+    text: z.string().optional(),
+    after: z.string().optional(),
+  }),
+]);
+
+export type HeadingContent = z.infer<typeof headingSchema>;
+
+// ============================================================================
 // SEO SCHEMA
 // ============================================================================
 
@@ -273,7 +288,7 @@ export type SEOData = z.infer<ReturnType<typeof seoSchema>>;
 export const baseSchema = ({ image }: { image: Function }) =>
   z.object({
     title: z.string(),
-    heading: z.string().optional(),
+    heading: headingSchema.optional(),
     description: z.string().optional(),
     featuredImage: imageInputSchema({ image }).optional(),
     bannerImage: imageInputSchema({ image }).optional(),
@@ -283,6 +298,7 @@ export const baseSchema = ({ image }: { image: Function }) =>
     seo: seoSchema({ image }),
     addToMenu: z.array(AddToMenuFields).optional(),
     redirectFrom: redirectFromSchema,
+    draft: z.boolean().default(false),
     publishDate: z
       .union([z.date(), z.string()])
       .optional()
@@ -292,10 +308,53 @@ export const baseSchema = ({ image }: { image: Function }) =>
         return new Date(val);
       }),
     order: z.number().default(0),
+    // Per-item link behavior override (takes priority over collection's itemsLinkBehavior)
+    linkBehavior: LinkBehaviorConfig,
     layout: z.string().optional(),
   });
 
 export type BaseData = z.infer<ReturnType<typeof baseSchema>>;
+
+// ============================================================================
+// LINK BEHAVIOR SCHEMA
+// ============================================================================
+
+/**
+ * Value formatters for display values
+ */
+export const ValueFormatter = z.enum(["phone", "email", "none"]).default("none");
+
+/**
+ * Link behavior modes for collections
+ * - standard: Generate URL from /{collection}/{slug}
+ * - root: Generate URL from /{slug}
+ * - prefixed: Build URL from linkPrefix + valueField (e.g., tel: + phone)
+ * - field: Use the 'link' field directly as the URL
+ * - none: No URL generation
+ */
+export const LinkMode = z
+  .enum(["standard", "root", "prefixed", "field", "none"])
+  .default("standard");
+
+/**
+ * Link behavior configuration for collections
+ */
+export const LinkBehaviorConfig = z
+  .object({
+    mode: LinkMode,
+    // Field mappings
+    link: z.string().default("url"), // Field containing URL (for 'field' mode)
+    linkPrefix: z.string().default("linkPrefix"), // Field containing prefix (for 'prefixed' mode)
+    // Static prefix (overrides per-item linkPrefix field)
+    prefix: z.string().optional(),
+    // Display value formatting (formats description for display)
+    valueFormatter: ValueFormatter,
+  })
+  .optional();
+
+export type LinkBehaviorConfigType = z.infer<typeof LinkBehaviorConfig>;
+export type LinkModeType = z.infer<typeof LinkMode>;
+export type ValueFormatterType = z.infer<typeof ValueFormatter>;
 
 // ============================================================================
 // META SCHEMA
@@ -304,7 +363,7 @@ export type BaseData = z.infer<ReturnType<typeof baseSchema>>;
 export const metaSchema = ({ image }: { image: Function }) =>
   z.object({
     title: z.string().optional(),
-    heading: z.string().optional(),
+    heading: headingSchema.optional(),
     description: z.string().optional(),
     hasPage: z.boolean().default(true),
     featuredImage: imageInputSchema({ image }).optional(),
@@ -314,6 +373,8 @@ export const metaSchema = ({ image }: { image: Function }) =>
     itemsHasPage: z.boolean().default(true),
     itemsRootPath: z.boolean().default(false),
     itemsAddToMenu: z.array(ItemsAddToMenuFields).optional(),
+    // Link behavior for all items in this collection (can be overridden per-item)
+    itemsLinkBehavior: LinkBehaviorConfig,
     layout: z.string().default('../layouts/collections/CollectionIndexLayout.astro'),
     itemsLayout: z.string().default('../layouts/collections/CollectionLayout.astro'),
   });

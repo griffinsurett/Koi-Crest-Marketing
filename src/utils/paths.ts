@@ -44,11 +44,46 @@ export function isMetaFile(path: string): boolean {
 
 /**
  * Check if a path belongs to a specific collection
- * 
+ *
  * @param path - File path to check
  * @param collectionName - Collection name to match
  * @returns True if path is in the specified collection
  */
 export function isInCollection(path: string, collectionName: string): boolean {
   return path.includes(`/content/${collectionName}/`);
+}
+
+/**
+ * Parse a URL pathname to extract collection and slug
+ *
+ * Handles standard URL structure:
+ * /{collection}/{slug} -> { collection: 'collection', slug: 'slug' }
+ * /{slug} -> { collection: null, slug: 'slug' }
+ *
+ * @param pathname - URL pathname (e.g., from Astro.url.pathname)
+ * @returns Object with collection (or null) and slug
+ * @example
+ * parseUrlPath('/capabilities/web-design')
+ * // Returns: { collection: 'capabilities', slug: 'web-design' }
+ *
+ * parseUrlPath('/about-us')
+ * // Returns: { collection: null, slug: 'about-us' }
+ */
+export function parseUrlPath(pathname: string): { collection: string | null; slug: string } {
+  const segments = pathname.split('/').filter(Boolean);
+
+  if (segments.length === 0) {
+    return { collection: null, slug: '' };
+  }
+
+  if (segments.length === 1) {
+    return { collection: null, slug: segments[0] };
+  }
+
+  // Last segment is always the slug
+  const slug = segments[segments.length - 1];
+  // First segment is the collection
+  const collection = segments[0];
+
+  return { collection, slug };
 }

@@ -13,8 +13,10 @@
  * Separated into its own component for easier maintenance
  * and conditional loading of third-party scripts.
  */
-// import LanguageDetectionScript from "@/integrations/preferences/language/components/LanguageDetectionScript.astro";
+import IntHeadScripts from "@/integrations/IntHeadScripts.astro";
+// import LanguageDetectionScript from "@/integrations/preferences/language/core/scripts/LanguageDetectionScript.astro";
 ---
+<IntHeadScripts />
 <!-- <LanguageDetectionScript /> -->
 
 <!-- Bebas Neue for headings, Space Grotesk for body -->

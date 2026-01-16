@@ -19,7 +19,7 @@ import { getRelations } from './relations';
 // ❌ NO module-level imports of astro:content or filter/sort (they're pure functions, OK)
 // ✅ Import pure utility functions (no astro:content in them)
 import { applyFilters } from './filters';
-import { applySorting } from './sorting';
+import { applySorting, sortByOrder } from './sorting';
 
 /**
  * Query builder class
@@ -32,7 +32,7 @@ export class Query<T extends CollectionKey> {
   private _offset: number = 0;
   private _includeRelations: boolean = false;
   private _maxDepth: number = 3;
-  
+
   constructor(collection?: T | T[]) {
     this._collection = collection;
   }
@@ -95,31 +95,31 @@ export class Query<T extends CollectionKey> {
     }
     return this;
   }
-  
+
   /**
    * Execute query and return results
    */
   async get(): Promise<QueryResult<T>> {
-    // ✅ Lazy import
-    const { getCollection } = await import('astro:content');
-    
+    // ✅ Lazy import - use getPublishedCollection which excludes drafts
+    const { getPublishedCollection } = await import('@/utils/collections');
+
     if (!this._collection) {
       throw new Error('Collection not specified');
     }
-    
-    // Get entries
+
+    // Get entries (drafts are automatically excluded)
     let entries: CollectionEntry<T>[];
-    
+
     if (Array.isArray(this._collection)) {
       // Multiple collections
       entries = [];
       for (const coll of this._collection) {
-        const collEntries = await getCollection(coll);
+        const collEntries = await getPublishedCollection(coll);
         entries.push(...(collEntries as CollectionEntry<T>[]));
       }
     } else {
       // Single collection
-      entries = await getCollection(this._collection) as CollectionEntry<T>[];
+      entries = await getPublishedCollection(this._collection) as CollectionEntry<T>[];
     }
     
     // Apply filters
@@ -129,9 +129,12 @@ export class Query<T extends CollectionKey> {
     
     const total = entries.length;
     
-    // Apply sorting
+    // Apply sorting (default to sortByOrder if no explicit sort specified)
     if (this._sorts.length > 0) {
       entries = applySorting(entries, this._sorts as any);
+    } else {
+      // Default: sort by order field ascending
+      entries = applySorting(entries, sortByOrder());
     }
     
     // Apply pagination
@@ -236,9 +239,9 @@ export async function find<T extends CollectionKey>(
   collection: T,
   id: string
 ): Promise<CollectionEntry<T> | undefined> {
-  // ✅ Lazy import
-  const { getCollection } = await import('astro:content');
-  const entries = await getCollection(collection);
+  // ✅ Lazy import - use getPublishedCollection which excludes drafts
+  const { getPublishedCollection } = await import('@/utils/collections');
+  const entries = await getPublishedCollection(collection);
   return entries.find(e => e.id === id) as CollectionEntry<T> | undefined;
 }
 

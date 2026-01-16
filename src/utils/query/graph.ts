@@ -75,16 +75,15 @@ export function clearGraphCache(): void {
 export async function buildRelationshipGraph(
   options: GraphBuildOptions = {}
 ): Promise<RelationshipGraph> {
-  // ✅ Lazy import everything
-  const { getCollection } = await import("astro:content");
+  // ✅ Lazy import everything - use getPublishedCollection to exclude drafts
+  const { getPublishedCollection } = await import("@/utils/collections");
   const { extractRelationConfig, normalizeReference, isParentField } =
     await import("./schema");
 
   // Get collection names without importing collections utilities that might have circular deps
   const { collections } = await import("@/content/config");
-  const allCollections = Object.keys(collections).filter(
-    (c) => c !== "menus" && c !== "menu-items"
-  ) as CollectionKey[];
+  // Include all collections in the relationship graph (menus/menu-items included)
+  const allCollections = Object.keys(collections) as CollectionKey[];
 
   const {
     collections: requestedCollections = allCollections,
@@ -107,7 +106,7 @@ export async function buildRelationshipGraph(
   // Phase 1: Load all entries and create base nodes
   const verbose = options.verbose ?? false;
   if (verbose) console.log("📊 Building relationship graph...");
-  await loadAllEntries(graph, requestedCollections, getCollection);
+  await loadAllEntries(graph, requestedCollections, getPublishedCollection);
 
   // Phase 2: Build direct references
   if (verbose) console.log("🔗 Mapping direct references...");
@@ -143,10 +142,10 @@ export async function buildRelationshipGraph(
 async function loadAllEntries(
   graph: RelationshipGraph,
   collections: CollectionKey[],
-  getCollection: any
+  getPublishedCollection: (collection: CollectionKey) => Promise<any[]>
 ): Promise<void> {
   for (const collection of collections) {
-    const entries = await getCollection(collection);
+    const entries = await getPublishedCollection(collection);
     const collectionMap = new Map<string, RelationMap>();
     const idSet = new Set<string>();
 

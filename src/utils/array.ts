@@ -1,12 +1,12 @@
 // src/utils/array.ts
-/**
- * Array utility functions
- */
+export function toArray<T>(value: T | T[] | undefined | null): T[] {
+  if (Array.isArray(value)) {
+    return value;
+  }
 
-/**
- * Normalize items prop to always be an array
- */
-export function toArray<T>(items: T | T[] | undefined | null): T[] {
-  if (!items) return [];
-  return Array.isArray(items) ? items : [items];
+  if (value === null || value === undefined) {
+    return [];
+  }
+
+  return [value];
 }

@@ -24,6 +24,10 @@ const configPath = pathToFileURL(path.join(projectRoot, 'src/integrations/icons/
 const { ICON_LIBRARIES, SCANNABLE_PREFIXES: SCANNABLE_PREFIXES_ARRAY, normalizeLibraryPrefix } = await import(configPath);
 const LIBRARIES = ICON_LIBRARIES;
 const SCANNABLE_PREFIXES = new Set(SCANNABLE_PREFIXES_ARRAY);
+const ICON_COMPONENT_OVERRIDES = new Map([
+  // Simple Icons renamed Twitter to X in v5; keep legacy ids working.
+  ['si:twitter', 'SiX'],
+]);
 const COMMENT_STRIPPERS = [
   /<!--[\s\S]*?-->/g, // HTML comments
   /\/\*[\s\S]*?\*\//g, // block comments
@@ -97,7 +101,7 @@ function buildImports(iconIds) {
     const library = LIBRARIES[prefix];
     if (!library) continue;
 
-    const componentName = `${library.componentPrefix}${toPascalCase(name)}`;
+    const componentName = ICON_COMPONENT_OVERRIDES.get(iconId) ?? `${library.componentPrefix}${toPascalCase(name)}`;
     const pkg = library.package;
     if (!importsByPackage.has(pkg)) importsByPackage.set(pkg, new Set());
     importsByPackage.get(pkg).add(componentName);
@@ -118,7 +122,7 @@ function renderFile(importsByPackage, iconIds) {
     .map((iconId) => {
       const [prefix, name] = iconId.split(':');
       const { componentPrefix } = LIBRARIES[prefix];
-      const componentName = `${componentPrefix}${toPascalCase(name)}`;
+      const componentName = ICON_COMPONENT_OVERRIDES.get(iconId) ?? `${componentPrefix}${toPascalCase(name)}`;
       return `  '${iconId}': ${componentName},`;
     })
     .join('\n');

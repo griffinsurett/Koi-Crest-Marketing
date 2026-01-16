@@ -137,7 +137,16 @@ export const collections = {
   }),
   "legal": defineCollection({
     schema: ({ image }) =>
-      baseSchema({ image }),
+      baseSchema({ image }).extend({
+        effectiveDate: z
+          .union([z.date(), z.string()])
+          .optional()
+          .transform((val) => {
+            if (!val) return undefined;
+            if (val instanceof Date) return val;
+            return new Date(val);
+          }),
+      }),
   }),
   "pricing": defineCollection({
     schema: ({ image }) =>

@@ -21,8 +21,6 @@ import Theme from "./Theme.astro";
 import BodyTags from "./BodyTags.astro";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
-import IntHeadScripts from "@/integrations/IntHeadScripts.astro";
-import IntFooterScripts from "@/integrations/IntFooterScripts.astro";
 
 export interface Props {
   [key: string]: any;  // Accept any props for SEO component
@@ -48,9 +46,6 @@ const { ...seoProps } = Astro.props;
     {/* Additional head tags (analytics scripts, etc.) */}
     <HeadTags />
 
-    {/* Integration head scripts (accessibility, language detection, translation) */}
-    <IntHeadScripts />
-
     {/* Optional noindex for unpublished content */}
     {seoProps.noindex && <meta name="robots" content="noindex,nofollow" />}
   </head>
@@ -70,7 +65,5 @@ const { ...seoProps } = Astro.props;
       <Footer />
     </div>
 
-    {/* Integration footer scripts (consent banner, etc.) */}
-    <IntFooterScripts />
   </body>
 </html>

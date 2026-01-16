@@ -142,7 +142,7 @@ These directives allow you to:
 
 ```astro
 ---
-import PortfolioCarousel from '@/components/PortfolioCarousel';
+import PortfolioCarousel from '@/components/LoopTemplates/Portfolio/PortfolioCarousel';
 ---
 
 <!-- Option 1: Load on first interaction (recommended for below-fold) -->

@@ -14,7 +14,7 @@
  */
 
 import { isValidElement, type ReactNode, createElement } from 'react';
-import { iconMap, type IconKey } from './iconMap.generated.js';
+import { iconMap, type IconKey } from './iconMap.generated';
 import { ICON_LIBRARIES, normalizeLibraryPrefix } from './iconConfig.js';
 
 /**

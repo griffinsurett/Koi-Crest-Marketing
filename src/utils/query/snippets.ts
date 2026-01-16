@@ -6,9 +6,9 @@
  * These will make it easier to reuse complex queries
  */
 
-import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, normalizeId, and, or, safeGetEntry } from '@/utils/query';
+import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, normalizeId, and, or } from '@/utils/query';
 import { getItemKey } from '@/utils/collections';
-import type { CollectionKey, CollectionEntry } from 'astro:content';
+import type { CollectionKey } from 'astro:content';
 
 // ============================================================================
 // GENERAL PATTERNS
@@ -44,6 +44,49 @@ export const byTag = (collection: CollectionKey, tags: string | string[], limit?
     q.limit(limit);
   }
   return q;
+};
+
+/**
+ * Fetch a single item by slug/id from a collection.
+ *
+ * Example: item("contact-us", "phone")
+ */
+export const item = async (collection: CollectionKey, key: string) => {
+  const targetId = normalizeId(key ?? "");
+  if (!targetId) return undefined;
+
+  return query(collection)
+    .where((entry) => normalizeId(getItemKey(entry)) === targetId)
+    .first();
+};
+
+/**
+ * Get specific items by their keys (slugs/ids), preserving the order provided.
+ * Supports a single key or an array of keys.
+ *
+ * Example: byItemKeys("about-us", "our-mission")
+ * Example: byItemKeys("about-us", ["our-mission", "our-vision"])
+ */
+export const byItemKeys = (collection: CollectionKey, keys: string | string[]) => {
+  const keyList = (Array.isArray(keys) ? keys : [keys]).filter(Boolean);
+  if (keyList.length === 0) {
+    return query(collection).where(() => false).limit(0);
+  }
+
+  const normalizedKeys = keyList.map(normalizeId);
+  const keySet = new Set(normalizedKeys);
+
+  return query(collection)
+    .where((entry) => {
+      const entryKey = normalizeId(getItemKey(entry));
+      return keySet.has(entryKey);
+    })
+    .orderBy((a, b) => {
+      // Preserve the order from the keys array
+      const aKey = normalizeId(getItemKey(a));
+      const bKey = normalizeId(getItemKey(b));
+      return normalizedKeys.indexOf(aKey) - normalizedKeys.indexOf(bKey);
+    });
 };
 
 // TODO: Items by author
@@ -189,18 +232,6 @@ export const siblings = (
     .orderBy(sortByOrder());
 };
 
-export const item = async <T extends CollectionKey>(
-  collection: T,
-  identifier?: string
-): Promise<CollectionEntry<T> | undefined> => {
-  const targetId = identifier?.trim();
-  if (!targetId) {
-    return undefined;
-  }
-  const entry = await safeGetEntry(collection, targetId);
-  return entry as CollectionEntry<T> | undefined;
-};
-
 // TODO: Items at specific depth
 // export const atDepth = (collection: CollectionKey, depth: number) => {}
 
@@ -208,11 +239,98 @@ export const item = async <T extends CollectionKey>(
 // RELATIONAL QUERIES
 // ============================================================================
 
-// TODO: Items that reference a specific entry
-// export const referencedBy = (collection: CollectionKey, targetCollection: string, targetId: string) => {}
+/**
+ * Filter function for matching a reference field to a target ID.
+ * Handles both single refs and arrays of refs.
+ */
+const matchesRef = (fieldValue: any, targetNormalized: string): boolean => {
+  if (!fieldValue) return false;
 
-// TODO: Items with references to any entry in target collection
-// export const withReferencesTo = (collection: CollectionKey, targetCollection: CollectionKey) => {}
+  if (Array.isArray(fieldValue)) {
+    return fieldValue.some((ref: any) => {
+      const id = typeof ref === "string" ? ref : ref?.id || ref?.slug || "";
+      return normalizeId(id) === targetNormalized;
+    });
+  }
+
+  const id = typeof fieldValue === "string" ? fieldValue : fieldValue?.id || fieldValue?.slug || "";
+  return normalizeId(id) === targetNormalized;
+};
+
+/**
+ * Items from a collection that reference a specific entry via a field.
+ *
+ * Example: Get capabilities related to the "blogs" solution
+ * related("capabilities", "solutions", "blogs")
+ *
+ * @param collection - The collection to query (e.g., "capabilities")
+ * @param field - The reference field name (e.g., "solutions")
+ * @param targetId - The ID of the target entry (e.g., "blogs")
+ */
+export const related = (
+  collection: CollectionKey,
+  field: string,
+  targetId: string
+) => {
+  const targetNormalized = normalizeId(targetId);
+
+  return query(collection)
+    .where((entry) => matchesRef((entry.data as any)[field], targetNormalized))
+    .orderBy(sortByOrder());
+};
+
+/**
+ * Root-level items (no parent) that reference a specific entry via a field.
+ *
+ * Example: Get root capabilities related to the "blogs" solution
+ * relatedRoots("capabilities", "solutions", "blogs")
+ *
+ * @param collection - The collection to query (e.g., "capabilities")
+ * @param field - The reference field name (e.g., "solutions")
+ * @param targetId - The ID of the target entry (e.g., "blogs")
+ */
+export const relatedRoots = (
+  collection: CollectionKey,
+  field: string,
+  targetId: string
+) => {
+  const targetNormalized = normalizeId(targetId);
+
+  return query(collection)
+    .where((entry) => {
+      const data = entry.data as any;
+      // Must have no parent AND match the reference
+      const hasNoParent = !data.parent || (Array.isArray(data.parent) && data.parent.length === 0);
+      return hasNoParent && matchesRef(data[field], targetNormalized);
+    })
+    .orderBy(sortByOrder());
+};
+
+/**
+ * Items from a collection that have any reference to a target collection.
+ *
+ * Example: Get all capabilities that reference any solution
+ * withReferencesTo("capabilities", "solutions")
+ *
+ * @param collection - The collection to query (e.g., "capabilities")
+ * @param field - The reference field name (e.g., "solutions")
+ */
+export const withReferencesTo = (
+  collection: CollectionKey,
+  field: string
+) => {
+  return query(collection)
+    .where((entry) => {
+      const data = entry.data as any;
+      const fieldValue = data[field];
+
+      // Check if field has any value (not null, undefined, or empty array)
+      if (!fieldValue) return false;
+      if (Array.isArray(fieldValue)) return fieldValue.length > 0;
+      return true;
+    })
+    .orderBy(sortByOrder());
+}
 
 // ============================================================================
 // CROSS-COLLECTION

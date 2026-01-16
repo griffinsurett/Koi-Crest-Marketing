@@ -12,7 +12,7 @@ import {
   prepareItemPageData,
   rootLevelFilter,
   buildRootLevelParams,
-} from "@/utils/pageGeneration/itemPageHelpers";
+} from "@/utils/pages/pageGeneration/itemPageHelpers";
 
 export async function getStaticPaths() {
   return generateItemPaths(rootLevelFilter, buildRootLevelParams);

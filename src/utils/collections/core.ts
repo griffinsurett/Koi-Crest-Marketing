@@ -25,6 +25,24 @@ export function getItemKey(item: AnyItem): string {
   return "";
 }
 
+/**
+ * Filter function that excludes draft entries
+ * Drafts should never appear in any collection query
+ */
+const excludeDrafts = (entry: CollectionEntry<any>) =>
+  (entry.data as any).draft !== true;
+
+/**
+ * Get a collection with drafts automatically filtered out
+ * This is the primary way to fetch collection entries - drafts simply don't exist
+ */
+export async function getPublishedCollection<T extends CollectionKey>(
+  collectionName: T
+): Promise<CollectionEntry<T>[]> {
+  const { getCollection } = await import("astro:content");
+  return getCollection(collectionName, excludeDrafts) as Promise<CollectionEntry<T>[]>;
+}
+
 export async function getCollectionWithMeta(collectionName: CollectionKey) {
   const { metaSchema } = await import("@/content/schema");
 
@@ -46,9 +64,8 @@ export async function getCollectionWithMeta(collectionName: CollectionKey) {
 
   const meta: MetaData = metaSchema({ image: simpleImageFn }).parse(data);
 
-  // ✅ Lazy import
-  const { getCollection } = await import("astro:content");
-  const entries = await getCollection(collectionName);
+  // Use getPublishedCollection to exclude drafts
+  const entries = await getPublishedCollection(collectionName);
 
   return { entries, meta, collectionName };
 }

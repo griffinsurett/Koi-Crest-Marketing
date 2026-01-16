@@ -1,4 +1,4 @@
-// src/components/ContentRenderer/utils/renderContent.ts
+// src/components/starter/ContentRenderer/utils/renderContent.ts
 /**
  * Content Rendering Utility
  * 

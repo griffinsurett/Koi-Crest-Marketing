@@ -9,6 +9,26 @@
 import type { ImageMetadata } from "astro";
 import type { ImageInput } from "@/content/schema";
 
+export type CollectionImage =
+  | ImageInput
+  | string
+  | {
+      src: string;
+      alt?: string;
+    };
+
+export type NormalizedImage =
+  | {
+      type: "asset";
+      src: ImageMetadata;
+      alt: string;
+    }
+  | {
+      type: "url";
+      src: string;
+      alt: string;
+    };
+
 /**
  * Type guard to check if a value is Astro ImageMetadata
  */
@@ -121,57 +141,117 @@ export function hasAltText(img: any): img is { src: any; alt: string } {
 }
 
 /**
- * Types for collection images
- */
-export type CollectionImage = ImageInput | undefined | null;
-
-export type NormalizedImage =
-  | { type: "asset"; src: ImageMetadata; alt: string }
-  | { type: "url"; src: string; alt: string };
-
-/**
- * Normalize a collection image to a consistent format for rendering
- * Returns undefined if no valid image is provided
+ * Normalize collection image inputs for consistent rendering.
  */
 export function normalizeCollectionImage(
-  img: CollectionImage,
+  image: CollectionImage | undefined,
   fallbackAlt: string
 ): NormalizedImage | undefined {
-  if (!img) return undefined;
+  if (!image) return undefined;
 
-  // Check if it's ImageMetadata (Astro asset)
-  if (isImageMetadata(img)) {
-    return {
-      type: "asset",
-      src: img,
-      alt: fallbackAlt,
-    };
+  if (typeof image === "object" && "type" in image) {
+    if (image.type === "asset" || image.type === "url") {
+      return image as NormalizedImage;
+    }
   }
 
-  // Check if it's wrapped format { src: ImageMetadata, alt?: string }
-  if (typeof img === "object" && "src" in img) {
-    const src = img.src;
+  if (isImageMetadata(image)) {
+    return { type: "asset", src: image, alt: fallbackAlt };
+  }
+
+  if (typeof image === "object" && "src" in image && image.src) {
     const alt =
-      "alt" in img && typeof img.alt === "string" ? img.alt : fallbackAlt;
+      typeof (image as any).alt === "string" ? (image as any).alt : fallbackAlt;
 
-    // src is ImageMetadata
-    if (isImageMetadata(src)) {
-      return {
-        type: "asset",
-        src: src,
-        alt: alt,
-      };
+    if (isImageMetadata(image.src)) {
+      return { type: "asset", src: image.src, alt };
     }
 
-    // src is a string URL
-    if (typeof src === "string") {
-      return {
-        type: "url",
-        src: src,
-        alt: alt,
-      };
+    if (typeof image.src === "string") {
+      return { type: "url", src: image.src, alt };
     }
+  }
+
+  if (typeof image === "string") {
+    return { type: "url", src: image, alt: fallbackAlt };
   }
 
   return undefined;
+}
+
+/**
+ * Configuration for generating a cropped "above the fold" preview image.
+ * Used to create a lightweight initial image that shows just the top portion
+ * of a tall screenshot, reducing initial payload while maintaining visual continuity.
+ */
+export interface CroppedPreviewConfig {
+  /** Target width for the preview (will match container width) */
+  width: number;
+  /** Height of the visible "above the fold" area */
+  height: number;
+  /** Output format */
+  format: "avif" | "webp";
+  /** Quality (0-100) */
+  quality: number;
+}
+
+/**
+ * Result from generating a cropped preview
+ */
+export interface CroppedPreviewResult {
+  /** Optimized image result from getImage */
+  image: Awaited<ReturnType<typeof import("astro:assets").getImage>>;
+  /** The config used to generate this preview */
+  config: CroppedPreviewConfig;
+}
+
+/**
+ * Default configs for cropped preview generation.
+ * Generates multiple formats for browser compatibility.
+ */
+export const CROPPED_PREVIEW_DEFAULTS: CroppedPreviewConfig[] = [
+  { width: 860, height: 500, format: "avif", quality: 50 },
+  { width: 860, height: 500, format: "webp", quality: 70 },
+];
+
+/**
+ * Generate a cropped "above the fold" preview image.
+ *
+ * This creates a small, fast-loading image showing just the top portion
+ * of a tall screenshot. Perfect for portfolio showcases where the full
+ * webpage screenshot is very tall but only the top is initially visible.
+ *
+ * @param metadata - Source image metadata
+ * @param configs - Array of format/size configs to generate
+ * @returns Array of optimized cropped images
+ *
+ * @example
+ * ```ts
+ * const previews = await generateCroppedPreview(imageMetadata);
+ * // Returns AVIF and WebP versions cropped to 860x500
+ * ```
+ */
+export async function generateCroppedPreview(
+  metadata: ImageMetadata,
+  configs: CroppedPreviewConfig[] = CROPPED_PREVIEW_DEFAULTS
+): Promise<CroppedPreviewResult[]> {
+  const { getImage } = await import("astro:assets");
+
+  const results = await Promise.all(
+    configs.map(async (config) => {
+      const image = await getImage({
+        src: metadata,
+        width: config.width,
+        height: config.height,
+        format: config.format,
+        quality: config.quality,
+        fit: "cover",
+        position: "top", // Crop from top - keeps the "above the fold" content
+      });
+
+      return { image, config };
+    })
+  );
+
+  return results;
 }

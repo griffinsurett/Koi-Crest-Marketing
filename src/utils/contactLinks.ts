@@ -4,12 +4,12 @@ import { formatPhoneNumber } from '@/utils/string';
 
 export interface ContactLink {
   id: string;
-  title: string;          // Raw title/value (email, phone digits, etc.)
-  displayTitle: string;   // Nicely formatted label for UI
+  title: string;          // Display heading (e.g., "Call Us", "Email Us")
+  description: string;    // Raw contact value (phone digits, email address)
+  displayValue: string;   // Formatted value for UI (formatted phone, etc.)
   url?: string;           // Full href (mailto:, tel:, etc.)
   linkPrefix?: string;
   tags?: string[];
-  description?: string;
   icon?: any;
 }
 
@@ -24,32 +24,45 @@ export function normalizeContactLinks(items: Array<any>): ContactLink[] {
     .map((item) => {
       const data = extractData(item);
       const id = String(data.id ?? item?.id ?? 'contact');
-      const rawTitle = String(data.title ?? '');
       const linkPrefix = data.linkPrefix ?? '';
       const tags: string[] = Array.isArray(data.tags) ? data.tags : data.tags ? [data.tags] : [];
 
-      const displayTitle = tags.includes('phone')
-        ? formatPhoneNumber(rawTitle)
-        : rawTitle;
+      // Use description for the contact value (phone/email), title for the heading
+      const rawValue = String(data.description ?? '');
+      const title = String(data.title ?? '');
 
-      const url = data.url ?? (linkPrefix ? `${linkPrefix}${rawTitle}` : undefined);
+      // Format the display value (phone numbers get formatted)
+      const displayValue = linkPrefix?.toLowerCase().startsWith("tel")
+        ? formatPhoneNumber(rawValue)
+        : rawValue;
+
+      const url = data.url ?? (linkPrefix ? `${linkPrefix}${rawValue}` : undefined);
 
       return {
         id,
-        title: rawTitle,
-        displayTitle,
+        title,
+        description: rawValue,
+        displayValue,
         url,
         linkPrefix,
         tags,
-        description: data.description,
         icon: data.icon,
       };
     })
-    .filter((link) => !!link.title);
+    .filter((link) => !!link.description);
 }
 
 export async function getContactLinks(): Promise<ContactLink[]> {
-  const { getCollection } = await import('astro:content');
-  const entries = await getCollection('contact-us');
+  const { getPublishedCollection } = await import('@/utils/collections');
+  const entries = await getPublishedCollection('contact-us');
   return normalizeContactLinks(entries as CollectionEntry<'contact-us'>[]);
 }
+
+const PHONE_CONTACT_IDS = new Set(["phone"]);
+const EMAIL_CONTACT_IDS = new Set(["email", "support-email", "contact-email"]);
+
+export const isPhoneContactId = (id?: string | null): boolean =>
+  id ? PHONE_CONTACT_IDS.has(id.toLowerCase()) : false;
+
+export const isEmailContactId = (id?: string | null): boolean =>
+  id ? EMAIL_CONTACT_IDS.has(id.toLowerCase()) : false;

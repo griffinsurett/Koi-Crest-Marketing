@@ -1,5 +1,5 @@
 // src/hooks/interactions/useScrollInteraction.ts
-import { useCallback, useEffect, useRef, type MutableRefObject } from "react";
+import { useCallback, useEffect, useRef, type RefObject } from "react";
 import { resolveHost, getPositionForHost, type HostElement } from "./utils";
 
 export type ScrollDirection = "up" | "down";
@@ -13,11 +13,11 @@ interface ScrollInteractionPayload {
 }
 
 export interface ScrollInteractionOptions {
-  elementRef?: MutableRefObject<HTMLElement | null> | null;
+  elementRef?: RefObject<HTMLElement | null> | null;
   scrollThreshold?: number;
   debounceDelay?: number;
   trustedOnly?: boolean;
-  internalFlagRef?: MutableRefObject<boolean | null> | null;
+  internalFlagRef?: RefObject<boolean | null> | null;
   wheelSensitivity?: number;
   onScrollActivity?: (payload: ScrollInteractionPayload) => void;
   onScrollUp?: (payload: ScrollInteractionPayload) => void;
@@ -43,7 +43,7 @@ export const useScrollInteraction = ({
   onDirectionChange,
   onWheelActivity,
 }: ScrollInteractionOptions = {}) => {
-  const endTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const endTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastPosRef = useRef(0);
   const lastDirRef = useRef<ScrollDirection | "none">("none");
   const scrollingRef = useRef(false);
@@ -62,9 +62,10 @@ export const useScrollInteraction = ({
       if (scrollingRef.current) {
         scrollingRef.current = false;
         const host = hostRef.current;
+        const dir = lastDirRef.current;
         onScrollEnd?.({
           pos: getPositionForHost(host),
-          dir: lastDirRef.current,
+          dir: dir === "none" ? "down" : dir,
         });
       }
     }, debounceDelay);
@@ -136,8 +137,8 @@ export const useScrollInteraction = ({
       emitActivity(deltaY, "wheel");
     };
 
-    host.addEventListener("wheel", handleWheel, { passive: true });
-    return () => host.removeEventListener("wheel", handleWheel);
+    (host as Window | HTMLElement).addEventListener("wheel", handleWheel as EventListener, { passive: true });
+    return () => (host as Window | HTMLElement).removeEventListener("wheel", handleWheel as EventListener);
   }, [elementRef, emitActivity, internalFlagRef, onWheelActivity, trustedOnly, wheelSensitivity]);
 
   useEffect(() => {
@@ -154,8 +155,8 @@ export const useScrollInteraction = ({
       }
     };
 
-    host.addEventListener("scroll", handleScroll, { passive: true });
-    return () => host.removeEventListener("scroll", handleScroll);
+    (host as Window | HTMLElement).addEventListener("scroll", handleScroll, { passive: true });
+    return () => (host as Window | HTMLElement).removeEventListener("scroll", handleScroll);
   }, [elementRef, emitActivity, internalFlagRef]);
 
   useEffect(() => () => clearEndTimer(), [clearEndTimer]);

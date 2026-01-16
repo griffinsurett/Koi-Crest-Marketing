@@ -5,6 +5,7 @@ import { capitalize } from '@/utils/string';
 import { parseContentPath, isMetaFile } from '@/utils/paths';
 import { SimpleIdRegistry } from '@/utils/idRegistry';
 import { parseFrontmatterFromString } from '@/utils/filesystem/frontmatter';
+import { shouldItemHavePageData, shouldItemUseRootPathData } from '../pages/pageRules';
 import { readFileSync, readdirSync } from 'fs';
 import { join, relative } from 'path';
 
@@ -140,26 +141,6 @@ function normalizeMenuReference(menu: any): any {
 
 function ensureArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value];
-}
-
-function getItemProperty<T>(
-  itemData: any,
-  metaData: any,
-  itemKey: string,
-  metaKey: string,
-  defaultValue: T
-): T {
-  if (itemData?.[itemKey] !== undefined) return itemData[itemKey];
-  if (metaData?.[metaKey] !== undefined) return metaData[metaKey];
-  return defaultValue;
-}
-
-function shouldItemHavePage(itemData: any, metaData: any): boolean {
-  return getItemProperty(itemData, metaData, 'hasPage', 'itemsHasPage', true);
-}
-
-function shouldItemUseRootPath(itemData: any, metaData: any): boolean {
-  return getItemProperty(itemData, metaData, 'rootPath', 'itemsRootPath', false);
 }
 
 function getCollectionMetaFromModules(
@@ -308,7 +289,7 @@ async function processItemMenus(
       const itemId = getUniqueId(semanticId);
 
       const meta = getCollectionMetaFromModules(collection, modules);
-      const useRootPath = shouldItemUseRootPath(data, meta);
+      const useRootPath = shouldItemUseRootPathData(data, meta);
       const itemUrl = useRootPath ? `/${slug}` : `/${collection}/${slug}`;
 
       store.set({
@@ -380,6 +361,49 @@ async function processCollectionMenus(
     }
 
     if (data.itemsAddToMenu) {
+      // Build a lookup of which items have pages
+      const itemsWithPages = new Set<string>();
+      // Build a lookup of parent -> children relationships
+      const parentToChildren = new Map<string, string[]>();
+
+      for (const [itemPath, itemMod] of Object.entries(modules)) {
+        if (!itemPath.includes(`content/${collection}/`)) continue;
+        if (isMetaFile(itemPath)) continue;
+
+        const itemData = itemMod.frontmatter ?? {};
+        const { slug } = parseContentPath(itemPath);
+
+        // Track which items have pages
+        if (shouldItemHavePageData(itemData, meta)) {
+          itemsWithPages.add(slug);
+        }
+
+        // Track parent -> children relationships
+        const parents = itemData.parent;
+        const parentList = Array.isArray(parents) ? parents : parents ? [parents] : [];
+
+        for (const parent of parentList) {
+          if (typeof parent === "string") {
+            const children = parentToChildren.get(parent) ?? [];
+            children.push(slug);
+            parentToChildren.set(parent, children);
+          }
+        }
+      }
+
+      // Check if a slug has any descendants with pages (recursive)
+      const hasDescendantWithPage = (slug: string, visited = new Set<string>()): boolean => {
+        if (visited.has(slug)) return false; // Prevent cycles
+        visited.add(slug);
+
+        const children = parentToChildren.get(slug) ?? [];
+        for (const child of children) {
+          if (itemsWithPages.has(child)) return true;
+          if (hasDescendantWithPage(child, visited)) return true;
+        }
+        return false;
+      };
+
       const configs = ensureArray(data.itemsAddToMenu);
 
       for (const menuConfig of configs) {
@@ -389,8 +413,6 @@ async function processCollectionMenus(
           ? collection
           : menuConfig.attachTo;
 
-        const hierarchyMode = menuConfig.hierarchyMode ?? 'auto';
-
         for (const [itemPath, itemMod] of Object.entries(modules)) {
           if (!itemPath.includes(`content/${collection}/`)) continue;
           if (isMetaFile(itemPath)) continue;
@@ -398,14 +420,17 @@ async function processCollectionMenus(
           const itemData = itemMod.frontmatter ?? {};
           const { slug } = parseContentPath(itemPath);
 
-          if (!shouldItemHavePage(itemData, meta)) continue;
+          const hasRenderablePage = shouldItemHavePageData(itemData, meta);
+          const isParentContainer = parentToChildren.has(slug);
+          const hasPageableDescendants = isParentContainer && hasDescendantWithPage(slug);
 
-          // If hierarchyMode is "roots-only", skip items that have a parent
-          if (hierarchyMode === 'roots-only' && itemData.parent) continue;
+          // Skip items with no page unless they are parent containers with descendants that have pages
+          if (!hasRenderablePage && !hasPageableDescendants) continue;
 
-          const useRootPath = shouldItemUseRootPath(itemData, meta);
-          const itemUrl = useRootPath ? `/${slug}` : `/${collection}/${slug}`;
-          
+          const itemUrl = hasRenderablePage
+            ? (shouldItemUseRootPathData(itemData, meta) ? `/${slug}` : `/${collection}/${slug}`)
+            : undefined;
+
           let parent = attachTo;
           // If attachTo is the collection but no explicit collection parent exists in the store,
           // avoid creating an implicit menu item and instead drop to root.

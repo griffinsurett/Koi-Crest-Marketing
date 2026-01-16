@@ -8,7 +8,10 @@
 @theme {
     --color-MainDark: var(--color-black);
     --color-MainLight: var(--color-white);
-    --color-bg: var(--color-white)
+    --color-bg: var(--color-white);
+    --color-surface: var(--color-gray-600);
+    --color-text: var(--color-gray-800);
+    --color-primary: var(--color-gray-800);
 }
 
 @layer base {

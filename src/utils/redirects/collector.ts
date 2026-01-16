@@ -6,11 +6,8 @@
  * from _meta.mdx files and individual content items.
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
-import { parseFrontmatter } from '../filesystem/frontmatter';
+import { scanCollections, DEFAULT_CONTENT_DIR } from '../filesystem/contentScanner';
 import { normalizePath } from '../pathValidation';
-import { getCollectionDirs } from '../filesystem/shared';
 import type { RedirectEntry } from './types';
 
 /**
@@ -37,15 +34,12 @@ export function collectCollectionRedirects(
   collectionName: string,
   contentDir: string
 ): RedirectEntry[] {
+  const collection = scanCollections(contentDir).find((c) => c.name === collectionName);
+  if (!collection) return [];
+
   const redirects: RedirectEntry[] = [];
-  const metaPath = path.join(contentDir, collectionName, '_meta.mdx');
-  
-  if (!fs.existsSync(metaPath)) {
-    return redirects;
-  }
-  
-  const meta = parseFrontmatter(metaPath);
-  
+  const meta = collection.meta;
+
   // Only process if collection has a page
   if (meta.hasPage === false) {
     return redirects;
@@ -82,51 +76,31 @@ export function collectItemRedirects(
   collectionName: string,
   contentDir: string
 ): RedirectEntry[] {
+  const collection = scanCollections(contentDir).find((c) => c.name === collectionName);
+  if (!collection) return [];
+
   const redirects: RedirectEntry[] = [];
-  const collectionDir = path.join(contentDir, collectionName);
-  
-  if (!fs.existsSync(collectionDir)) {
-    return redirects;
-  }
-  
-  // Read collection meta for itemsHasPage default
-  const metaPath = path.join(collectionDir, '_meta.mdx');
-  const meta = fs.existsSync(metaPath) ? parseFrontmatter(metaPath) : {};
+  const meta = collection.meta;
   const itemsHasPageDefault = meta.itemsHasPage !== false;
-  
-  // Get all content files
-  const files = fs.readdirSync(collectionDir);
-  const contentFiles = files.filter(file => 
-    (file.endsWith('.mdx') || file.endsWith('.md')) && 
-    !file.startsWith('_')
-  );
-  
-  for (const file of contentFiles) {
-    const filePath = path.join(collectionDir, file);
-    const data = parseFrontmatter(filePath);
-    
+
+  for (const item of collection.items) {
+    const data = item.data;
+
     // Check if item should have a page
     const hasPage = data.hasPage !== undefined ? data.hasPage : itemsHasPageDefault;
-    if (!hasPage) {
-      continue;
-    }
-    
+    if (!hasPage) continue;
+
     const redirectFromPaths = normalizeRedirectFrom(data.redirectFrom);
-    
-    if (redirectFromPaths.length === 0) {
-      continue;
-    }
-    
-    // Extract slug from filename
-    const slug = file.replace(/\.(mdx|md)$/, '');
-    
+    if (redirectFromPaths.length === 0) continue;
+
+    const slug = item.slug;
+
     // Determine target path based on rootPath setting
-    const useRootPath = data.rootPath !== undefined 
-      ? data.rootPath 
-      : (meta.itemsRootPath !== undefined ? meta.itemsRootPath : false);
-    
+    const useRootPath =
+      data.rootPath !== undefined ? data.rootPath : meta.itemsRootPath !== undefined ? meta.itemsRootPath : false;
+
     const targetPath = useRootPath ? `/${slug}` : `/${collectionName}/${slug}`;
-    
+
     for (const fromPath of redirectFromPaths) {
       redirects.push({
         from: normalizePath(fromPath),
@@ -136,7 +110,7 @@ export function collectItemRedirects(
       });
     }
   }
-  
+
   return redirects;
 }
 
@@ -147,22 +121,22 @@ export function collectItemRedirects(
  * @returns Array of all redirect entries
  */
 export function collectAllRedirects(
-  contentDir: string = path.join(process.cwd(), 'src', 'content')
+  contentDir: string = DEFAULT_CONTENT_DIR
 ): RedirectEntry[] {
   const allRedirects: RedirectEntry[] = [];
-  const collectionDirs = getCollectionDirs(contentDir);
+  const collections = scanCollections(contentDir);
   
-  for (const collectionName of collectionDirs) {
+  for (const { name } of collections) {
     try {
       // Collection-level redirects
-      const collectionRedirects = collectCollectionRedirects(collectionName, contentDir);
+      const collectionRedirects = collectCollectionRedirects(name, contentDir);
       allRedirects.push(...collectionRedirects);
       
       // Item-level redirects
-      const itemRedirects = collectItemRedirects(collectionName, contentDir);
+      const itemRedirects = collectItemRedirects(name, contentDir);
       allRedirects.push(...itemRedirects);
     } catch (error) {
-      console.error(`Error collecting redirects from ${collectionName}:`, error);
+      console.error(`Error collecting redirects from ${name}:`, error);
     }
   }
   

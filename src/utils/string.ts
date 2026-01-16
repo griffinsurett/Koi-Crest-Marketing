@@ -24,6 +24,24 @@ export function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+export function uppercase(str: string): string {
+  return str ? str.toUpperCase() : str;
+}
+
+/**
+ * Capitalize the first letter of each word
+ *
+ * @param str - String to capitalize
+ * @returns String with each word capitalized
+ * @example
+ * capitalizeWords('hello world') // 'Hello World'
+ * capitalizeWords('standard-websites') // 'Standard-Websites'
+ */
+export function capitalizeWords(str: string): string {
+  if (!str) return str;
+  return str.replace(/\b\w/g, char => char.toUpperCase());
+}
+
 /**
  * Convert a string to kebab-case
  * 

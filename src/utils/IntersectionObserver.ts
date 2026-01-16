@@ -1,10 +1,5 @@
-// src/utils/IntersectionObserver.ts
-/**
- * IntersectionObserver utility for visibility detection
- */
-
 interface IntersectionObserverOptions {
-  threshold?: number;
+  threshold?: number | number[];
   root?: Element | null;
   rootMargin?: string;
   once?: boolean;
@@ -12,66 +7,56 @@ interface IntersectionObserverOptions {
   onExit?: (entry: IntersectionObserverEntry) => void;
 }
 
-interface IntersectionObserverResult {
-  isVisible: boolean;
-  hasBeenSeen: boolean;
-  disconnect: () => void;
-}
-
 export function createIntersectionObserver(
-  element: HTMLElement,
-  options: IntersectionObserverOptions = {}
-): IntersectionObserverResult {
-  const {
+  element: Element,
+  {
     threshold = 0.1,
     root = null,
     rootMargin = "0px",
     once = false,
     onEnter,
     onExit,
-  } = options;
-
+  }: IntersectionObserverOptions = {}
+) {
   let isVisible = false;
   let hasBeenSeen = false;
+  let observer: IntersectionObserver | null = null;
 
-  if (typeof IntersectionObserver === "undefined") {
-    // Fallback for SSR or unsupported browsers
+  if (!element || typeof IntersectionObserver === "undefined") {
     return {
-      isVisible: true,
-      hasBeenSeen: true,
-      disconnect: () => {},
+      isVisible,
+      hasBeenSeen,
+      disconnect: () => undefined,
     };
   }
 
-  const observer = new IntersectionObserver(
+  observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          isVisible = true;
-          hasBeenSeen = true;
-          onEnter?.(entry);
+      const entry = entries[0];
+      if (!entry) return;
+      const inView = entry.isIntersecting;
+      isVisible = inView;
 
-          if (once) {
-            observer.disconnect();
-          }
-        } else {
-          isVisible = false;
-          onExit?.(entry);
-        }
-      });
+      if (inView) {
+        if (!hasBeenSeen) hasBeenSeen = true;
+        onEnter?.(entry);
+        if (once) observer?.disconnect();
+      } else {
+        onExit?.(entry);
+      }
     },
-    {
-      threshold,
-      root,
-      rootMargin,
-    }
+    { threshold, root, rootMargin }
   );
 
   observer.observe(element);
 
   return {
-    isVisible,
-    hasBeenSeen,
-    disconnect: () => observer.disconnect(),
+    get isVisible() {
+      return isVisible;
+    },
+    get hasBeenSeen() {
+      return hasBeenSeen;
+    },
+    disconnect: () => observer?.disconnect(),
   };
 }
