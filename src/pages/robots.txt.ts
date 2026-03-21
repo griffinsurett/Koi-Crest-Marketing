@@ -9,6 +9,7 @@ export const GET: APIRoute = () => {
   const lines = [
     "User-agent: *",
     "Allow: /",
+    "Disallow: /*?*",
     // Uncomment when you have a sitemap
     // `Sitemap: ${siteUrl}/sitemap-0.xml`,
     `Host: ${siteData.url}`,
