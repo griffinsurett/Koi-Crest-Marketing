@@ -73,8 +73,8 @@ const finalKeywords = seo?.keywords || [
   "static site generator",
   "web development",
 ];
-const finalCanonicalUrl =
-  seo?.canonicalUrl || `${siteData.url}${Astro.url.pathname}`;
+const canonicalPath = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '');
+const finalCanonicalUrl = seo?.canonicalUrl || `${siteData.url}${canonicalPath}`;
 const effectiveRobots = seo?.robots || "index, follow";
 
 // Author and publisher
