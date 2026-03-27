@@ -85,7 +85,6 @@ export const MenuFilterOptions = z.object({
   onlyDepths: z.array(z.number()).optional(),
   excludeDepths: z.array(z.number()).optional(),
   tags: z.array(z.string()).optional(),
-  excludeTags: z.array(z.string()).optional(),
 });
 
 export const ChildHandlingOptions = z.object({
@@ -375,7 +374,7 @@ export const metaSchema = ({ image }: { image: Function }) =>
     itemsAddToMenu: z.array(ItemsAddToMenuFields).optional(),
     // Link behavior for all items in this collection (can be overridden per-item)
     itemsLinkBehavior: LinkBehaviorConfig,
-    layout: z.string().default('../layouts/collections/CollectionIndexLayout.astro'),
+    indexLayout: z.string().default('../layouts/collections/CollectionIndexLayout.astro'),
     itemsLayout: z.string().default('../layouts/collections/CollectionLayout.astro'),
   });
 

@@ -14,11 +14,25 @@
 import { siteData } from "@/content/siteData";
 import { Image } from "astro:assets";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, sortBy, whereNoParent } from "@/utils/query";
+import { query, sortBy } from "@/utils/query";
 import CookiePreferencesButton from "@/integrations/preferences/consent/ui/CookiePreferencesButton";
 import AccessibilityButton from "@/integrations/preferences/accessibility/ui/AccessibilityButton";
 import Logo from "@/components/Logo.astro";
 import { roots } from "@/utils/query/snippets";
+import { getCollectionMeta, prepareCollectionEntries } from "@/utils/collections";
+
+const contactMeta = getCollectionMeta("contact-us");
+const contactEntries = await query("contact-us")
+  .where((entry) => entry.id !== "email")
+  .all();
+const footerContactItems = [
+  ...(await prepareCollectionEntries(contactEntries, "contact-us", contactMeta)),
+  {
+    id: "contact-us-root",
+    title: "Email Us",
+    url: "/contact-us",
+  },
+];
 ---
 
 <footer class="bg-gray-50 border-t border-gray-200 mt-auto">
@@ -28,7 +42,6 @@ import { roots } from "@/utils/query/snippets";
       <!-- Column 1: Logo & Company Info -->
       <div class="space-y-4">
         <Logo
-          size="default"
           linkClassName="items-start justify-center"
           textContainerClassName="hidden flex-col text-center py-2 gap-2"
         />
@@ -93,7 +106,7 @@ import { roots } from "@/utils/query/snippets";
 
       <!-- Column 3: Contact Info -->
       <ContentRenderer
-        query={query("contact-us")}
+        items={footerContactItems}
         variant="ListVariant"
         orientation="vertical"
         className="py-0"

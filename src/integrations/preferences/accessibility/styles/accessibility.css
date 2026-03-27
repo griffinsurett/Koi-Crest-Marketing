@@ -499,7 +499,6 @@ html[data-a11y-font="readable"] body * {
     width: 18px;
     border-radius: 999px;
     background: var(--color-primary);
-    border: 2px solid var(--color-bg);
     box-shadow: 0 10px 25px var(--int-a11y-slider-shadow);
     margin-top: -8px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;

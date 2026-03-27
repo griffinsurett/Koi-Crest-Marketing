@@ -108,7 +108,7 @@ export function getLayoutPath(
   return getItemProperty(
     item?.data,
     meta,
-    'layout',          // item-level property
+    'itemLayout',          // item-level property
     'itemsLayout',         // collection-level property
     undefined              // default (will use CollectionLayout)
   );
@@ -117,12 +117,12 @@ export function getLayoutPath(
 /**
  * Get layout path for collection index pages
  * 
- * Uses the layout field from _meta.mdx
+ * Uses the indexLayout field from _meta.mdx
  * Defaults to CollectionIndexLayout if not specified
  * 
  * @param meta - Collection metadata
  * @returns Layout path to use
  */
 export function getCollectionIndexLayoutPath(meta: any): string {
-  return meta.layout || DEFAULT_INDEX_LAYOUT_PATH;
+  return meta.indexLayout || DEFAULT_INDEX_LAYOUT_PATH;
 }

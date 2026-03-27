@@ -13,6 +13,7 @@
 
 import { metaSchema, type MetaData } from "@/content/schema";
 import { z } from "astro:content";
+import type { ImageMetadata } from "astro";
 
 /**
  * Pre-load all _meta.mdx files at module load time
@@ -22,6 +23,58 @@ const mdxModules = import.meta.glob<{ frontmatter?: Record<string, any> }>(
   "../../content/**/_meta.mdx",
   { eager: true }
 );
+
+const assetModules = import.meta.glob<{ default: ImageMetadata }>(
+  "../../assets/**/*.{avif,gif,jpeg,jpg,png,svg,webp}",
+  { eager: true }
+);
+
+const assetPathAliases = [
+  { from: "@/assets/", to: "../../assets/" },
+  { from: "../../assets/", to: "../../assets/" },
+  { from: "../assets/", to: "../../assets/" },
+];
+
+function resolveMetaAssetPath(path?: string): ImageMetadata | string | undefined {
+  if (!path || typeof path !== "string") return undefined;
+
+  const normalizedPath = assetPathAliases.reduce((resolved, alias) => {
+    if (resolved.startsWith(alias.from)) {
+      return `${alias.to}${resolved.slice(alias.from.length)}`;
+    }
+    return resolved;
+  }, path);
+
+  const assetModule = assetModules[normalizedPath];
+  return assetModule?.default ?? path;
+}
+
+function resolveMetaImages(value: unknown): unknown {
+  if (typeof value === "string") {
+    return resolveMetaAssetPath(value) ?? value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => resolveMetaImages(item));
+  }
+
+  if (!value || typeof value !== "object") {
+    return value;
+  }
+
+  const resolvedObject: Record<string, unknown> = {};
+
+  for (const [key, nestedValue] of Object.entries(value)) {
+    if (key === "src" && typeof nestedValue === "string") {
+      resolvedObject[key] = resolveMetaAssetPath(nestedValue) ?? nestedValue;
+      continue;
+    }
+
+    resolvedObject[key] = resolveMetaImages(nestedValue);
+  }
+
+  return resolvedObject;
+}
 
 /**
  * Get metadata for a specific collection from its _meta.mdx file
@@ -41,10 +94,11 @@ export function getCollectionMeta(collectionName: string): MetaData {
   );
 
   const data = mdxKey ? (mdxModules[mdxKey] as any).frontmatter ?? {} : {};
+  const resolvedData = resolveMetaImages(data);
 
-  // For _meta.mdx, images come as raw strings from glob imports
-  // We need to pass them through as-is since they're not in content collections
-  const passthroughImage = () => z.string().optional();
+  // _meta.mdx image fields may still be raw strings, wrapped { src, alt } values,
+  // or eagerly resolved Astro image metadata from the asset map above.
+  const passthroughImage = () => z.any().optional();
 
-  return metaSchema({ image: passthroughImage }).parse(data);
+  return metaSchema({ image: passthroughImage }).parse(resolvedData);
 }

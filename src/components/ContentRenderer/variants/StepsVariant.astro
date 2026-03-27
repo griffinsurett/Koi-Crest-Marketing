@@ -45,41 +45,41 @@ const sortedItems = [...items].sort((a, b) => {
         titleClass="text-4xl md:text-5xl font-bold text-black"
         containerClass="space-y-2"
       />
-      {description && (
-        <p class="text-gray-600 text-lg mt-6 max-w-2xl mx-auto">
-          {description}
-        </p>
-      )}
+      {
+        description && (
+          <p class="text-gray-600 text-lg mt-6 max-w-2xl mx-auto">
+            {description}
+          </p>
+        )
+      }
     </div>
 
     <!-- Steps Grid -->
-    {sortedItems.length > 0 && (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {sortedItems.map((item, index) => {
-          const stepNumber = String(item.step ?? index + 1).padStart(2, '0');
-          return (
-            <div class="group relative">
-              <!-- Step Card -->
-              <div class="bg-white p-8 h-full border border-gray-200 transition-all duration-300 hover:shadow-lg hover:border-gray-300">
-                <!-- Step Number -->
-                <div class="text-6xl font-bold text-gray-200 mb-4 transition-colors duration-300 group-hover:text-black">
-                  {stepNumber}
+    {
+      sortedItems.length > 0 && (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {sortedItems.map((item, index) => {
+            const stepNumber = String(item.step ?? index + 1).padStart(2, "0");
+            return (
+              <div class="group relative">
+                <div class="bg-white p-8 h-full border border-gray-200 transition-all duration-300 hover:shadow-lg hover:border-gray-300">
+                  <div class="text-6xl font-bold text-gray-200 mb-4 transition-colors duration-300 group-hover:text-black">
+                    {stepNumber}
+                  </div>
+
+                  <h3 class="text-xl font-bold text-black mb-3">
+                    {item.title}
+                  </h3>
+
+                  <p class="text-gray-600 leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
-
-                <!-- Step Title -->
-                <h3 class="text-xl font-bold text-black mb-3">
-                  {item.title}
-                </h3>
-
-                <!-- Step Description -->
-                <p class="text-gray-600 leading-relaxed">
-                  {item.description}
-                </p>
               </div>
-            </div>
-          );
-        })}
-      </div>
-    )}
+            );
+          })}
+        </div>
+      )
+    }
   </div>
 </section>

@@ -100,7 +100,7 @@ export default function CookieConsentBanner() {
         ssr={false}
         ariaLabel="Cookie consent banner"
       >
-        <div className="group text-left transition-all duration-300">
+        <div id="cookie-consent-banner" className="group text-left transition-all duration-300">
           <div className="rounded-3xl border border-text/10 bg-surface p-6 shadow-md backdrop-blur-sm">
             <div className="flex flex-col gap-6">
               <div className="flex items-start gap-3">

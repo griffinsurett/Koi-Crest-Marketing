@@ -79,7 +79,7 @@ export async function generateCollectionIndexPaths(): Promise<
  * Prepare all data needed to render a collection index page
  *
  * Works just like prepareItemPageData but for collection index pages.
- * Gets the layout component from meta.layout field
+ * Gets the layout component from meta.indexLayout field
  * and the MDX content from _meta.mdx body.
  */
 export async function prepareCollectionIndexData(

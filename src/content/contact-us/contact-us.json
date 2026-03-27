@@ -5,12 +5,5 @@
     "icon": "fa6:phone",
     "label": "Phone Number",
     "linkPrefix": "tel:"
-  },
-  {
-    "id": "email",
-    "title": "koicrestofficial@gmail.com",
-    "icon": "lu:mail",
-    "label": "Email Address",
-    "linkPrefix": "mailto:"
   }
 ]
