@@ -1,6 +1,5 @@
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
-import { loadEnv } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
@@ -10,10 +9,11 @@ import { buildRedirectConfig } from './src/utils/redirects';
 import { manualChunks, assetFileNames } from './vite.chunks.js';
 import iconGeneratorIntegration from './src/integrations/icons/icon-generator.integration.mjs';
 import clientDirectivesIntegration from './src/integrations/client-directives/client-directives.integration.mjs';
+import robotsLlmsIntegration from './src/integrations/robots-llms/robots-llms.integration.ts';
+import { SITE_URL } from './src/content/siteData.ts';
 
-const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 const redirects = await buildRedirectConfig();
-const siteUrl = `https://${env.PUBLIC_SITE_DOMAIN}`;
+const siteUrl = SITE_URL;
 
 console.log(`Site URL: ${siteUrl}`);
 
@@ -55,6 +55,7 @@ export default defineConfig({
       },
     }),
     sitemap(),
+    robotsLlmsIntegration(),
   ],
   
   build: {

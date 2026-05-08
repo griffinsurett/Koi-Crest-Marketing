@@ -6,6 +6,7 @@
  */
 import { Image } from "astro:assets";
 import { siteData } from "@/content/siteData";
+import logoImage from "@/assets/koi-crest-logo.png";
 
 interface Props {
   /**
@@ -93,7 +94,7 @@ const logoHeight = height || config.imageSize;
   class={`text-2xl font-bold transition-colors flex flex-col gap-0 ${linkClassName}`}
 >
   <Image
-    src={siteData.Logo}
+    src={logoImage}
     alt={`${siteData.title} Logo`}
     width={logoWidth}
     height={logoHeight}
