@@ -1,42 +1,23 @@
-// src/content/config.ts
-/**
- * Collection structure:
- *
- * src/content/[collection]/
- *   _meta.mdx         ← Collection config (frontmatter) + index page content (body)
- *                        The _ prefix excludes it from collection entries
- *   item-one.mdx      ← Collection item
- *   item-two.mdx      ← Collection item
- *
- * _meta.mdx frontmatter controls:
- * - title: Display name for the collection
- * - description: Collection description
- * - hasPage: Whether to generate /[collection] index page
- * - itemsHasPage: Whether items get individual pages
- * - featuredImage: Hero image for index page
- * - seo: SEO overrides
- */
-import { file } from "astro/loaders";
-import { defineCollection, z } from "astro:content";
-import { baseSchema, MenuSchema, MenuItemFields, refSchema, imageInputSchema } from "./schema";
+// src/content.config.ts
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
+import { GlobLoad, FileLoad } from "@/utils/loaders/loaderUtils";
+import { baseSchema, MenuSchema, MenuItemFields, refSchema, imageInputSchema } from "./content/schema";
 import { MenuItemsLoader } from "@/utils/loaders/MenuItemsLoader";
 
-// Define your collections with the base schema - all support MDX
 export const collections = {
-  // ── menus.json ─────────────────────────────────────────
   menus: defineCollection({
-    loader: file("src/content/menus/menus.json"),
+    loader: FileLoad("menus", "menus.json"),
     schema: MenuSchema,
   }),
 
-  // ── menu-items.json ─────────────────────────────────────
   "menu-items": defineCollection({
     loader: MenuItemsLoader(),
     schema: MenuItemFields,
   }),
 
   "contact-us": defineCollection({
-    loader: file("src/content/contact-us/contact-us.json"),
+    loader: FileLoad("contact-us", "contact-us.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         linkPrefix: z.string().optional(),
@@ -45,7 +26,7 @@ export const collections = {
   }),
 
   "social-media": defineCollection({
-    loader: file("src/content/social-media/socialmedia.json"),
+    loader: FileLoad("social-media", "socialmedia.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         link: z.string().optional(),
@@ -53,6 +34,7 @@ export const collections = {
   }),
 
   "blog": defineCollection({
+    loader: GlobLoad("blog"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         author: refSchema("authors"),
@@ -60,8 +42,9 @@ export const collections = {
         readingTime: z.number().optional(),
       }),
   }),
+
   "authors": defineCollection({
-    loader: file("src/content/authors/authors.json"),
+    loader: FileLoad("authors", "authors.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         email: z.string().email().optional(),
@@ -76,7 +59,9 @@ export const collections = {
         role: z.string().optional(),
       }),
   }),
+
   "services": defineCollection({
+    loader: GlobLoad("services"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         parent: refSchema("services"),
@@ -89,7 +74,9 @@ export const collections = {
           }),
       }),
   }),
+
   "projects": defineCollection({
+    loader: GlobLoad("projects"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         projectUrl: z.string().url().optional(),
@@ -99,7 +86,9 @@ export const collections = {
         afterImage: imageInputSchema({ image }),
       }),
   }),
+
   "testimonials": defineCollection({
+    loader: GlobLoad("testimonials"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         role: z.string(),
@@ -107,35 +96,43 @@ export const collections = {
         rating: z.number().min(1).max(5).default(5),
       }),
   }),
+
   "faq": defineCollection({
+    loader: GlobLoad("faq"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         services: refSchema("services"),
       }),
   }),
+
   "reasons": defineCollection({
-  loader: file("src/content/reasons/reasons.json"),
-  schema: ({ image }) =>
-    baseSchema({ image }),
-}),
-"mission-vision": defineCollection({
-  loader: file("src/content/mission-vision/mission-vision.json"),
-  schema: ({ image }) =>
-    baseSchema({ image }),
-}),
-"values": defineCollection({
-  loader: file("src/content/values/values.json"),
-  schema: ({ image }) =>
-    baseSchema({ image }),
-}),
+    loader: FileLoad("reasons", "reasons.json"),
+    schema: ({ image }) =>
+      baseSchema({ image }),
+  }),
+
+  "mission-vision": defineCollection({
+    loader: FileLoad("mission-vision", "mission-vision.json"),
+    schema: ({ image }) =>
+      baseSchema({ image }),
+  }),
+
+  "values": defineCollection({
+    loader: FileLoad("values", "values.json"),
+    schema: ({ image }) =>
+      baseSchema({ image }),
+  }),
+
   "benefits": defineCollection({
-    loader: file("src/content/benefits/benefits.json"),
+    loader: FileLoad("benefits", "benefits.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         benefit: z.string(),
       }),
   }),
+
   "legal": defineCollection({
+    loader: GlobLoad("legal"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         effectiveDate: z
@@ -148,7 +145,9 @@ export const collections = {
           }),
       }),
   }),
+
   "pricing": defineCollection({
+    loader: GlobLoad("pricing"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         monthlyPrice: z.string(),
@@ -169,15 +168,18 @@ export const collections = {
         }).optional(),
       }),
   }),
+
   "industries": defineCollection({
+    loader: GlobLoad("industries"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         parent: refSchema("industries"),
         whyGreat: z.string().optional(),
       }),
   }),
+
   "steps": defineCollection({
-    loader: file("src/content/steps/steps.json"),
+    loader: FileLoad("steps", "steps.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         step: z.number(),

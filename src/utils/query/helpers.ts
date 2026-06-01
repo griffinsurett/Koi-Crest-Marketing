@@ -4,16 +4,13 @@
  */
 
 import type { CollectionEntry, CollectionKey } from 'astro:content';
-import { getItemKey } from '@/utils/collections';
 
 /**
  * Get a clean ID from an entry specifically for query operations
  * This ensures the ID is normalized for graph lookups
  */
 export function getQueryKey(entry: CollectionEntry<CollectionKey>): string {
-  // Use getItemKey as base, then ensure it's fully normalized
-  const key = getItemKey(entry);
-  return normalizeId(key);
+  return normalizeId(entry.id);
 }
 
 /**

@@ -6,7 +6,8 @@
  * These are pure Zod schemas - no astro:content imports at module level.
  */
 
-import { z, reference } from 'astro:content';
+import { z } from 'astro/zod';
+import { reference } from 'astro:content';
 import type { CollectionKey } from 'astro:content';
 
 /**

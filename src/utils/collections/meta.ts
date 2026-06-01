@@ -12,7 +12,7 @@
  */
 
 import { metaSchema, type MetaData } from "@/content/schema";
-import { z } from "astro:content";
+import { z } from "astro/zod";
 import type { ImageMetadata } from "astro";
 
 /**

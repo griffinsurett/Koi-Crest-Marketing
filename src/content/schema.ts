@@ -1,5 +1,6 @@
 // src/content/schema.ts
-import { z, reference, type CollectionKey } from "astro:content";
+import { z } from "astro/zod";
+import { reference, type CollectionKey } from "astro:content";
 
 // ============================================================================
 // REFERENCE SCHEMA

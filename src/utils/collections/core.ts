@@ -4,25 +4,13 @@
  */
 
 import type { CollectionKey, CollectionEntry } from "astro:content";
-import { collections } from "@/content/config";
+import { collections } from "@/content.config";
 import type { MetaData } from "@/content/schema";
 
 // ❌ NO astro:content imports at module level
 
 export function getCollectionNames(): string[] {
   return Object.keys(collections);
-}
-
-type AnyItem =
-  | CollectionEntry<CollectionKey>
-  | { slug?: string; id?: string; [key: string]: unknown };
-
-export function getItemKey(item: AnyItem): string {
-  if (!item) return "";
-  if ("slug" in item && typeof item.slug === "string" && item.slug)
-    return item.slug;
-  if ("id" in item && typeof item.id === "string" && item.id) return item.id;
-  return "";
 }
 
 /**

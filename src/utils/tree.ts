@@ -1,20 +1,19 @@
 // src/utils/tree.ts
 /**
  * Tree Building Utilities
- * 
+ *
  * Transforms flat arrays with parent references into hierarchical trees.
  * Used by MenuVariant and any other component that needs hierarchy.
  */
 
-import { getItemKey } from './collections';
 
 /**
  * Build hierarchical tree from flat items with parent references
- * 
+ *
  * @param items - Flat array of items with optional parent field
  * @param options - Configuration for tree building
  * @returns Array of root-level items with nested children
- * 
+ *
  * @example
  * const flatItems = [
  *   { id: 'home', parent: null },
@@ -39,32 +38,31 @@ export function buildTree<T extends { parent?: any; order?: number }>(
   } = options;
 
   type TreeNode = T & { children: TreeNode[] };
-  
+
   const itemMap = new Map<string, TreeNode>();
   const roots: TreeNode[] = [];
-  
+
   // First pass: create nodes with children arrays
   items.forEach(item => {
-    const id = getItemKey(item as any);
+    const id = (item as any).id || (item as any).slug || "";
     if (id) {
       itemMap.set(id, { ...item, children: [] });
     }
   });
-  
+
   // Second pass: build hierarchy
   items.forEach(item => {
-    const id = getItemKey(item as any);
+    const id = (item as any).id || (item as any).slug || "";
     if (!id) return;
-    
+
     const node = itemMap.get(id)!;
     const parent = item[parentField];
-    
+
     if (parent) {
-      // Extract parent ID (handle both string and object references)
-      const parentId = typeof parent === 'string' ? parent : 
-                       getItemKey(parent);
+      const parentId = typeof parent === 'string' ? parent :
+                       (parent as any).id || (parent as any).slug || "";
       const parentNode = itemMap.get(parentId);
-      
+
       if (parentNode) {
         parentNode.children.push(node);
       } else {
@@ -76,7 +74,7 @@ export function buildTree<T extends { parent?: any; order?: number }>(
       roots.push(node);
     }
   });
-  
+
   // Sort recursively
   const sortTree = (nodes: TreeNode[]) => {
     nodes.sort((a, b) => {
@@ -85,21 +83,21 @@ export function buildTree<T extends { parent?: any; order?: number }>(
       const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
       return sortDirection === 'asc' ? comparison : -comparison;
     });
-    
+
     nodes.forEach(node => {
       if (node.children.length > 0) {
         sortTree(node.children);
       }
     });
   };
-  
+
   sortTree(roots);
   return roots;
 }
 
 /**
  * Flatten a tree back to an array (useful for searching/filtering)
- * 
+ *
  * @param tree - Hierarchical tree structure
  * @param includeDepth - Add depth property to each item
  * @returns Flat array of all items
@@ -109,18 +107,18 @@ export function flattenTree<T extends { children?: any[] }>(
   includeDepth: boolean = false
 ): Array<T & { depth?: number }> {
   const result: Array<T & { depth?: number }> = [];
-  
+
   const traverse = (nodes: T[], depth: number = 0) => {
     for (const node of nodes) {
       const { children, ...item } = node;
       result.push(includeDepth ? { ...item as T, depth } : item as T);
-      
+
       if (children && children.length > 0) {
         traverse(children, depth + 1);
       }
     }
   };
-  
+
   traverse(tree);
   return result;
 }
@@ -134,13 +132,13 @@ export function findInTree<T extends { children?: T[] }>(
 ): T | undefined {
   for (const node of tree) {
     if (predicate(node)) return node;
-    
+
     if (node.children && node.children.length > 0) {
       const found = findInTree(node.children, predicate);
       if (found) return found;
     }
   }
-  
+
   return undefined;
 }
 
@@ -156,29 +154,29 @@ export function getAncestors<T extends { parent?: any }>(
 ): T[] {
   const { parentField = 'parent' as keyof T } = options;
   const ancestors: T[] = [];
-  
-  // Build lookup map using getItemKey
+
+  // Build lookup map
   const itemMap = new Map<string, T>();
   items.forEach(item => {
-    const id = getItemKey(item as any);
+    const id = (item as any).id || (item as any).slug || "";
     if (id) {
       itemMap.set(id, item);
     }
   });
-  
+
   // Walk up the tree
   let current = itemMap.get(targetId);
   while (current) {
     const parent = current[parentField];
     if (!parent) break;
-    
-    const parentId = typeof parent === 'string' ? parent : getItemKey(parent);
+
+    const parentId = typeof parent === 'string' ? parent : (parent as any).id || (parent as any).slug || "";
     const parentItem = itemMap.get(parentId);
-    
+
     if (!parentItem) break;
     ancestors.unshift(parentItem); // Add to beginning
     current = parentItem;
   }
-  
+
   return ancestors;
 }

@@ -7,7 +7,6 @@
  */
 
 import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, normalizeId, and, or } from '@/utils/query';
-import { getItemKey } from '@/utils/collections';
 import type { CollectionKey } from 'astro:content';
 
 // ============================================================================
@@ -56,7 +55,7 @@ export const item = async (collection: CollectionKey, key: string) => {
   if (!targetId) return undefined;
 
   return query(collection)
-    .where((entry) => normalizeId(getItemKey(entry)) === targetId)
+    .where((entry) => normalizeId(entry.id) === targetId)
     .first();
 };
 
@@ -78,13 +77,12 @@ export const byItemKeys = (collection: CollectionKey, keys: string | string[]) =
 
   return query(collection)
     .where((entry) => {
-      const entryKey = normalizeId(getItemKey(entry));
+      const entryKey = normalizeId(entry.id);
       return keySet.has(entryKey);
     })
     .orderBy((a, b) => {
-      // Preserve the order from the keys array
-      const aKey = normalizeId(getItemKey(a));
-      const bKey = normalizeId(getItemKey(b));
+      const aKey = normalizeId(a.id);
+      const bKey = normalizeId(b.id);
       return normalizedKeys.indexOf(aKey) - normalizedKeys.indexOf(bKey);
     });
 };
@@ -173,7 +171,7 @@ export const parent = (
 
   return query(collection)
     .where((entry) => {
-      const id = normalizeId(getItemKey(entry));
+      const id = normalizeId(entry.id);
       return targetIds.includes(id);
     })
     .orderBy(sortByOrder());
@@ -212,7 +210,7 @@ export const siblings = (
   return query(collection)
     .where((entry) => {
       // Exclude the target item itself when possible
-      if (targetId && normalizeId(getItemKey(entry)) === targetId) {
+      if (targetId && normalizeId(entry.id) === targetId) {
         return false;
       }
 

@@ -7,8 +7,8 @@
  */
 
 import type { CollectionKey, CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
-import { getCollectionMeta, getItemKey } from "@/utils/collections";
+import { getCollection, render as renderEntry } from "astro:content";
+import { getCollectionMeta } from "@/utils/collections";
 import {
   shouldItemHavePage,
   shouldItemUseRootPath,
@@ -34,7 +34,7 @@ export type ItemFilter = (
  * Path parameters for root-level items
  */
 export interface RootLevelPathParams {
-  slug: string;
+  id: string;
 }
 
 /**
@@ -42,7 +42,7 @@ export interface RootLevelPathParams {
  */
 export interface CollectionLevelPathParams {
   collection: string;
-  slug: string;
+  id: string;
 }
 
 /**
@@ -76,18 +76,10 @@ export interface PreparedPageData {
 
 /**
  * Generate static paths for items matching a filter
- *
- * Generic function that handles path generation for both
- * root-level and collection-level routes.
- *
- * @param filter - Function to determine which items to include
- * @param buildParams - Function to build path params from entry
- * @returns Array of static path entries
  */
-
 export async function generateItemPaths<TParams>(
   filter: ItemFilter,
-  buildParams: (collection: string, slug: string) => TParams
+  buildParams: (collection: string, id: string) => TParams
 ): Promise<StaticPath<TParams>[]> {
   const collections = getPageCollections();
   const paths: StaticPath<TParams>[] = [];
@@ -106,9 +98,9 @@ export async function generateItemPaths<TParams>(
     entries
       .filter((entry) => filter(entry as CollectionEntry<CollectionKey>, meta))
       .forEach((entry) => {
-        const slug = getItemKey(entry);
+        const id = entry.id;
         paths.push({
-          params: buildParams(collectionKey, slug),
+          params: buildParams(collectionKey, id),
           props: {
             entry: entry as CollectionEntry<CollectionKey>,
             collectionMeta: meta,
@@ -123,35 +115,23 @@ export async function generateItemPaths<TParams>(
 
 /**
  * Prepare all data needed to render an item page
- *
- * This function handles ALL the logic for preparing a page:
- * - Getting the layout component
- * - Rendering MDX content
- * - Building SEO props
- *
- * @param props - Props from getStaticPaths
- * @returns All data needed to render the page
  */
 export async function prepareItemPageData(
   props: ItemPageProps
 ): Promise<PreparedPageData> {
   const { entry, collectionMeta, collectionName } = props;
 
-  // Get the layout path from meta/item
   const layoutPath = getLayoutPath(collectionMeta, entry, true);
-
-  // Get the actual layout component
   const LayoutComponent = await getLayoutComponent(layoutPath);
 
-  // Prepare content if MDX - safe type assertion since we know it might have render
   let Content = null;
-  const entryWithRender = entry as any;
-  if (entryWithRender && typeof entryWithRender.render === "function") {
-    const rendered = await entryWithRender.render();
-    Content = rendered.Content;
+  try {
+    const rendered = await renderEntry(entry as any);
+    Content = rendered?.Content ?? null;
+  } catch {
+    Content = null;
   }
 
-  // Build SEO props
   const seoProps = await buildItemSEOProps(entry, collectionMeta);
 
   return {
@@ -166,7 +146,6 @@ export async function prepareItemPageData(
 
 /**
  * Filter for root-level items
- * Items that should have a page AND use root path
  */
 export const rootLevelFilter: ItemFilter = (entry, meta) => {
   return shouldItemHavePage(entry, meta) && shouldItemUseRootPath(entry, meta);
@@ -174,7 +153,6 @@ export const rootLevelFilter: ItemFilter = (entry, meta) => {
 
 /**
  * Filter for collection-level items
- * Items that should have a page but NOT use root path
  */
 export const collectionLevelFilter: ItemFilter = (entry, meta) => {
   return shouldItemHavePage(entry, meta) && !shouldItemUseRootPath(entry, meta);
@@ -185,9 +163,9 @@ export const collectionLevelFilter: ItemFilter = (entry, meta) => {
  */
 export function buildRootLevelParams(
   _collection: string,
-  slug: string
+  id: string
 ): RootLevelPathParams {
-  return { slug };
+  return { id };
 }
 
 /**
@@ -195,7 +173,7 @@ export function buildRootLevelParams(
  */
 export function buildCollectionLevelParams(
   collection: string,
-  slug: string
+  id: string
 ): CollectionLevelPathParams {
-  return { collection, slug };
+  return { collection, id };
 }
